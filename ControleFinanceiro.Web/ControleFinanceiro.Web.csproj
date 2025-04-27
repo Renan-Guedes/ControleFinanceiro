@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ControleFinanceiro.Infra\ControleFinanceiro.Infra.csproj" />
+  </ItemGroup>
+
 </Project>

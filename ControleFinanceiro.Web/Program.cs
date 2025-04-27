@@ -1,4 +1,18 @@
+using ControleFinanceiro.Infra.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Recupera Connection String
+var cnnStr = builder
+    .Configuration
+    .GetConnectionString("DefaultConnection") ?? string.Empty;
+
+// Registra DbContext
+builder.Services.AddDbContext<AppDbContext>(x =>
+{
+    x.UseSqlServer(cnnStr);
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
