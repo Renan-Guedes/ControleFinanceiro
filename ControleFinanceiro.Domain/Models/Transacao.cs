@@ -23,4 +23,10 @@ public class Transacao
     public long UsuarioId { get; set; }
 
     public Usuario Usuario { get; set; } = null!;
+
+    public DateTime DataCriacao { get; set; } = DateTime.Now;
+
+    public DateTime? DataAtualizacao { get; set; }
+
+    public DateTime? DataExclusao { get; set; }
 }
