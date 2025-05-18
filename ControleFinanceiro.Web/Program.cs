@@ -1,4 +1,8 @@
+using ControleFinanceiro.Application.Interfaces;
+using ControleFinanceiro.Application.UseCases;
+using ControleFinanceiro.Domain.Repositories;
 using ControleFinanceiro.Infra.Data;
+using ControleFinanceiro.Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +17,10 @@ builder.Services.AddDbContext<AppDbContext>(x =>
 {
     x.UseSqlServer(cnnStr);
 });
+
+// Registra serviços
+builder.Services.AddScoped<ICategoriaUseCase, CategoriaUseCase>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

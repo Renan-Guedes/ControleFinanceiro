@@ -27,7 +27,7 @@ public class CategoriaRepository : ICategoriaRepository
         _db.SaveChanges();
     }
 
-    public void Deletar(int id)
+    public void Deletar(long id)
     {
         var categoria = _db.Categorias.Find(id);
 
@@ -45,7 +45,7 @@ public class CategoriaRepository : ICategoriaRepository
             .ToList();
     }
 
-    public Categoria ListarPorId(int id)
+    public Categoria ListarPorId(long id)
     {
         return _db.Categorias
             .FirstOrDefault(x => x.Id == id && x.DataExclusao == null);

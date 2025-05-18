@@ -19,13 +19,15 @@ public class CategoriaUseCase : ICategoriaUseCase
 
     public void Atualizar(Categoria categoria) => _repository.Atualizar(categoria);
 
-    public void Deletar(int id) => _repository.Deletar(id);
+    public void Deletar(long id) => _repository.Deletar(id);
 
     #endregion
 
     #region Métodos de Pesquisa
 
     public List<Categoria> ListarTodas() => _repository.Listar();
+
+    public Categoria PesquisarPorId(long id) => _repository.ListarPorId(id);
 
     public List<Categoria> ListarPorNome(string categoria) => _repository.ListarPorNome(categoria);
 
