@@ -19,7 +19,15 @@ namespace ControleFinanceiro.Web.Controllers
         public ActionResult Index()
         {
             var categorias = _categoriaUseCase.ListarTodas();
-            return View(categorias);
+
+            var viewModel = categorias.Select(c => new CategoriaViewModel
+            {
+                Id = c.Id,
+                Titulo = c.Titulo,
+                Descricao = c.Descricao
+            }).ToList();
+
+            return View(viewModel);
         }
 
         // GET: /Categoria/Criar
@@ -74,14 +82,14 @@ namespace ControleFinanceiro.Web.Controllers
             if (!ModelState.IsValid)
                 return View(categoriaviewModel);
 
-            var categoriaAtualizada = new Categoria 
+            var categoriaEditada = new Categoria 
             {
                 Id = categoriaviewModel.Id,
                 Titulo = categoriaviewModel.Titulo,
                 Descricao = categoriaviewModel.Descricao
             };
 
-            _categoriaUseCase.Atualizar(categoriaAtualizada);
+            _categoriaUseCase.Atualizar(categoriaEditada);
             return RedirectToAction(nameof(Index));
         }
 
@@ -93,7 +101,14 @@ namespace ControleFinanceiro.Web.Controllers
             if (categoria == null)
                 return NotFound();
 
-            return View(categoria);
+            var viewModel = new CategoriaViewModel
+            {
+                Id = categoria.Id,
+                Titulo = categoria.Titulo,
+                Descricao = categoria.Descricao
+            };
+
+            return View(viewModel);
         }
 
         // POST: /Categoria/Deletar/5

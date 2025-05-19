@@ -1,8 +1,8 @@
-﻿@model ControleFinanceiro.Web.ViewModels.CategoriaViewModel
+﻿@model ControleFinanceiro.Web.ViewModels.TransacaoViewModel
 
 <h2>Confirmar Exclusão</h2>
 
-<p>Tem certeza que deseja excluir a categoria <strong>@Model.Titulo</strong>?</p>
+<p>Tem certeza que deseja excluir a transação <strong>@Model.Titulo</strong>?</p>
 
 <form asp-action="Deletar" method="post">
     <input type="hidden" asp-for="Id" />

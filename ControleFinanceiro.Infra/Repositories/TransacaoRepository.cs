@@ -1,6 +1,7 @@
 ﻿using ControleFinanceiro.Domain.Models;
 using ControleFinanceiro.Domain.Repositories;
 using ControleFinanceiro.Infra.Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace ControleFinanceiro.Infra.Repositories;
@@ -27,7 +28,7 @@ public class TransacaoRepository : ITransacaoRepository
         _db.SaveChanges();
     }
 
-    public void Deletar(int id)
+    public void Deletar(long id)
     {
         var transacao = _db.Transacoes.Find(id);
 
@@ -41,21 +42,15 @@ public class TransacaoRepository : ITransacaoRepository
     public List<Transacao> Listar()
     {
         return _db.Transacoes
+            .Include(t => t.Categoria)
             .Where(x => x.DataExclusao == null)
             .ToList();
     }
 
-    public Transacao ListarPorId(int id)
+    public Transacao ListarPorId(long id)
     {
         return _db.Transacoes
             .FirstOrDefault(x => x.Id == id && x.DataExclusao == null);
-    }
-
-    public List<Transacao> ListarPorNome(string transacao)
-    {
-        return _db.Transacoes
-            .Where(x => x.Titulo.Contains(transacao) && x.DataExclusao == null)
-            .ToList();
     }
 
     public void Dispose()

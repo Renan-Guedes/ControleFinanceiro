@@ -18,9 +18,15 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     x.UseSqlServer(cnnStr);
 });
 
-// Registra serviços
+// Registra serviços //
+
+// Categoria
 builder.Services.AddScoped<ICategoriaUseCase, CategoriaUseCase>();
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+
+// Transação
+builder.Services.AddScoped<ITransacaoUseCase, TransacaoUseCase>();
+builder.Services.AddScoped<ITransacaoRepository, TransacaoRepository>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

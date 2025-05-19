@@ -1,14 +1,17 @@
-﻿@model List<ControleFinanceiro.Web.ViewModels.CategoriaViewModel>
+﻿@model List<ControleFinanceiro.Web.ViewModels.TransacaoViewModel>
 
-<h2>Lista de Categorias</h2>
+<h2>Lista de Transação</h2>
 
-<a asp-action="Criar" class="btn btn-primary">Nova Categoria</a>
+<a asp-action="Criar" class="btn btn-primary">Nova Transação</a>
 
 <table class="table">
     <thead>
         <tr>
             <th>Título</th>
-            <th>Descrição</th>
+            <th>Tipo</th>
+            <th>Valor</th>
+            <th>Categoria</th>
+            <th>Data da Transação</th>
             <th>Ações</th>
         </tr>
     </thead>
@@ -17,7 +20,10 @@
         {
             <tr>
                 <td>@item.Titulo</td>
-                <td>@item.Descricao</td>
+                <td>@item.Tipo</td>
+                <td>@item.Valor</td>
+                <td>@item.CategoriaNome</td>
+                <td>@item.PagoOuRecebidoEmFormatado</td>
                 <td>
                     <a asp-action="Editar" asp-route-id="@item.Id">Editar</a> |
                     <a asp-action="Deletar" asp-route-id="@item.Id">Deletar</a>

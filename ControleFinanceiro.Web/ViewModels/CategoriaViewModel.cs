@@ -1,13 +1,13 @@
-﻿namespace ControleFinanceiro.Web.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ControleFinanceiro.Web.ViewModels;
+
+public class CategoriaViewModel
 {
-    public class CategoriaViewModel
-    {
-        public long Id { get; set; }
+    public long Id { get; set; }
 
-        public string Titulo { get; set; } = string.Empty;
+    [Required(ErrorMessage = "O campo Título é obrigatório")]
+    public string Titulo { get; set; } = string.Empty;
 
-        public string? Descricao { get; set; }
-
-        public long UsuarioId { get; set; }
-    }
+    public string? Descricao { get; set; }
 }

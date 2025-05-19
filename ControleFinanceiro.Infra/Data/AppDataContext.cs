@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using ControleFinanceiro.Domain.Models;
+﻿using ControleFinanceiro.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ControleFinanceiro.Infra.Data;
@@ -19,8 +18,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     #region Fluent Mapping
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Identifica todos os mapeamentos que implementam o IEntityConfiguration
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        /* Identifica todos os mapeamentos que implementam o IEntityConfiguration
+
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        */
+
+        modelBuilder.Entity<Categoria>().ToTable("Categoria");
+        modelBuilder.Entity<Transacao>().ToTable("Transacao");
+        modelBuilder.Entity<Usuario>().ToTable("Usuario");
     }
 
     #endregion

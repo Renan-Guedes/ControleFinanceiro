@@ -7,8 +7,6 @@ public class Transacao
     public long Id { get; set; }
 
     public string Titulo { get; set; } = string.Empty;
-
-    public DateTime CriadoEm { get; set; } = DateTime.Now;
     
     public DateTime? PagoOuRecebidoEm { get; set; }
 
