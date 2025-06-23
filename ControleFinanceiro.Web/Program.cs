@@ -1,3 +1,7 @@
+using ControleFinanceiro.Application.Interfaces;
+using ControleFinanceiro.Application.UseCase;
+using ControleFinanceiro.Domain.Interfaces;
+using ControleFinanceiro.Infra;
 using ControleFinanceiro.Infra.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +16,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     // Recupera a Connection String do appsettings.json
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+// Registra os serviços de aplicação //
+
+// Categoria
+builder.Services.AddScoped<ICategoriaUseCase, CategoriaUseCase>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 
 var app = builder.Build();
 
