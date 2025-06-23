@@ -1,8 +1,28 @@
 ﻿@model List<ControleFinanceiro.Web.ViewModels.CategoriaViewModel>
 
-<h2>Categorias</h2>
+<h2>Listar Categorias</h2>
 
-@foreach(var categoria in Model)
-{
-    <p>@categoria.Nome</p>
-}
+<a asp-action="Criar" class="btn btn-primary mb-3">Nova Categoria</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Ativo</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var categoria in Model)
+        {
+            <tr>
+                <td>@categoria.Nome</td>
+                <td>@(categoria.Ativo ? "Sim" : "Não")</td>
+                <td>
+                    <a asp-action="Editar" asp-route-id="@categoria.Id" class="btn btn-warning">Editar</a>
+                    <a asp-action="Deletar" asp-route-id="@categoria.Id" class="btn btn-danger">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

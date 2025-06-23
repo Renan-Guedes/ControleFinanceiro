@@ -6,12 +6,12 @@ public class CategoriaViewModel
 {
     public int Id { get; set; }
 
-    [Required(ErrorMessage = "O Título da Categoria é obrigatório")]
+    [Required(ErrorMessage = "(* obrigatório")]
     public string Nome { get; set; }
     
-    public string Descricao { get; set; }
-    
     public DateTime? DataExclusao { get; set; }
-    
+
+    [Required(ErrorMessage = "* obrigatório")]
+    [Display(Name = "Está Ativo?")]
     public bool Ativo { get; set; }
 }

@@ -1,0 +1,5 @@
+﻿@model ControleFinanceiro.Web.ViewModels.CategoriaViewModel
+
+<h2>@ViewContext.RouteData.Values["action"]?.ToString() Categoria</h2>
+
+@await Html.PartialAsync("_FormCategoria", Model)
