@@ -3,6 +3,7 @@ using ControleFinanceiro.Application.UseCase;
 using ControleFinanceiro.Domain.Interfaces;
 using ControleFinanceiro.Infra;
 using ControleFinanceiro.Infra.Data;
+using ControleFinanceiro.Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Categoria
 builder.Services.AddScoped<ICategoriaUseCase, CategoriaUseCase>();
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+
+// Transação
+builder.Services.AddScoped<ITransacaoUseCase, TransacaoUseCase>();
+builder.Services.AddScoped<ITransacaoRepository, TransacaoRepository>();
+
+// Tipo de Transação
+builder.Services.AddScoped<ITipoTransacaoUseCase, TipoTransacaoUseCase>();
+builder.Services.AddScoped<ITipoTransacaoRepository, TipoTransacaoRepository>();
 
 var app = builder.Build();
 

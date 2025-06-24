@@ -7,9 +7,7 @@ public class CategoriaViewModel
     public int Id { get; set; }
 
     [Required(ErrorMessage = "(* obrigatório")]
-    public string Nome { get; set; }
-    
-    public DateTime? DataExclusao { get; set; }
+    public string Nome { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "* obrigatório")]
     [Display(Name = "Está Ativo?")]

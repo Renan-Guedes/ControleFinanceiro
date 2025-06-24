@@ -1,0 +1,44 @@
+﻿@model IEnumerable<ControleFinanceiro.Web.ViewModels.TransacaoViewModel>
+
+@{
+    ViewData["Title"] = "Transações";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<a asp-action="Criar" class="btn btn-primary mb-3">Nova Transação</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Descrição</th>
+            <th>Tipo</th>
+            <th>Fatura</th>
+            <th>Valor Planejado</th>
+            <th>Valor Pago</th>
+            <th>Categoria</th>
+            <th>Data Vencimento</th>
+            <th>Data Transação</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Descricao</td>
+                <td>@item.TipoTransacaoNome</td>
+                <td>@(item.Fatura ? "Sim" : "Não")</td>
+                <td>@item.ValorPlanejado.ToString("C")</td>
+                <td>@item.ValorPago.ToString("C")</td>
+                <td>@item.CategoriaNome</td>
+                <td>@item.DataVencimentoFormatada</td>
+                <td>@item.DataTransacaoFormatada</td>
+                <td>
+                    <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Deletar" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

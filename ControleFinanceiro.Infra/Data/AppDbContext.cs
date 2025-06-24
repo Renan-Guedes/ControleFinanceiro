@@ -11,8 +11,8 @@ public class AppDbContext : DbContext
 
     // O DbSet representa todas as tabelas do banco de dados em sistema
     public DbSet<CategoriaModel> Categorias { get; set; }
-    
-    public DbSet<FinanceiroModel> Financas { get; set; }
-    
-    public DbSet<TransacaoModel> Trasacoes { get; set; }
+        
+    public DbSet<TransacaoModel> Transacoes { get; set; }
+
+    public DbSet<TipoTransacaoModel> TipoTransacoes { get; set; }
 }

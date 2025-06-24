@@ -48,4 +48,10 @@ public class CategoriaRepository : ICategoriaRepository
             .Where(c => c.DataExclusao == null)
             .ToList();
     }
+
+    public CategoriaModel? BuscarPorId(int id)
+    {
+        return _db.Categorias
+            .FirstOrDefault(c => c.Id == id && c.DataExclusao == null);
+    }
 }

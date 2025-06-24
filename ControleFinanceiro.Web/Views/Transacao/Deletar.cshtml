@@ -1,0 +1,29 @@
+﻿@model ControleFinanceiro.Web.ViewModels.TransacaoViewModel
+
+@{
+    ViewData["Title"] = "Excluir Transação";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h4>Tem certeza que deseja excluir esta transação?</h4>
+
+<dl class="row">
+    <dt class="col-sm-3">Descrição</dt>
+    <dd class="col-sm-9">@Model.Descricao</dd>
+
+    <dt class="col-sm-3">Tipo</dt>
+    <dd class="col-sm-9">@Model.TipoTransacaoId</dd>
+
+    <dt class="col-sm-3">Valor Pago</dt>
+    <dd class="col-sm-9">@Model.ValorPago.ToString("C")</dd>
+
+    <dt class="col-sm-3">Data</dt>
+    <dd class="col-sm-9">@Model.DataTransacao.ToShortDateString()</dd>
+</dl>
+
+<form asp-action="Deletar" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Excluir</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

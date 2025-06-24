@@ -20,4 +20,6 @@ public class CategoriaUseCase : ICategoriaUseCase
     public void Deletar(int id) => _repository.Deletar(id);
 
     public List<CategoriaModel> ListarTodos() => _repository.Listar();
+
+    public CategoriaModel? BuscarPorId(int id) => _repository.BuscarPorId(id);
 }

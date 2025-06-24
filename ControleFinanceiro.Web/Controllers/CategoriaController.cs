@@ -24,7 +24,6 @@ namespace ControleFinanceiro.Web.Controllers
                 Id = c.Id,
                 Nome = c.Nome,
                 Ativo = c.Ativo,
-                DataExclusao = c.DataExclusao
             }).ToList();
 
             return View(viewModel);
@@ -71,7 +70,6 @@ namespace ControleFinanceiro.Web.Controllers
                 Id = categoria.Id,
                 Nome = categoria.Nome,
                 Ativo = categoria.Ativo,
-                DataExclusao = categoria.DataExclusao
             };
 
             return View(viewModel);
@@ -105,19 +103,16 @@ namespace ControleFinanceiro.Web.Controllers
         // GET: /Categoria/Deletar/{id}
         public IActionResult Deletar(int id)
         {
-            var categoria = _categoriaUseCase.ListarTodos().FirstOrDefault(c => c.Id == id);
+            var categoria = _categoriaUseCase.BuscarPorId(id); // Evite ListarTodos + FirstOrDefault
 
-            if (categoria == null)
-            {
+            if (categoria is null)
                 return NotFound();
-            }
 
             var viewModel = new CategoriaViewModel
             {
                 Id = categoria.Id,
                 Nome = categoria.Nome,
-                Ativo = categoria.Ativo,
-                DataExclusao = categoria.DataExclusao
+                Ativo = categoria.Ativo
             };
 
             return View(viewModel);
@@ -126,18 +121,17 @@ namespace ControleFinanceiro.Web.Controllers
         // POST: /Categoria/Deletar/{id}
         [HttpPost, ActionName("Deletar")]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmarDelete(int id)
+        public IActionResult ConfirmarDeletar(int id)
         {
-            var categoria = _categoriaUseCase.ListarTodos().FirstOrDefault(c => c.Id == id);
+            var categoria = _categoriaUseCase.BuscarPorId(id);
 
-            if (categoria == null)
-            {
+            if (categoria is null)
                 return NotFound();
-            }
 
             _categoriaUseCase.Deletar(id);
 
             return RedirectToAction(nameof(Index));
         }
+
     }
 }
