@@ -32,6 +32,10 @@ builder.Services.AddScoped<ITransacaoRepository, TransacaoRepository>();
 builder.Services.AddScoped<ITipoTransacaoUseCase, TipoTransacaoUseCase>();
 builder.Services.AddScoped<ITipoTransacaoRepository, TipoTransacaoRepository>();
 
+// Banco
+builder.Services.AddScoped<IBancoUseCase, BancoUseCase>();
+builder.Services.AddScoped<IBancoRepository, BancoRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,0 +1,28 @@
+﻿@model IEnumerable<ControleFinanceiro.Web.ViewModels.BancoViewModel>
+
+<h2>Lista de Bancos</h2>
+
+<a asp-action="Criar" class="btn btn-success mb-3">Novo Banco</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var banco in Model)
+        {
+            <tr>
+                <td>@banco.Nome</td>
+                <td>@(banco.Ativo ? "Ativo" : "Inativo")</td>
+                <td>
+                    <a asp-action="Editar" asp-route-id="@banco.Id" class="btn btn-warning btn-sm">Editar</a>
+                    <a asp-action="Deletar" asp-route-id="@banco.Id" class="btn btn-danger btn-sm">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -58,7 +58,7 @@ namespace ControleFinanceiro.Web.Controllers
         // GET: /Categoria/Editar/{id}
         public IActionResult Editar(int id)
         {
-            var categoria = _categoriaUseCase.ListarTodos().FirstOrDefault(c => c.Id == id);
+            var categoria = _categoriaUseCase.BuscarPorId(id);
 
             if (categoria == null)
             {
@@ -85,7 +85,7 @@ namespace ControleFinanceiro.Web.Controllers
                 return View(categoriaViewModel);
             }
 
-            var categoria = _categoriaUseCase.ListarTodos().FirstOrDefault(c => c.Id == categoriaViewModel.Id);
+            var categoria = _categoriaUseCase.BuscarPorId(categoriaViewModel.Id);
 
             if (categoria == null)
             {

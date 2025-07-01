@@ -22,6 +22,10 @@ public class TransacaoModel
 
     public TipoTransacaoModel? TipoTransacao { get; set; }
 
+    public int BancoId { get; set; } = 1; // Alterar Depois
+
+    public BancoModel? Banco { get; set; }
+
     #endregion
 
     public DateTime? DataVencimento { get; set; }

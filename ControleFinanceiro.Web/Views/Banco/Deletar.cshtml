@@ -1,0 +1,12 @@
+﻿@model ControleFinanceiro.Web.ViewModels.BancoViewModel
+
+<h2>Excluir Banco</h2>
+
+<p>Tem certeza que deseja excluir o banco <strong>@Model.Nome</strong>?</p>
+<p>Status: <strong>@(Model.Ativo ? "Ativo" : "Inativo")</strong></p>
+
+<form asp-action="Deletar">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

@@ -1,0 +1,5 @@
+﻿@model ControleFinanceiro.Web.ViewModels.BancoViewModel
+
+<h2>@ViewContext.RouteData.Values["action"]?.ToString() Banco</h2>
+
+@await Html.PartialAsync("_FormBanco", Model)
