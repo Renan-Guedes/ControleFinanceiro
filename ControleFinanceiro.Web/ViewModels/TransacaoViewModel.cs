@@ -33,6 +33,12 @@ public class TransacaoViewModel
     public string CategoriaNome { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "* obrigatório")]
+    [DisplayName("Banco")]
+    public int BancoId { get; set; }
+
+    public string BancoNome { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "* obrigatório")]
     [DisplayName("Tipo de Transação")]
     public int TipoTransacaoId { get; set; }
 

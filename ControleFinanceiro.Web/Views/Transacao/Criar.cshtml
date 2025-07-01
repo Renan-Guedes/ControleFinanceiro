@@ -43,6 +43,14 @@
     </div>
 
     <div class="form-group">
+        <label asp-for="BancoId"></label>
+        <select asp-for="BancoId" class="form-select" asp-items="@(new SelectList(ViewBag.Bancos, "Id", "Nome"))">
+            <option value="">Selecione o Banco</option>
+        </select>
+        <span asp-validation-for="BancoId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
         <label asp-for="TipoTransacaoId"></label>
         <select asp-for="TipoTransacaoId" class="form-select" asp-items="@(new SelectList(ViewBag.TipoTransacao, "Id", "Nome"))">
             <option value="">Selecione o tipo</option>

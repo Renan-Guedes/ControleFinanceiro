@@ -46,6 +46,7 @@ public class TransacaoRepository : ITransacaoRepository
             .Where(t => t.DataExclusao == null)
             .Include(c => c.Categoria)
             .Include(t => t.TipoTransacao)
+            .Include(b => b.Banco)
             .ToList();
     }
 

@@ -11,12 +11,14 @@ namespace ControleFinanceiro.Web.Controllers
         private readonly ITransacaoUseCase _transacaoUseCase;
         private readonly ICategoriaUseCase _categoriaUseCase;
         private readonly ITipoTransacaoUseCase _tipoTransacaoUseCase;
+        private readonly IBancoUseCase _bancoUseCase;
 
-        public TransacaoController(ITransacaoUseCase transacaoUseCase, ICategoriaUseCase categoriaUseCase, ITipoTransacaoUseCase tipoTransacaoUseCase)
+        public TransacaoController(ITransacaoUseCase transacaoUseCase, ICategoriaUseCase categoriaUseCase, ITipoTransacaoUseCase tipoTransacaoUseCase, IBancoUseCase bancoUseCase)
         {
             _transacaoUseCase = transacaoUseCase;
             _categoriaUseCase = categoriaUseCase;
             _tipoTransacaoUseCase = tipoTransacaoUseCase;
+            _bancoUseCase = bancoUseCase;
         }
 
         // GET: /Transacao
@@ -33,6 +35,8 @@ namespace ControleFinanceiro.Web.Controllers
                 ValorPago = t.ValorPago,
                 CategoriaId = t.CategoriaId,
                 CategoriaNome = t.Categoria?.Nome ?? "Categoria Não Encontrada",
+                BancoId = t.BancoId,
+                BancoNome = t.Banco?.Nome ?? "Banco Não Encontrado",
                 TipoTransacaoId = t.TipoTransacaoId,
                 TipoTransacaoNome = t.TipoTransacao?.Nome ?? "Tipo de Transação Não Encontrada", 
                 DataVencimento = t.DataVencimento,
@@ -70,6 +74,7 @@ namespace ControleFinanceiro.Web.Controllers
                     ValorPlanejado = transacaoViewModel.ValorPlanejado,
                     ValorPago = transacaoViewModel.ValorPago,
                     CategoriaId = transacaoViewModel.CategoriaId,
+                    BancoId = transacaoViewModel.BancoId,
                     DataVencimento = transacaoViewModel.DataVencimento,
                     DataTransacao = transacaoViewModel.DataTransacao
                 };
@@ -92,6 +97,8 @@ namespace ControleFinanceiro.Web.Controllers
             ViewBag.Categorias = _categoriaUseCase.ListarTodos().ToList();
 
             ViewBag.TipoTransacao = _tipoTransacaoUseCase.ListarTodos().ToList();
+
+            ViewBag.Bancos = _bancoUseCase.ListarTodos().ToList();
         }
 
         // GET: /Transacao/Editar/{id}
@@ -109,6 +116,7 @@ namespace ControleFinanceiro.Web.Controllers
                 ValorPlanejado = transacao.ValorPlanejado,
                 ValorPago = transacao.ValorPago,
                 CategoriaId = transacao.CategoriaId,
+                BancoId = transacao.BancoId,
                 DataVencimento = transacao.DataVencimento,
                 DataTransacao = transacao.DataTransacao
             };
@@ -137,6 +145,7 @@ namespace ControleFinanceiro.Web.Controllers
                 ValorPlanejado = transacaoViewModel.ValorPlanejado,
                 ValorPago = transacaoViewModel.ValorPago,
                 CategoriaId = transacaoViewModel.CategoriaId,
+                BancoId = transacaoViewModel.BancoId,
                 DataVencimento = transacaoViewModel.DataVencimento,
                 DataTransacao = transacaoViewModel.DataTransacao
             };

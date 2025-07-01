@@ -22,7 +22,7 @@ public class TransacaoModel
 
     public TipoTransacaoModel? TipoTransacao { get; set; }
 
-    public int BancoId { get; set; } = 1; // Alterar Depois
+    public int BancoId { get; set; }
 
     public BancoModel? Banco { get; set; }
 
