@@ -18,35 +18,47 @@ public class AppDbContext : DbContext
 
     public DbSet<BancoModel> Bancos { get; set; }
 
+    public DbSet<PlanejamentoMensalModel> PlanejamentosMensais { get; set; }
+
+    public DbSet<GastoFixoModel> GastosFixos { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Banco
+        modelBuilder.Entity<BancoModel>().ToTable("Banco");
+
         // Categoria
         modelBuilder.Entity<CategoriaModel>().ToTable("Categoria");
 
-        // Transacao
-        modelBuilder.Entity<TransacaoModel>().ToTable("Transacao");
+        // Gastos Fixos
+        modelBuilder.Entity<GastoFixoModel>().ToTable("GastoFixo");
+
+        // Planejamento Mensal
+        modelBuilder.Entity<PlanejamentoMensalModel>().ToTable("PlanejamentoMensal");
 
         // TipoTransacao
         modelBuilder.Entity<TipoTransacaoModel>().ToTable("TipoTransacao");
         modelBuilder.Entity<TipoTransacaoModel>().HasData(
-            new TipoTransacaoModel 
-            { 
-                Id = 1, Nome = "Receita", 
+            new TipoTransacaoModel
+            {
+                Id = 1,
+                Nome = "Receita",
                 DataInclusao = new DateTime(2025, 01, 01),
                 DataAtualizacao = null,
                 DataExclusao = null
             },
-            new TipoTransacaoModel 
-            { 
-                Id = 2, Nome = "Despesa",
+            new TipoTransacaoModel
+            {
+                Id = 2,
+                Nome = "Despesa",
                 DataInclusao = new DateTime(2025, 01, 01),
                 DataAtualizacao = null,
                 DataExclusao = null
             }
         );
 
-        // Banco
-        modelBuilder.Entity<BancoModel>().ToTable("Banco");
+        // Transacao
+        modelBuilder.Entity<TransacaoModel>().ToTable("Transacao");
 
         base.OnModelCreating(modelBuilder);
     }
