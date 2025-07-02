@@ -8,6 +8,14 @@ public class BancoModel
 
     public bool Ativo { get; set; } = true;
 
+    #region Foreign Keys
+
+    public int UsuarioId { get; set; }
+
+    public UsuarioModel? Usuario { get; set; }
+
+    #endregion
+
     public DateTime DataInclusao { get; set; } = DateTime.Now;
 
     public DateTime? DataAtualizacao { get; set; }

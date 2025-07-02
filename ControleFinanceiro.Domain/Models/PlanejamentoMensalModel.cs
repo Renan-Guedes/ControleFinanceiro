@@ -10,9 +10,17 @@ public class PlanejamentoMensalModel
     
     public decimal SaldoInicial { get; set; }
 
+    #region Foreign Keys
+
     public int BancoId { get; set; }
 
     public BancoModel? Banco { get; set; }
+
+    public int UsuarioId { get; set; }
+
+    public UsuarioModel? Usuario { get; set; }
+
+    #endregion
 
     public DateTime DataInclusao { get; set; } = DateTime.Now;
 

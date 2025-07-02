@@ -6,6 +6,8 @@ public class GastoFixoModel
 
     public decimal Valor { get; set; }
 
+    #region Foreign Keys
+
     public int CategoriaId { get; set; }
 
     public int TipoTransacaoId { get; set; } = 2; // Despesa por padrão
@@ -17,6 +19,12 @@ public class GastoFixoModel
     public int PlanjamentoMensalId { get; set; }
 
     public PlanejamentoMensalModel? PlanejamentoMensal { get; set; }
+
+    public int UsuarioId { get; set; }
+
+    public UsuarioModel? Usuario { get; set; }
+
+    #endregion
 
     public DateTime DataInclusao { get; set; } = DateTime.Now;
 
