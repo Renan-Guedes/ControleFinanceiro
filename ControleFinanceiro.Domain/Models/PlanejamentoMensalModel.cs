@@ -22,6 +22,12 @@ public class PlanejamentoMensalModel
 
     #endregion
 
+    #region Collections
+
+    public ICollection<GastoFixoModel> GastosFixos { get; set; } = new List<GastoFixoModel>();
+
+    #endregion
+
     public DateTime DataInclusao { get; set; } = DateTime.Now;
 
     public DateTime? DataAtualizacao { get; set; }
