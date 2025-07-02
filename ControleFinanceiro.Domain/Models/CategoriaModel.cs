@@ -20,6 +20,8 @@ public class CategoriaModel
 
     public ICollection<TransacaoModel> Transacoes { get; set; } = new List<TransacaoModel>();
 
+    public ICollection<GastoFixoModel> GastosFixos { get; set; } = new List<GastoFixoModel>();
+
     #endregion
 
     public DateTime DataInclusao { get; set; } = DateTime.Now;

@@ -28,44 +28,8 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Banco
-        modelBuilder.Entity<BancoModel>().ToTable("Banco");
-
-        // Categoria
-        modelBuilder.Entity<CategoriaModel>().ToTable("Categoria");
-
-        // Gastos Fixos
-        modelBuilder.Entity<GastoFixoModel>().ToTable("GastoFixo");
-
-        // Planejamento Mensal
-        modelBuilder.Entity<PlanejamentoMensalModel>().ToTable("PlanejamentoMensal");
-
-        // TipoTransacao
-        modelBuilder.Entity<TipoTransacaoModel>().ToTable("TipoTransacao");
-        modelBuilder.Entity<TipoTransacaoModel>().HasData(
-            new TipoTransacaoModel
-            {
-                Id = 1,
-                Nome = "Receita",
-                DataInclusao = new DateTime(2025, 01, 01),
-                DataAtualizacao = null,
-                DataExclusao = null
-            },
-            new TipoTransacaoModel
-            {
-                Id = 2,
-                Nome = "Despesa",
-                DataInclusao = new DateTime(2025, 01, 01),
-                DataAtualizacao = null,
-                DataExclusao = null
-            }
-        );
-
-        // Transacao
-        modelBuilder.Entity<TransacaoModel>().ToTable("Transacao");
-
-        // Usuario
-        modelBuilder.Entity<UsuarioModel>().ToTable("Usuario");
+        // Aplica todas as configurações de mapeamento que implementam IEntityTypeConfiguration<T>
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
         base.OnModelCreating(modelBuilder);
     }

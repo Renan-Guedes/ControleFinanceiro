@@ -10,7 +10,11 @@ public class GastoFixoModel
 
     public int CategoriaId { get; set; }
 
+    public CategoriaModel? Categoria { get; set; }
+
     public int TipoTransacaoId { get; set; } = 2; // Despesa por padrão
+
+    public TipoTransacaoModel? TipoTransacao { get; set; }
 
     public int BancoId { get; set; }
 
