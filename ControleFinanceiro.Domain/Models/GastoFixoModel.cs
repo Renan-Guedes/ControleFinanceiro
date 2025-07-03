@@ -30,6 +30,8 @@ public class GastoFixoModel
 
     #endregion
 
+    public string? Descricao { get; set; } = string.Empty;
+
     public DateTime DataInclusao { get; set; } = DateTime.Now;
 
     public DateTime? DataAtualizacao { get; set; }

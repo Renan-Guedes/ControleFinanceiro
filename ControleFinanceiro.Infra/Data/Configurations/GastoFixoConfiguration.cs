@@ -13,6 +13,8 @@ public class GastoFixoConfiguration : IEntityTypeConfiguration<GastoFixoModel>
 
         // Configurações das colunas
         builder.HasKey(g => g.Id);
+        builder.Property(g => g.Descricao)
+            .HasMaxLength(200);
 
         // Configurações de relacionamento
         builder.HasOne(g => g.Usuario)
