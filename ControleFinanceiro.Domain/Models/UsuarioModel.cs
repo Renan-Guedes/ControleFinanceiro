@@ -4,12 +4,6 @@ public class UsuarioModel
 {
     public int Id { get; set; }
 
-    public string Nome { get; set; } = string.Empty;
-
-    public string Email { get; set; } = string.Empty;
-
-    public string SenhaHash { get; set; } = string.Empty;
-
     #region Collections 
 
     public ICollection<BancoModel> Bancos { get; set; } = new List<BancoModel>();
@@ -23,6 +17,12 @@ public class UsuarioModel
     public ICollection<TransacaoModel> Transacoes { get; set; } = new List<TransacaoModel>();
 
     #endregion
+
+    public string Nome { get; set; } = string.Empty;
+
+    public string Email { get; set; } = string.Empty;
+
+    public string SenhaHash { get; set; } = string.Empty;
 
     public DateTime DataInclusao { get; set; } = DateTime.Now;
 

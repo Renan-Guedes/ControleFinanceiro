@@ -3,12 +3,6 @@
 public class PlanejamentoMensalModel
 {
     public int Id { get; set; }
-    
-    public int Ano { get; set; }
-    
-    public int Mes { get; set; }
-    
-    public decimal SaldoInicial { get; set; }
 
     #region Foreign Keys
 
@@ -27,6 +21,12 @@ public class PlanejamentoMensalModel
     public ICollection<GastoFixoModel> GastosFixos { get; set; } = new List<GastoFixoModel>();
 
     #endregion
+
+    public int Ano { get; set; }
+
+    public int Mes { get; set; }
+
+    public decimal SaldoInicial { get; set; }
 
     public DateTime DataInclusao { get; set; } = DateTime.Now;
 

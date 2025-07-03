@@ -3,10 +3,6 @@
 public class BancoModel
 {
     public int Id { get; set; }
-    
-    public string Nome { get; set; } = string.Empty;
-
-    public bool Ativo { get; set; } = true;
 
     #region Foreign Keys
 
@@ -20,7 +16,13 @@ public class BancoModel
 
     public ICollection<TransacaoModel> Transacoes { get; set; } = new List<TransacaoModel>();
 
+    public ICollection<GastoFixoModel> GastosFixos { get; set; } = new List<GastoFixoModel>();
+
     #endregion
+
+    public string Nome { get; set; } = string.Empty;
+
+    public bool Ativo { get; set; } = true;
 
     public DateTime DataInclusao { get; set; } = DateTime.Now;
 

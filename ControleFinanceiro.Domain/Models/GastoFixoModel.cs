@@ -4,8 +4,6 @@ public class GastoFixoModel
 {
     public int Id { get; set; }
 
-    public decimal Valor { get; set; }
-
     #region Foreign Keys
 
     public int CategoriaId { get; set; }
@@ -20,7 +18,7 @@ public class GastoFixoModel
 
     public BancoModel? Banco { get; set; }
 
-    public int PlanjamentoMensalId { get; set; }
+    public int PlanejamentoMensalId { get; set; }
 
     public PlanejamentoMensalModel? PlanejamentoMensal { get; set; }
 
@@ -31,6 +29,8 @@ public class GastoFixoModel
     #endregion
 
     public string? Descricao { get; set; } = string.Empty;
+    
+    public decimal Valor { get; set; }
 
     public DateTime DataInclusao { get; set; } = DateTime.Now;
 

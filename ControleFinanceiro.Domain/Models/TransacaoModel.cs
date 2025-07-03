@@ -3,14 +3,6 @@
 public class TransacaoModel
 {
     public int Id { get; set; }
-    
-    public string Descricao { get; set; } = string.Empty;
-
-    public bool Fatura { get; set; }
-
-    public decimal ValorPlanejado { get; set; }
-    
-    public decimal ValorPago { get; set; }
 
     #region Foreign Keys
 
@@ -31,6 +23,14 @@ public class TransacaoModel
     public UsuarioModel? Usuario { get; set; }
 
     #endregion
+
+    public string Descricao { get; set; } = string.Empty;
+
+    public bool Fatura { get; set; }
+
+    public decimal ValorPlanejado { get; set; }
+
+    public decimal ValorPago { get; set; }
 
     public DateTime? DataVencimento { get; set; }
 

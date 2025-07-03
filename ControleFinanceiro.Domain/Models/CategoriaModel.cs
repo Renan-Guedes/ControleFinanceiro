@@ -3,10 +3,6 @@
 public class CategoriaModel
 {
     public int Id { get; set; }
-    
-    public string Nome { get; set; } = string.Empty;
-
-    public bool Ativo { get; set; }
 
     #region Foreign Keys
 
@@ -23,6 +19,10 @@ public class CategoriaModel
     public ICollection<GastoFixoModel> GastosFixos { get; set; } = new List<GastoFixoModel>();
 
     #endregion
+
+    public string Nome { get; set; } = string.Empty;
+
+    public bool Ativo { get; set; }
 
     public DateTime DataInclusao { get; set; } = DateTime.Now;
     
