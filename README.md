@@ -23,4 +23,6 @@ Além de aplicar conhecimentos em .NET, o projeto também foi uma oportunidade d
 
 ## 📚 Documentação Completa
 
-A documentação detalhada está disponível na [Wiki do projeto](https://github.com/Renan-Guedes/ControleFinanceiro/wiki)
+A documentação detalhada está disponível na [Wiki do projeto](https://github.com/Renan-Guedes/ControleFinanceiro/wiki):
+
+- [Arquitetura do Projeto](https://github.com/Renan-Guedes/ControleFinanceiro/wiki/Arquitetura-do-Projeto)
