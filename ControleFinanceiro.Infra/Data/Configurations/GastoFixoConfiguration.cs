@@ -32,11 +32,6 @@ public class GastoFixoConfiguration : IEntityTypeConfiguration<GastoFixoModel>
             .HasForeignKey(g => g.BancoId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne(g => g.PlanejamentoMensal)
-            .WithMany(pm => pm.GastosFixos)
-            .HasForeignKey(g => g.PlanejamentoMensalId)
-            .OnDelete(DeleteBehavior.Restrict);
-
         builder.HasOne(g => g.Usuario)
             .WithMany(u => u.GastosFixos)
             .HasForeignKey(g => g.UsuarioId)

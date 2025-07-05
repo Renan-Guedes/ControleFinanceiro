@@ -18,10 +18,6 @@ public class GastoFixoModel
 
     public BancoModel? Banco { get; set; }
 
-    public int PlanejamentoMensalId { get; set; }
-
-    public PlanejamentoMensalModel? PlanejamentoMensal { get; set; }
-
     public int UsuarioId { get; set; }
 
     public UsuarioModel? Usuario { get; set; }
