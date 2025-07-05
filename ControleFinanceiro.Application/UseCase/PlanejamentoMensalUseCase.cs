@@ -18,7 +18,8 @@ public class PlanejamentoMensalUseCase : IPlanejamentoMensalUseCase
     {
         var existePlanejamento = _repository.ListarTodos(planejamentoMensalModel.UsuarioId)
             .Any(p => p.Ano == planejamentoMensalModel.Ano 
-                && p.Mes == planejamentoMensalModel.Mes);
+                && p.Mes == planejamentoMensalModel.Mes
+                && p.BancoId == planejamentoMensalModel.BancoId);
 
         if (existePlanejamento)
         {

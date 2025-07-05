@@ -51,6 +51,8 @@ namespace ControleFinanceiro.Web.Controllers
         {
             try
             {
+                ValidarPlanejamento(planejamentoMensalViewModel);
+
                 if (!ModelState.IsValid)
                 {
                     PreencherViewBags();
@@ -179,6 +181,18 @@ namespace ControleFinanceiro.Web.Controllers
         private void PreencherViewBags()
         {
             ViewBag.Bancos = _bancoUseCase.ListarTodos().ToList();
+        }
+
+        private void ValidarPlanejamento(PlanejamentoMensalViewModel vm)
+        {
+            if (vm.BancoId == 0)
+                ModelState.AddModelError(nameof(vm.BancoId), "Selecione um banco.");
+
+            if (vm.Ano == 0)
+                ModelState.AddModelError(nameof(vm.Ano), "Ano é obrigatório.");
+
+            if (vm.Mes < 1 || vm.Mes > 12)
+                ModelState.AddModelError(nameof(vm.Mes), "Mês inválido.");
         }
     }
 }

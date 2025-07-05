@@ -13,11 +13,14 @@ namespace ControleFinanceiro.Web.ViewModels
 
         public string BancoNome { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "* Obrigatório")]
         public int Ano { get; set; }
 
+        [Required(ErrorMessage = "* Obrigatório")]
         [Display(Name = "Mês")]
         public int Mes { get; set; }
 
+        [Required(ErrorMessage = "* Obrigatório")]
         [Display(Name = "Saldo Inicial")]
         public decimal SaldoInicial { get; set; }
     }
