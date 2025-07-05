@@ -1,0 +1,22 @@
+﻿@model ControleFinanceiro.Web.ViewModels.PlanejamentoMensalViewModel
+
+@{
+    ViewData["Title"] = "Excluir Planejamento";
+}
+
+<h2>Confirmar Exclusão</h2>
+
+<h4>Você tem certeza que deseja excluir este planejamento?</h4>
+
+<div>
+    <strong>Ano:</strong> @Model.Ano <br />
+    <strong>Mês:</strong> @Model.Mes <br />
+    <strong>Saldo Inicial:</strong> @Model.SaldoInicial.ToString("C") <br />
+    <strong>Banco:</strong> @Model.BancoNome
+</div>
+
+<form asp-action="Deletar" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Excluir</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

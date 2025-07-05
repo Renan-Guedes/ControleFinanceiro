@@ -36,6 +36,10 @@ builder.Services.AddScoped<ITipoTransacaoRepository, TipoTransacaoRepository>();
 builder.Services.AddScoped<IBancoUseCase, BancoUseCase>();
 builder.Services.AddScoped<IBancoRepository, BancoRepository>();
 
+// Planejamento Mensal
+builder.Services.AddScoped<IPlanejamentoMensalUseCase, PlanejamentoMensalUseCase>();
+builder.Services.AddScoped<IPlanejamentoMensalRepository, PlanejamentoMensalRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,0 +1,5 @@
+﻿@model ControleFinanceiro.Web.ViewModels.PlanejamentoMensalViewModel
+
+<h2>@ViewContext.RouteData.Values["action"]?.ToString() Planejamento</h2>
+
+@await Html.PartialAsync("_FormPlanejamentoMensal", Model)
