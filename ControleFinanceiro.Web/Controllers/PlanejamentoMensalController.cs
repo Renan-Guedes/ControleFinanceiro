@@ -51,7 +51,7 @@ namespace ControleFinanceiro.Web.Controllers
         {
             try
             {
-                ValidarPlanejamento(planejamentoMensalViewModel);
+                ValidarCampos(planejamentoMensalViewModel);
 
                 if (!ModelState.IsValid)
                 {
@@ -113,8 +113,13 @@ namespace ControleFinanceiro.Web.Controllers
         {
             try
             {
-                if (!ModelState.IsValid) 
+                ValidarCampos(vm);
+
+                if (!ModelState.IsValid)
+                {
+                    PreencherViewBags();
                     return View(vm);
+                }
                 
                 var userId = 1; // Substituir depois com o usuário logado
                 
@@ -133,7 +138,7 @@ namespace ControleFinanceiro.Web.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "Erro ao atualizar Planejamento: " + ex.Message);
+                ModelState.AddModelError(string.Empty, "Erro ao salvar: " + ex.Message);
                 return View(vm);
             }
         }
@@ -183,7 +188,7 @@ namespace ControleFinanceiro.Web.Controllers
             ViewBag.Bancos = _bancoUseCase.ListarTodos().ToList();
         }
 
-        private void ValidarPlanejamento(PlanejamentoMensalViewModel vm)
+        private void ValidarCampos(PlanejamentoMensalViewModel vm)
         {
             if (vm.BancoId == 0)
                 ModelState.AddModelError(nameof(vm.BancoId), "Selecione um banco.");

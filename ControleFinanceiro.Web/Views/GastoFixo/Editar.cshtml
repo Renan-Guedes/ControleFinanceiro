@@ -1,0 +1,5 @@
+﻿@model ControleFinanceiro.Web.ViewModels.GastoFixoViewModel
+
+<h2>@ViewContext.RouteData.Values["action"]?.ToString() Gasto Fixo</h2>
+
+@await Html.PartialAsync("_FormGastoFixo", Model)

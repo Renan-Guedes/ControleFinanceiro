@@ -1,0 +1,32 @@
+﻿@using ControleFinanceiro.Web.ViewModels
+@model IEnumerable<GastoFixoViewModel>
+
+<h2>Gastos Fixos</h2>
+<a asp-action="Criar" class="btn btn-primary mb-3">+ Novo Gasto Fixo</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Descrição</th>
+            <th>Valor</th>
+            <th>Banco</th>
+            <th>Categoria</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Descricao</td>
+                <td>@item.Valor.ToString("C")</td>
+                <td>@item.BancoNome</td>
+                <td>@item.CategoriaNome</td>
+                <td>
+                    <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Excluir" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

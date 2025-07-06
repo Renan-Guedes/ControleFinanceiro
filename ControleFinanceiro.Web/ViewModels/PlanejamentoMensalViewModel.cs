@@ -13,15 +13,16 @@ namespace ControleFinanceiro.Web.ViewModels
 
         public string BancoNome { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "* Obrigatório")]
+        [Required(ErrorMessage = "Ano é obrigatório.")]
+        [Range(2000, 2100, ErrorMessage = "O Ano deve estar entre 2000 e 2100")]
         public int Ano { get; set; }
 
-        [Required(ErrorMessage = "* Obrigatório")]
-        [Display(Name = "Mês")]
+        [Required(ErrorMessage = "Mês é obrigatório.")]
+        [Range(1, 12, ErrorMessage = "Mês inválido.")]
         public int Mes { get; set; }
 
-        [Required(ErrorMessage = "* Obrigatório")]
         [Display(Name = "Saldo Inicial")]
+        [Required(ErrorMessage = "Saldo Inicial é obrigatório.")]
         public decimal SaldoInicial { get; set; }
     }
 }

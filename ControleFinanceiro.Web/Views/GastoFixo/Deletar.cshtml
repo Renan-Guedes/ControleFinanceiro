@@ -1,0 +1,11 @@
+﻿@model ControleFinanceiro.Web.ViewModels.GastoFixoViewModel
+
+<h2>Excluir Gasto Fixo</h2>
+
+<p>Tem certeza que deseja excluir <strong>@Model.Descricao</strong>?</p>
+
+<form asp-action="Excluir">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
