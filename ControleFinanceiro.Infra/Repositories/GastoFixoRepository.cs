@@ -43,7 +43,7 @@ public class GastoFixoRepository : IGastoFixoRepository
         }
     }
 
-    public List<GastoFixoModel> ListarTodos(int usuarioId, int? bancoId = null, int? categoriaId = null, int? tipoTransacaoId = null)
+    public List<GastoFixoModel> ListarTodos(int usuarioId)
     {
         return _db.GastosFixos
             .Include(g => g.Banco)
@@ -53,7 +53,7 @@ public class GastoFixoRepository : IGastoFixoRepository
             .ToList();
     }
 
-    public GastoFixoModel? ListarPorId(int gastoFixoId, int usuarioId)
+    public GastoFixoModel? BuscarPorId(int gastoFixoId, int usuarioId)
     {
         return _db.GastosFixos
             .Include(g => g.Banco)

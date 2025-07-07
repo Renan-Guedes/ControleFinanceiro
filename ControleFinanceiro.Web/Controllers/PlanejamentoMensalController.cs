@@ -20,11 +20,13 @@ namespace ControleFinanceiro.Web.Controllers
         // GET: /PlanejamentoMensal
         public IActionResult Index()
         {
-            var userId = 1; // Substituir depois com o usuário logado
+            int usuarioId = 1; // Substituir depois com o usuário logado
             
-            var planejamentosMensais = _planejamentoMensalUseCase.ListarTodos(userId).ToList();
+            var planejamentosMensais = _planejamentoMensalUseCase
+                .ListarTodos(usuarioId)
+                .ToList();
             
-            var viewModel = planejamentosMensais.Select(p => new PlanejamentoMensalViewModel
+            var vm = planejamentosMensais.Select(p => new PlanejamentoMensalViewModel
             {
                 Id = p.Id,
                 BancoId = p.BancoId,
@@ -34,40 +36,40 @@ namespace ControleFinanceiro.Web.Controllers
                 SaldoInicial = p.SaldoInicial
             }).ToList();
 
-            return View(viewModel);
+            return View(vm);
         }
 
         // GET: /PlanejamentoMensal/Criar
         public IActionResult Criar()
         {
-            PreencherViewBags();
-            return View();
+            int usuarioId = 1; // Substituir depois com o usuário logado
+
+            PreencherViewBags(usuarioId);
+            return View(new PlanejamentoMensalViewModel());
         }
 
         // POST: /PlanejamentoMensal/Criar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Criar(PlanejamentoMensalViewModel planejamentoMensalViewModel)
+        public IActionResult Criar(PlanejamentoMensalViewModel vm)
         {
+            int usuarioId = 1; // Substituir depois com o usuário logado
+
             try
             {
-                ValidarCampos(planejamentoMensalViewModel);
-
                 if (!ModelState.IsValid)
                 {
-                    PreencherViewBags();
-                    return View(planejamentoMensalViewModel);
+                    PreencherViewBags(usuarioId);
+                    return View(vm);
                 }
-
-                var userId = 1; // Substituir depois com o usuário logado
 
                 var planejamentoMensal = new PlanejamentoMensalModel
                 {
-                    BancoId = planejamentoMensalViewModel.BancoId,
-                    UsuarioId = userId,
-                    Ano = planejamentoMensalViewModel.Ano,
-                    Mes = planejamentoMensalViewModel.Mes,
-                    SaldoInicial = planejamentoMensalViewModel.SaldoInicial,
+                    BancoId = vm.BancoId,
+                    UsuarioId = usuarioId,
+                    Ano = vm.Ano,
+                    Mes = vm.Mes,
+                    SaldoInicial = vm.SaldoInicial
                 };
 
                 _planejamentoMensalUseCase.Criar(planejamentoMensal);
@@ -75,20 +77,19 @@ namespace ControleFinanceiro.Web.Controllers
             }
             catch (Exception ex)
             {
-
-
                 ModelState.AddModelError(string.Empty, "Erro ao salvar: " + ex.Message);
-                PreencherViewBags();
-                return View(planejamentoMensalViewModel);
+                PreencherViewBags(usuarioId);
+                return View(vm);
             }
         }
 
         // GET: /PlanejamentoMensal/Editar/{id}
-        public IActionResult Editar(int id)
+        public IActionResult Editar(int planejamentoMensalId)
         {
-            int userId = 1; // Substituir depois com o usuário logado
+            int usuarioId = 1; // Substituir depois com o usuário logado
 
-            var planejamentoMensal = _planejamentoMensalUseCase.ListarPorId(id, userId);
+            var planejamentoMensal = _planejamentoMensalUseCase
+                .BuscarPorId(planejamentoMensalId, usuarioId);
 
             if (planejamentoMensal == null)
                 return NotFound();
@@ -102,7 +103,7 @@ namespace ControleFinanceiro.Web.Controllers
                 SaldoInicial = planejamentoMensal.SaldoInicial
             };
 
-            PreencherViewBags();
+            PreencherViewBags(usuarioId);
             return View(vm);
         }
 
@@ -111,27 +112,25 @@ namespace ControleFinanceiro.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Editar(PlanejamentoMensalViewModel vm)
         {
+            int usuarioId = 1; // Substituir depois com o usuário logado
+
             try
             {
-                ValidarCampos(vm);
-
                 if (!ModelState.IsValid)
                 {
-                    PreencherViewBags();
+                    PreencherViewBags(usuarioId);
                     return View(vm);
                 }
-                
-                var userId = 1; // Substituir depois com o usuário logado
-                
-                var planejamentoMensal = new PlanejamentoMensalModel
-                {
-                    Id = vm.Id,
-                    BancoId = vm.BancoId,
-                    UsuarioId = userId,
-                    Ano = vm.Ano,
-                    Mes = vm.Mes,
-                    SaldoInicial = vm.SaldoInicial,
-                };
+
+                var planejamentoMensal = _planejamentoMensalUseCase.BuscarPorId(vm.Id, usuarioId);
+
+                if (planejamentoMensal == null)
+                    return NotFound();
+
+                planejamentoMensal.BancoId = vm.BancoId;
+                planejamentoMensal.Ano = vm.Ano;
+                planejamentoMensal.Mes = vm.Mes;
+                planejamentoMensal.SaldoInicial = vm.SaldoInicial;
 
                 _planejamentoMensalUseCase.Atualizar(planejamentoMensal);
                 return RedirectToAction(nameof(Index));
@@ -144,11 +143,12 @@ namespace ControleFinanceiro.Web.Controllers
         }
 
         // GET: /PlanejamentoMensal/Deletar/{id}
-        public IActionResult Deletar(int id)
+        public IActionResult Deletar(int planejamentoMensalId)
         {
-            var userId = 1; // Substituir depois com o usuário logado
+            int usuarioId = 1; // Substituir depois com o usuário logado
 
-            var planejamentoMensal = _planejamentoMensalUseCase.ListarPorId(id, userId);
+            var planejamentoMensal = _planejamentoMensalUseCase
+                .BuscarPorId(planejamentoMensalId, usuarioId);
             
             if (planejamentoMensal == null) 
                 return NotFound();
@@ -169,35 +169,34 @@ namespace ControleFinanceiro.Web.Controllers
         // POST: /PlanejamentoMensal/Deletar/{id}
         [HttpPost, ActionName("Deletar")]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmarDeletar(int id)
+        public IActionResult ConfirmarDeletar(int planejamentoMensalId)
         {
-            var userId = 1; // Substituir depois com o usuário logado
+            int usuarioId = 1; // Substituir depois com o usuário logad
 
-            var planejamentoMensal = _planejamentoMensalUseCase.ListarPorId(id, userId);
+            try
+            {
+                var planejamentoMensal = _planejamentoMensalUseCase
+                    .BuscarPorId(planejamentoMensalId, usuarioId);
 
-            if (planejamentoMensal is null) 
-                return NotFound();
+                if (planejamentoMensal == null)
+                    NotFound();
 
-            _planejamentoMensalUseCase.Deletar(id, userId);
+                _planejamentoMensalUseCase.Deletar(planejamentoMensalId, usuarioId);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Erro ao excluir: " + ex.Message);
+                return View();
+            }
         }
 
-        private void PreencherViewBags()
+        private void PreencherViewBags(int usuarioId)
         {
-            ViewBag.Bancos = _bancoUseCase.ListarTodos().ToList();
-        }
-
-        private void ValidarCampos(PlanejamentoMensalViewModel vm)
-        {
-            if (vm.BancoId == 0)
-                ModelState.AddModelError(nameof(vm.BancoId), "Selecione um banco.");
-
-            if (vm.Ano == 0)
-                ModelState.AddModelError(nameof(vm.Ano), "Ano é obrigatório.");
-
-            if (vm.Mes < 1 || vm.Mes > 12)
-                ModelState.AddModelError(nameof(vm.Mes), "Mês inválido.");
+            ViewBag.Bancos = _bancoUseCase
+                .ListarTodos(usuarioId)
+                .ToList();
         }
     }
 }

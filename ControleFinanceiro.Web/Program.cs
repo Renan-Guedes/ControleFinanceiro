@@ -40,6 +40,10 @@ builder.Services.AddScoped<IBancoRepository, BancoRepository>();
 builder.Services.AddScoped<IPlanejamentoMensalUseCase, PlanejamentoMensalUseCase>();
 builder.Services.AddScoped<IPlanejamentoMensalRepository, PlanejamentoMensalRepository>();
 
+// Gastos Fixos
+builder.Services.AddScoped<IGastoFixoUseCase, GastoFixoUseCase>();
+builder.Services.AddScoped<IGastoFixoRepository, GastoFixoRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -4,9 +4,9 @@ namespace ControleFinanceiro.Domain.Interfaces;
 
 public interface IBancoRepository
 {
-    List<BancoModel> Listar();
-    BancoModel? BuscarPorId(int id);
-    void Criar(BancoModel banco);
-    void Atualizar(BancoModel banco);
-    void Deletar(int id);
+    List<BancoModel> ListarTodos(int usuarioId);
+    BancoModel? BuscarPorId(int bancoId, int usuarioId);
+    void Criar(BancoModel bancoModel);
+    void Atualizar(BancoModel bancoModel);
+    void Deletar(int bancoId, int usuarioId);
 }

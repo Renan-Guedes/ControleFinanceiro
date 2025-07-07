@@ -19,8 +19,8 @@
                 <td>@banco.Nome</td>
                 <td>@(banco.Ativo ? "Ativo" : "Inativo")</td>
                 <td>
-                    <a asp-action="Editar" asp-route-id="@banco.Id" class="btn btn-warning btn-sm">Editar</a>
-                    <a asp-action="Deletar" asp-route-id="@banco.Id" class="btn btn-danger btn-sm">Excluir</a>
+                    <a asp-action="Editar" asp-route-bancoId="@banco.Id" class="btn btn-warning btn-sm">Editar</a>
+                    <a asp-action="Deletar" asp-route-bancoId="@banco.Id" class="btn btn-danger btn-sm">Excluir</a>
                 </td>
             </tr>
         }

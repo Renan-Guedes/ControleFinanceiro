@@ -4,13 +4,13 @@ namespace ControleFinanceiro.Domain.Interfaces;
 
 public interface ITransacaoRepository
 {
-    List<TransacaoModel> Listar();
+    List<TransacaoModel> ListarTodos(int usuarioId);
 
-    TransacaoModel BuscarPorId(int id);
+    TransacaoModel BuscarPorId(int transacaoId, int usuarioId);
 
-    void Criar(TransacaoModel transacao);
+    void Criar(TransacaoModel transacaoModel);
 
-    void Atualizar(TransacaoModel transacao);
+    void Atualizar(TransacaoModel transacaoModel);
     
-    void Deletar(int id);
+    void Deletar(int transacaoId, int usuarioid);
 }

@@ -1,6 +1,12 @@
 ﻿@model ControleFinanceiro.Web.ViewModels.TransacaoViewModel
 
 <form asp-action="@ViewContext.RouteData.Values["action"]?.ToString()">
+    
+    @if (Model.Id > 0)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+    
     <div class="form-group">
         <label asp-for="Descricao"></label>
         <input asp-for="Descricao" class="form-control" />
@@ -8,17 +14,10 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="TipoTransacaoId"></label>
-        <select asp-for="TipoTransacaoId" class="form-select" asp-items=@(new SelectList(ViewBag.TipoTransacao, "Id", "Nome"))>
-        </select>
-        <span asp-validation-for="TipoTransacaoId" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
         <label asp-for="Fatura"></label>
         <select asp-for="Fatura" class="form-select">
             <option value="true">Sim</option>
-            <option value="false" selected>Não</option>
+            <option value="false">Não</option>
         </select>
         <span asp-validation-for="Fatura" class="text-danger"></span>
     </div>
@@ -38,9 +37,25 @@
     <div class="form-group">
         <label asp-for="CategoriaId"></label>
         <select asp-for="CategoriaId" class="form-select" asp-items="@(new SelectList(ViewBag.Categorias, "Id", "Nome"))">
-            <option value="">Selecione a Categoria</option>
+            <option value="">Selecione a categoria</option>
         </select>
         <span asp-validation-for="CategoriaId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="BancoId"></label>
+        <select asp-for="BancoId" class="form-select" asp-items="@(new SelectList(ViewBag.Bancos, "Id", "Nome"))">
+            <option value="">Selecione o Banco</option>
+        </select>
+        <span asp-validation-for="BancoId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TipoTransacaoId"></label>
+        <select asp-for="TipoTransacaoId" class="form-select" asp-items="@(new SelectList(ViewBag.TipoTransacao, "Id", "Nome"))">
+            <option value="">Selecione o tipo</option>
+        </select>
+        <span asp-validation-for="TipoTransacaoId" class="text-danger"></span>
     </div>
 
     <div class="form-group">

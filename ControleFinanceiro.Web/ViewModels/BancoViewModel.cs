@@ -7,6 +7,8 @@ namespace ControleFinanceiro.Web.ViewModels
     {
         public int Id { get; set; }
 
+        public int UsuarioId { get; set; } 
+
         [Required(ErrorMessage = "* obrigatório")]
         [DisplayName("Nome do Banco")]
         public string Nome { get; set; } = string.Empty;

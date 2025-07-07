@@ -3,6 +3,7 @@ using ControleFinanceiro.Application.UseCase;
 using ControleFinanceiro.Domain.Models;
 using ControleFinanceiro.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.WebSockets;
 
 namespace ControleFinanceiro.Web.Controllers
 {
@@ -11,128 +12,165 @@ namespace ControleFinanceiro.Web.Controllers
         private readonly IBancoUseCase _bancoUseCase;
 
         public BancoController(IBancoUseCase bancoUseCase)
-        {
-            _bancoUseCase = bancoUseCase;
-        }
+            => _bancoUseCase = bancoUseCase;
+
 
         // GET: /Banco
         public IActionResult Index()
         {
-            var bancos = _bancoUseCase.ListarTodos().ToList();
+            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
 
-            var viewModel = bancos.Select(b => new BancoViewModel
+            var bancos = _bancoUseCase
+                .ListarTodos(usuarioId)
+                .ToList();
+
+            var vm = bancos.Select(b => new BancoViewModel
             {
                 Id = b.Id,
+                UsuarioId = usuarioId,
                 Nome = b.Nome,
                 Ativo = b.Ativo
             }).ToList();
 
-            return View(viewModel);
+            return View(vm);
         }
 
         // GET: /Banco/Criar
         public IActionResult Criar()
         {
-            return View();
+            var vm = new BancoViewModel();
+            return View(vm);
         }
 
         // POST: /Banco/Criar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Criar(BancoViewModel bancoViewModel)
+        public IActionResult Criar(BancoViewModel vm)
         {
-            if (!ModelState.IsValid)
+            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
+
+            try
             {
-                return View(bancoViewModel);
+                if (!ModelState.IsValid)
+                    return View(vm);
+
+                var novoBanco = new BancoModel
+                {
+                    UsuarioId = usuarioId,
+                    Nome = vm.Nome,
+                    Ativo = vm.Ativo
+                };
+
+                _bancoUseCase.Criar(novoBanco);
+
+                return RedirectToAction(nameof(Index));
             }
-            
-            var novoBanco = new BancoModel
+            catch (Exception ex)
             {
-                Nome = bancoViewModel.Nome,
-                Ativo = bancoViewModel.Ativo
-            };
-            
-            _bancoUseCase.Criar(novoBanco);
-            return RedirectToAction(nameof(Index));
+                ModelState.AddModelError(string.Empty, "Erro ao salvar: " + ex.Message);
+                return View(vm);
+            }
         }
 
         // GET: /Banco/Editar/{id}
-        public IActionResult Editar(int id)
+        public IActionResult Editar(int bancoId)
         {
-            var banco = _bancoUseCase.BuscarPorId(id);
-            
+            int usuarioid = 1; // Substitua pelo ID do usuário autenticado
+
+            var banco = _bancoUseCase
+                .BuscarPorId(bancoId, usuarioid);
+
             if (banco == null)
-            {
                 return NotFound();
-            }
-            
-            var viewModel = new BancoViewModel
+
+            var vm = new BancoViewModel
             {
                 Id = banco.Id,
                 Nome = banco.Nome,
                 Ativo = banco.Ativo
             };
 
-            return View(viewModel);
+            return View(vm);
         }
 
         // POST: /Banco/Editar/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Editar(BancoViewModel bancoViewModel)
+        public IActionResult Editar(BancoViewModel vm)
         {
-            if (!ModelState.IsValid)
+            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
+
+            try
             {
-                return View(bancoViewModel);
+                if (!ModelState.IsValid)
+                    return View(vm);
+
+                var bancoExistente = _bancoUseCase
+                    .BuscarPorId(vm.Id, usuarioId);
+
+                if (bancoExistente == null)
+                    return NotFound();
+
+                bancoExistente.Nome = vm.Nome;
+                bancoExistente.Ativo = vm.Ativo;
+                _bancoUseCase.Atualizar(bancoExistente);
+
+                return RedirectToAction(nameof(Index));
+
             }
-            
-            var bancoExistente = _bancoUseCase.BuscarPorId(bancoViewModel.Id);
-            
-            if (bancoExistente == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                ModelState.AddModelError(string.Empty, "Erro ao salvar: " + ex.Message);
+                return View(vm);
             }
-            
-            bancoExistente.Nome = bancoViewModel.Nome;
-            bancoExistente.Ativo = bancoViewModel.Ativo;
-            
-            _bancoUseCase.Atualizar(bancoExistente);
-            
-            return RedirectToAction(nameof(Index));
         }
 
         // GET: /Banco/Deletar/{id}
-        public IActionResult Deletar(int id)
+        public IActionResult Deletar(int bancoId)
         {
-            var banco = _bancoUseCase.BuscarPorId(id);
-            
+            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
+
+            var banco = _bancoUseCase
+                .BuscarPorId(bancoId, usuarioId);
+
             if (banco == null)
-            {
                 return NotFound();
-            }
-            
-            var viewModel = new BancoViewModel
+
+            var vm = new BancoViewModel
             {
                 Id = banco.Id,
+                UsuarioId = banco.UsuarioId,
                 Nome = banco.Nome,
                 Ativo = banco.Ativo
             };
-            return View(viewModel);
+
+            return View(vm);
         }
 
         // POST: /Categoria/Deletar/{id}
         [HttpPost, ActionName("Deletar")]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmarDeletar(int id)
+        public IActionResult ConfirmarDeletar(int bancoId)
         {
-            var banco = _bancoUseCase.BuscarPorId(id);
+            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
 
-            if (banco is null)
-                return NotFound();
+            try
+            {
+                var banco = _bancoUseCase
+                    .BuscarPorId(bancoId, usuarioId);
 
-            _bancoUseCase.Deletar(id);
+                if (banco == null)
+                    return NotFound();
 
-            return RedirectToAction(nameof(Index));
+                _bancoUseCase.Deletar(bancoId, usuarioId);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Erro ao excluir: " + ex.Message);
+                return View();
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ public interface IGastoFixoUseCase
 {
     List<GastoFixoModel> ListarTodos(int usuarioId, int? bancoId = null, int? categoriaId = null, int? tipoTransacaoId = null);
 
-    GastoFixoModel? ListarPorId(int gastoFixoId, int usuarioId);
+    GastoFixoModel? BuscarPorId(int gastoFixoId, int usuarioId);
 
     void Criar(GastoFixoModel gastoFixoModel);
 

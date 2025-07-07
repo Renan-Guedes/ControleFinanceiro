@@ -10,128 +10,160 @@ namespace ControleFinanceiro.Web.Controllers
         private readonly ICategoriaUseCase _categoriaUseCase;
 
         public CategoriaController(ICategoriaUseCase categoriaUseCase)
-        {
-            _categoriaUseCase = categoriaUseCase;
-        }
+            => _categoriaUseCase = categoriaUseCase;
+        
 
         // GET: /Categoria        
         public IActionResult Index()
         {
-            var categorias = _categoriaUseCase.ListarTodos().ToList();
+            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
 
-            var viewModel = categorias.Select(c => new CategoriaViewModel
+            var categorias = _categoriaUseCase
+                .ListarTodos(usuarioId)
+                .ToList();
+
+            var vm = categorias.Select(c => new CategoriaViewModel
             {
                 Id = c.Id,
                 Nome = c.Nome,
                 Ativo = c.Ativo,
             }).ToList();
 
-            return View(viewModel);
+            return View(vm);
         }
 
         // GET: /Categoria/Criar
         public IActionResult Criar()
-        {
-            return View();
-        }
+            => View();
 
         // POST: /Categoria/Criar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Criar(CategoriaViewModel categoriaViewModel)
+        public IActionResult Criar(CategoriaViewModel vm)
         {
-            if (!ModelState.IsValid)
+            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
+
+            try
             {
-                return RedirectToAction("Index");
+                if (!ModelState.IsValid)
+                    RedirectToAction("Index");
+
+
+                var novaCategoria = new CategoriaModel
+                {
+                    Nome = vm.Nome,
+                    UsuarioId = usuarioId,
+                    Ativo = vm.Ativo
+                };
+
+                _categoriaUseCase.Criar(novaCategoria);
+                return RedirectToAction(nameof(Index));
             }
-
-            var novaCategoria = new CategoriaModel
+            catch (Exception ex)
             {
-                Nome = categoriaViewModel.Nome,
-                Ativo = categoriaViewModel.Ativo
-            };
-
-            _categoriaUseCase.Criar(novaCategoria);
-            return RedirectToAction(nameof(Index));
+                ModelState.AddModelError(string.Empty, "Erro ao salvar: " + ex.Message);
+                return View(vm);
+            }
         }
 
         // GET: /Categoria/Editar/{id}
-        public IActionResult Editar(int id)
+        public IActionResult Editar(int categoriaId)
         {
-            var categoria = _categoriaUseCase.BuscarPorId(id);
+            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
+
+            var categoria = _categoriaUseCase
+                .BuscarPorId(categoriaId, usuarioId);
 
             if (categoria == null)
-            {
                 return NotFound();
-            }
-
-            var viewModel = new CategoriaViewModel
+            
+            var vm = new CategoriaViewModel
             {
                 Id = categoria.Id,
                 Nome = categoria.Nome,
                 Ativo = categoria.Ativo,
             };
 
-            return View(viewModel);
+            return View(vm);
         }
 
         // POST: /Categoria/Editar/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Editar(CategoriaViewModel categoriaViewModel)
+        public IActionResult Editar(CategoriaViewModel vm)
         {
-            if (!ModelState.IsValid)
+            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
+
+            try
             {
-                return View(categoriaViewModel);
+                if (!ModelState.IsValid)
+                    return View(vm);
+
+                var categoria = _categoriaUseCase
+                    .BuscarPorId(vm.Id, usuarioId);
+
+                if (categoria == null)
+                    return NotFound();
+
+                categoria.Nome = vm.Nome;
+                categoria.Ativo = vm.Ativo;
+
+                _categoriaUseCase.Atualizar(categoria);
+
+                return RedirectToAction(nameof(Index));
             }
-
-            var categoria = _categoriaUseCase.BuscarPorId(categoriaViewModel.Id);
-
-            if (categoria == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                ModelState.AddModelError(string.Empty, "Erro ao salvar: " + ex.Message);
+                return View(vm);
             }
-
-            categoria.Nome = categoriaViewModel.Nome;
-            categoria.Ativo = categoriaViewModel.Ativo;
-
-            _categoriaUseCase.Atualizar(categoria);
-
-            return RedirectToAction(nameof(Index));
         }
 
         // GET: /Categoria/Deletar/{id}
-        public IActionResult Deletar(int id)
+        public IActionResult Deletar(int categoriaId)
         {
-            var categoria = _categoriaUseCase.BuscarPorId(id); // Evite ListarTodos + FirstOrDefault
+            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
+
+            var categoria = _categoriaUseCase
+                .BuscarPorId(categoriaId, usuarioId);
 
             if (categoria is null)
                 return NotFound();
 
-            var viewModel = new CategoriaViewModel
+            var vm = new CategoriaViewModel
             {
                 Id = categoria.Id,
                 Nome = categoria.Nome,
                 Ativo = categoria.Ativo
             };
 
-            return View(viewModel);
+            return View(vm);
         }
 
         // POST: /Categoria/Deletar/{id}
         [HttpPost, ActionName("Deletar")]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmarDeletar(int id)
+        public IActionResult ConfirmarDeletar(int categoriaId)
         {
-            var categoria = _categoriaUseCase.BuscarPorId(id);
+            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
 
-            if (categoria is null)
-                return NotFound();
+            try
+            {
+                var categoria = _categoriaUseCase
+                    .BuscarPorId(categoriaId, usuarioId);
 
-            _categoriaUseCase.Deletar(id);
+                if (categoria is null)
+                    return NotFound();
 
-            return RedirectToAction(nameof(Index));
+                _categoriaUseCase.Deletar(categoriaId, usuarioId);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Erro ao salvar: " + ex.Message);
+                return View();
+            }
         }
-
     }
 }

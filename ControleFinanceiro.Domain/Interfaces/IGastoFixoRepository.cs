@@ -4,9 +4,9 @@ namespace ControleFinanceiro.Domain.Interfaces;
 
 public interface IGastoFixoRepository
 {
-    List<GastoFixoModel> ListarTodos(int usuarioId, int? bancoId = null, int? categoriaId = null, int? tipoTransacaoId = null);
+    List<GastoFixoModel> ListarTodos(int usuarioId);
     
-    GastoFixoModel? ListarPorId(int gastoFixoId, int usuarioId);
+    GastoFixoModel? BuscarPorId(int gastoFixoId, int usuarioId);
     
     void Criar(GastoFixoModel gastoFixoModel);
     

@@ -12,14 +12,22 @@ public class BancoUseCase : IBancoUseCase
     {
         _bancoRepository = bancoRepository;
     }
+    
+    public void Criar(BancoModel bancoModel) 
+        => _bancoRepository.Criar(bancoModel);
 
-    public void Criar(BancoModel banco) => _bancoRepository.Criar(banco);
+    public void Atualizar(BancoModel bancoModel) 
+        => _bancoRepository.Atualizar(bancoModel);
+    
+    public void Deletar(int bancoId, int usuarioId) 
+        => _bancoRepository.Deletar(bancoId, usuarioId);
+    
+    public List<BancoModel> ListarTodos(int usuarioId) 
+        => _bancoRepository.ListarTodos(usuarioId);
 
-    public void Atualizar(BancoModel banco) => _bancoRepository.Atualizar(banco);
+    public BancoModel? BuscarPorId(int bancoId, int usuarioId) 
+        => _bancoRepository.BuscarPorId(bancoId, usuarioId);
 
-    public BancoModel? BuscarPorId(int id) => _bancoRepository.BuscarPorId(id);
 
-    public void Deletar(int id) => _bancoRepository.Deletar(id);
 
-    public List<BancoModel> ListarTodos() => _bancoRepository.Listar();
 }

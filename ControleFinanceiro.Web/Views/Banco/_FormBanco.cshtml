@@ -1,6 +1,9 @@
 ﻿@model ControleFinanceiro.Web.ViewModels.BancoViewModel
 
-<form asp-action="@ViewContext.RouteData.Values["action"]?.ToString()">
+<form asp-action="@ViewContext.RouteData.Values["action"]?.ToString()">       
+    
+    <input type="hidden" asp-for="Id" />
+    
     <div class="form-group">
         <label asp-for="Nome"></label>
         <input asp-for="Nome" class="form-control" />
@@ -10,7 +13,7 @@
     <div class="form-group">
         <label asp-for="Ativo"></label>
         <select asp-for="Ativo" class="form-select">
-            <option value="true" selected>Ativo</option>
+            <option value="true">Ativo</option>
             <option value="false">Inativo</option>
         </select>
     </div>

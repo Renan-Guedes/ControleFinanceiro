@@ -13,15 +13,18 @@ public class GastoFixoUseCase : IGastoFixoUseCase
         _repository = repository;
     }
 
-    public void Criar(GastoFixoModel gastoFixoModel) => _repository.Criar(gastoFixoModel);
+    public void Criar(GastoFixoModel gastoFixoModel)
+        => _repository.Criar(gastoFixoModel);
 
-    public void Atualizar(GastoFixoModel gastoFixoModel) => _repository.Atualizar(gastoFixoModel);
+    public void Atualizar(GastoFixoModel gastoFixoModel)
+        => _repository.Atualizar(gastoFixoModel);
 
-    public void Deletar(int gastoFixoId, int usuarioId) => _repository.Deletar(gastoFixoId, usuarioId);
+    public void Deletar(int gastoFixoId, int usuarioId)
+        => _repository.Deletar(gastoFixoId, usuarioId);
 
-    public List<GastoFixoModel> ListarTodos(int usuarioId, int? bancoId = null, int? categoriaId = null, int? tipoTransacaoId = null) =>
-        _repository.ListarTodos(usuarioId, bancoId, categoriaId, tipoTransacaoId);
+    public List<GastoFixoModel> ListarTodos(int usuarioId, int? bancoId = null, int? categoriaId = null, int? tipoTransacaoId = null)
+        => _repository.ListarTodos(usuarioId);
 
-    public GastoFixoModel? ListarPorId(int gastoFixoId, int usuarioId) =>
-        _repository.ListarPorId(gastoFixoId, usuarioId);
+    public GastoFixoModel? BuscarPorId(int gastoFixoId, int usuarioId)
+        => _repository.BuscarPorId(gastoFixoId, usuarioId);
 }

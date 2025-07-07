@@ -52,7 +52,7 @@ public class PlanejamentoMensalRepository : IPlanejamentoMensalRepository
             .ToList();
     }
 
-    public PlanejamentoMensalModel? ListarPorId(int planejamentoMensalId, int usuarioId)
+    public PlanejamentoMensalModel? BuscarPorId(int planejamentoMensalId, int usuarioId)
     {
         return _db.PlanejamentosMensais
             .Include(b => b.Banco)

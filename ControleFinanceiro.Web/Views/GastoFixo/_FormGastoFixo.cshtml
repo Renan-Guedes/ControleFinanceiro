@@ -1,8 +1,14 @@
 ﻿@model ControleFinanceiro.Web.ViewModels.GastoFixoViewModel
 
-<h2>@ViewContext.RouteData.Values["action"] - Gasto Fixo</h2>
-
 <form asp-action="@ViewContext.RouteData.Values["action"]?.ToString()" method="post">
+
+    @if (Model.Id > 0)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+
+    <input type="hidden" asp-for="Id" />
+
     <div class="form-group">
         <label asp-for="Descricao"></label>
         <input asp-for="Descricao" class="form-control" />

@@ -13,13 +13,18 @@ public class TransacaoUseCase : ITransacaoUseCase
         _transacaoRepository = transacaoRepository;
     }
 
-    public void Criar(TransacaoModel transacao) => _transacaoRepository.Criar(transacao);
+    public void Criar(TransacaoModel transacaoModel)
+        => _transacaoRepository.Criar(transacaoModel);
 
-    public void Atualizar(TransacaoModel transacao) => _transacaoRepository.Atualizar(transacao);
+    public void Atualizar(TransacaoModel transacaoModel)
+        => _transacaoRepository.Atualizar(transacaoModel);
 
-    public void Deletar(int id) => _transacaoRepository.Deletar(id);
+    public void Deletar(int transacaoId, int usuarioId)
+        => _transacaoRepository.Deletar(transacaoId, usuarioId);
 
-    public List<TransacaoModel> ListarTodos() => _transacaoRepository.Listar();
+    public List<TransacaoModel> ListarTodos(int usuarioId)
+        => _transacaoRepository.ListarTodos(usuarioId);
 
-    public TransacaoModel? BuscarPorId(int id) => _transacaoRepository.BuscarPorId(id);    
+    public TransacaoModel BuscarPorId(int transacaoId, int usuarioId)
+        => _transacaoRepository.BuscarPorId(transacaoId, usuarioId);
 }

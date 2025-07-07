@@ -13,13 +13,17 @@ public class CategoriaUseCase : ICategoriaUseCase
         _repository = repository;
     }
 
-    public void Criar(CategoriaModel categoria) => _repository.Criar(categoria);
+    public void Criar(CategoriaModel categoriaModel)
+        => _repository.Criar(categoriaModel);
+    public void Atualizar(CategoriaModel categoriaModel)
+        => _repository.Atualizar(categoriaModel);
 
-    public void Atualizar(CategoriaModel categoria) => _repository.Atualizar(categoria);
+    public void Deletar(int categoriaId, int usuarioId)
+        => _repository.Deletar(categoriaId, usuarioId);
 
-    public void Deletar(int id) => _repository.Deletar(id);
+    public List<CategoriaModel> ListarTodos(int usuarioId)
+        => _repository.ListarTodos(usuarioId);
 
-    public List<CategoriaModel> ListarTodos() => _repository.Listar();
-
-    public CategoriaModel? BuscarPorId(int id) => _repository.BuscarPorId(id);
+    public CategoriaModel? BuscarPorId(int categoriaId, int usuarioId)
+        => _repository.BuscarPorId(categoriaId, usuarioId);
 }

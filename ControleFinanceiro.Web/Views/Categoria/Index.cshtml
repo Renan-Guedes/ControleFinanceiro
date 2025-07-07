@@ -19,8 +19,8 @@
                 <td>@categoria.Nome</td>
                 <td>@(categoria.Ativo ? "Sim" : "Não")</td>
                 <td>
-                    <a asp-action="Editar" asp-route-id="@categoria.Id" class="btn btn-warning">Editar</a>
-                    <a asp-action="Deletar" asp-route-id="@categoria.Id" class="btn btn-danger">Excluir</a>
+                    <a asp-action="Editar" asp-route-categoriaId="@categoria.Id" class="btn btn-warning">Editar</a>
+                    <a asp-action="Deletar" asp-route-categoriaId="@categoria.Id" class="btn btn-danger">Excluir</a>
                 </td>
             </tr>
         }

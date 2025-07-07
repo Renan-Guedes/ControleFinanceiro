@@ -37,8 +37,8 @@
                 <td>@item.DataVencimentoFormatada</td>
                 <td>@item.DataTransacaoFormatada</td>
                 <td>
-                    <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
-                    <a asp-action="Deletar" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Excluir</a>
+                    <a asp-action="Editar" asp-route-transacaoId="@item.Id" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Deletar" asp-route-transacaoId="@item.Id" class="btn btn-sm btn-danger">Excluir</a>
                 </td>
             </tr>
         }

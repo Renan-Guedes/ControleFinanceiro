@@ -1,6 +1,9 @@
 ﻿@model ControleFinanceiro.Web.ViewModels.CategoriaViewModel
 
 <form asp-action="@ViewContext.RouteData.Values["action"]?.ToString()">
+    
+    <input type="hidden" asp-for="Id" />
+    
     <div class="form-group">
         <label asp-for="Nome"></label>
         <input asp-for="Nome" class="form-control" />

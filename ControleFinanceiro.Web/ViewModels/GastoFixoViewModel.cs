@@ -1,5 +1,4 @@
-﻿using ControleFinanceiro.Domain.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ControleFinanceiro.Web.ViewModels
 {

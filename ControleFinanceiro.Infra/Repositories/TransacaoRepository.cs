@@ -14,21 +14,22 @@ public class TransacaoRepository : ITransacaoRepository
         _db = db;
     }
 
-    public void Criar(TransacaoModel transacao)
+    public void Criar(TransacaoModel transacaoModel)
     {
-        _db.Transacoes.Add(transacao);
+        _db.Transacoes.Add(transacaoModel);
         _db.SaveChanges();
     }
 
-    public void Atualizar(TransacaoModel transacao)
+    public void Atualizar(TransacaoModel transacaoModel)
     {
-        _db.Transacoes.Update(transacao);
+        _db.Transacoes.Update(transacaoModel);
         _db.SaveChanges();
     }
 
-    public void Deletar(int id)
+    public void Deletar(int transacaoId, int usuarioId)
     {
-        var transacao = _db.Transacoes.Find(id);
+        var transacao = _db.Transacoes
+            .FirstOrDefault(t => t.Id == transacaoId && t.UsuarioId == usuarioId);
 
         if (transacao != null)
         {
@@ -38,21 +39,25 @@ public class TransacaoRepository : ITransacaoRepository
 
             _db.SaveChanges();
         }
+        else
+        {
+            throw new Exception("Transação não encontrado ou não pertence ao usuário.");
+        }
     }
 
-    public List<TransacaoModel> Listar()
+    public List<TransacaoModel> ListarTodos(int usuarioId)
     {
         return _db.Transacoes
-            .Where(t => t.DataExclusao == null)
+            .Where(t => t.DataExclusao == null && t.UsuarioId == usuarioId)
             .Include(c => c.Categoria)
             .Include(t => t.TipoTransacao)
             .Include(b => b.Banco)
             .ToList();
     }
 
-    public TransacaoModel? BuscarPorId(int id)
+    public TransacaoModel? BuscarPorId(int transacaoId, int usuarioId)
     {
         return _db.Transacoes
-           .FirstOrDefault(t => t.Id == id && t.DataExclusao == null);
+            .FirstOrDefault(t => t.Id == transacaoId && t.UsuarioId == usuarioId);
     }
 }

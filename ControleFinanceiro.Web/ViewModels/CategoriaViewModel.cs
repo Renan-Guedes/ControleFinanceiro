@@ -6,7 +6,7 @@ public class CategoriaViewModel
 {
     public int Id { get; set; }
 
-    [Required(ErrorMessage = "(* obrigatório")]
+    [Required(ErrorMessage = "* obrigatório")]
     public string Nome { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "* obrigatório")]

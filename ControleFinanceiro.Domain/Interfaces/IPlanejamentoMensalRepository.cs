@@ -6,7 +6,7 @@ public interface IPlanejamentoMensalRepository
 {
     List<PlanejamentoMensalModel> ListarTodos(int usuarioId);
 
-    PlanejamentoMensalModel? ListarPorId(int planejamentoMensalId, int usuarioId);
+    PlanejamentoMensalModel? BuscarPorId(int planejamentoMensalId, int usuarioId);
 
     void Criar(PlanejamentoMensalModel planejamentoMensalModel);
 

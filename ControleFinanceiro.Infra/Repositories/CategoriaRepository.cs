@@ -13,22 +13,25 @@ public class CategoriaRepository : ICategoriaRepository
         _db = db;
     }
 
-    public void Criar(CategoriaModel categoria)
+    #region Métodos Básicos
+
+    public void Criar(CategoriaModel categoriaModel)
     {
-        _db.Categorias.Add(categoria);
+        _db.Categorias.Add(categoriaModel);
         _db.SaveChanges();
     }
 
-    public void Atualizar(CategoriaModel categoria)
+    public void Atualizar(CategoriaModel categoriaModel)
     {
-        categoria.DataAtualizacao = DateTime.Now;
-        _db.Categorias.Update(categoria);
+        categoriaModel.DataAtualizacao = DateTime.Now;
+        _db.Categorias.Update(categoriaModel);
         _db.SaveChanges();
     }
 
-    public void Deletar(int id)
+    public void Deletar(int categoriaId, int usuarioId)
     {
-        var categoria = _db.Categorias.Find(id);
+        var categoria = _db.Categorias
+            .FirstOrDefault(c => c.Id == categoriaId && c.UsuarioId == usuarioId);
 
         if(categoria != null )
         {
@@ -42,16 +45,22 @@ public class CategoriaRepository : ICategoriaRepository
         }
     }
 
-    public List<CategoriaModel> Listar()
+    #endregion
+
+    #region Métodos de Consulta
+
+    public List<CategoriaModel> ListarTodos(int usuarioId)
     {
         return _db.Categorias
-            .Where(c => c.DataExclusao == null)
+            .Where(c => c.UsuarioId == usuarioId && c.DataExclusao == null)
             .ToList();
     }
 
-    public CategoriaModel? BuscarPorId(int id)
+    public CategoriaModel? BuscarPorId(int categoriaId, int usuarioId)
     {
         return _db.Categorias
-            .FirstOrDefault(c => c.Id == id && c.DataExclusao == null);
+            .FirstOrDefault(c => c.Id == categoriaId && c.UsuarioId == usuarioId && c.DataExclusao == null);
     }
+
+    #endregion
 }

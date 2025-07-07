@@ -4,13 +4,13 @@ namespace ControleFinanceiro.Domain.Interfaces;
 
 public interface ICategoriaRepository
 {
-    List<CategoriaModel> Listar();
+    List<CategoriaModel> ListarTodos(int usuarioId);
 
-    CategoriaModel? BuscarPorId(int id);
+    CategoriaModel? BuscarPorId(int categoriaId, int usuarioId);
 
-    void Criar(CategoriaModel categoria);
+    void Criar(CategoriaModel categoriaModel);
     
-    void Atualizar(CategoriaModel categoria);
+    void Atualizar(CategoriaModel categoriaModel);
     
-    void Deletar(int id);
+    void Deletar(int categoriaId, int usuarioId);
 }

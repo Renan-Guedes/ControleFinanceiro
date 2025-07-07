@@ -13,22 +13,25 @@ public class BancoRepository : IBancoRepository
         _db = db;
     }
 
-    public void Criar(BancoModel banco)
+    #region Métodos Básicos
+
+    public void Criar(BancoModel bancoModel)
     {
-        _db.Bancos.Add(banco);
+        _db.Bancos.Add(bancoModel);
         _db.SaveChanges();
     }
 
-    public void Atualizar(BancoModel banco)
+    public void Atualizar(BancoModel bancoModel)
     {
-        banco.DataAtualizacao = DateTime.Now;
-        _db.Bancos.Update(banco);
+        bancoModel.DataAtualizacao = DateTime.Now;
+        _db.Bancos.Update(bancoModel);
         _db.SaveChanges();
     }
 
-    public void Deletar(int id)
+    public void Deletar(int bancoId, int usuarioId)
     {
-        var banco = _db.Bancos.Find(id);
+        var banco = _db.Bancos
+            .FirstOrDefault(b => b.Id == bancoId && b.UsuarioId == usuarioId);
 
         if (banco != null)
         {
@@ -42,16 +45,22 @@ public class BancoRepository : IBancoRepository
         }
     }
 
-    public List<BancoModel> Listar()
+    #endregion
+
+    #region Métodos de Consulta
+
+    public List<BancoModel> ListarTodos(int usuarioId)
     {
         return _db.Bancos
-            .Where(b => b.DataExclusao == null)
+            .Where(b => b.UsuarioId == usuarioId && b.DataExclusao == null)
             .ToList();
     }
 
-    public BancoModel? BuscarPorId(int id)
+    public BancoModel? BuscarPorId(int bancoId, int usuarioId)
     {
         return _db.Bancos
-            .FirstOrDefault(b => b.Id == id && b.DataExclusao == null);
+            .FirstOrDefault(b => b.Id == bancoId && b.UsuarioId == usuarioId && b.DataExclusao == null);
     }
+
+    #endregion
 }

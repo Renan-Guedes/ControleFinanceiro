@@ -1,7 +1,7 @@
-﻿@using ControleFinanceiro.Web.ViewModels
-@model IEnumerable<GastoFixoViewModel>
+﻿@model IEnumerable<ControleFinanceiro.Web.ViewModels.GastoFixoViewModel>
 
 <h2>Gastos Fixos</h2>
+
 <a asp-action="Criar" class="btn btn-primary mb-3">+ Novo Gasto Fixo</a>
 
 <table class="table table-bordered">
@@ -23,8 +23,8 @@
                 <td>@item.BancoNome</td>
                 <td>@item.CategoriaNome</td>
                 <td>
-                    <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
-                    <a asp-action="Excluir" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Excluir</a>
+                    <a asp-action="Editar" asp-route-gastoFixoId="@item.Id" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Deletar" asp-route-gastoFixoId="@item.Id" class="btn btn-sm btn-danger">Excluir</a>
                 </td>
             </tr>
         }

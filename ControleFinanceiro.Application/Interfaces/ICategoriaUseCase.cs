@@ -4,13 +4,13 @@ namespace ControleFinanceiro.Application.Interfaces;
 
 public interface ICategoriaUseCase
 {
-    List<CategoriaModel> ListarTodos();
+    List<CategoriaModel> ListarTodos(int usuarioId);
 
-    CategoriaModel? BuscarPorId(int id);
+    CategoriaModel? BuscarPorId(int categoriaId, int usuarioId);
 
-    void Criar(CategoriaModel categoria);
-    
-    void Atualizar(CategoriaModel categoria);
-    
-    void Deletar(int id);
+    void Criar(CategoriaModel categoriaModel);
+
+    void Atualizar(CategoriaModel categoriaModel);
+
+    void Deletar(int categoriaId, int usuarioId);
 }
