@@ -18,7 +18,7 @@ Além de aplicar conhecimentos em .NET, o projeto também foi uma oportunidade d
 - .NET 9.0 ou superior
 - ASP.NET Core MVC
 - Entity Framework Core
-- SQL Server
+- MySQL
 - Arquitetura em Camadas
 
 ## 📚 Documentação Completa
