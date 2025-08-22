@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -8,57 +9,67 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ControleFinanceiro.Infra.Migrations
 {
     /// <inheritdoc />
-    public partial class initialmigration : Migration
+    public partial class FirstMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "TipoTransacao",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nome = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    DataInclusao = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DataExclusao = table.Column<DateTime>(type: "datetime2", nullable: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Nome = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DataInclusao = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(6)"),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    DataExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TipoTransacao", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Usuario",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    SenhaHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DataInclusao = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DataExclusao = table.Column<DateTime>(type: "datetime2", nullable: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Nome = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Email = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    SenhaHash = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DataInclusao = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(6)"),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    DataExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Usuario", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Banco",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
-                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Ativo = table.Column<bool>(type: "bit", nullable: false),
-                    DataInclusao = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DataExclusao = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Nome = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Ativo = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DataInclusao = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(6)"),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    DataExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -69,20 +80,22 @@ namespace ControleFinanceiro.Infra.Migrations
                         principalTable: "Usuario",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Categoria",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
-                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Ativo = table.Column<bool>(type: "bit", nullable: false),
-                    DataInclusao = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DataExclusao = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Nome = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Ativo = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DataInclusao = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(6)"),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    DataExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -93,22 +106,23 @@ namespace ControleFinanceiro.Infra.Migrations
                         principalTable: "Usuario",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "PlanejamentoMensal",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     BancoId = table.Column<int>(type: "int", nullable: false),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
                     Ano = table.Column<int>(type: "int", nullable: false),
                     Mes = table.Column<int>(type: "int", nullable: false),
-                    SaldoInicial = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    DataInclusao = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DataExclusao = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    SaldoInicial = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    DataInclusao = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(6)"),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    DataExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -125,27 +139,29 @@ namespace ControleFinanceiro.Infra.Migrations
                         principalTable: "Usuario",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Transacao",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     CategoriaId = table.Column<int>(type: "int", nullable: false),
                     TipoTransacaoId = table.Column<int>(type: "int", nullable: false),
                     BancoId = table.Column<int>(type: "int", nullable: false),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
-                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fatura = table.Column<bool>(type: "bit", nullable: false),
-                    ValorPlanejado = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ValorPago = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    DataVencimento = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DataTransacao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DataInclusao = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DataExclusao = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Descricao = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Fatura = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    ValorPlanejado = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    ValorPago = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    DataVencimento = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    DataTransacao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    DataInclusao = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(6)"),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    DataExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -174,23 +190,25 @@ namespace ControleFinanceiro.Infra.Migrations
                         principalTable: "Usuario",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "GastoFixo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     CategoriaId = table.Column<int>(type: "int", nullable: false),
                     TipoTransacaoId = table.Column<int>(type: "int", nullable: false),
                     BancoId = table.Column<int>(type: "int", nullable: false),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
-                    Descricao = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    Valor = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    DataInclusao = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DataExclusao = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Descricao = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Valor = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    DataInclusao = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(6)"),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    DataExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     PlanejamentoMensalModelId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -225,7 +243,8 @@ namespace ControleFinanceiro.Infra.Migrations
                         principalTable: "Usuario",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.InsertData(
                 table: "TipoTransacao",
@@ -311,26 +330,13 @@ namespace ControleFinanceiro.Infra.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "GastoFixo");
-
-            migrationBuilder.DropTable(
-                name: "Transacao");
-
-            migrationBuilder.DropTable(
-                name: "PlanejamentoMensal");
-
-            migrationBuilder.DropTable(
-                name: "Categoria");
-
-            migrationBuilder.DropTable(
-                name: "TipoTransacao");
-
-            migrationBuilder.DropTable(
-                name: "Banco");
-
-            migrationBuilder.DropTable(
-                name: "Usuario");
+            migrationBuilder.DropTable(name: "GastoFixo");
+            migrationBuilder.DropTable(name: "Transacao");
+            migrationBuilder.DropTable(name: "PlanejamentoMensal");
+            migrationBuilder.DropTable(name: "Categoria");
+            migrationBuilder.DropTable(name: "TipoTransacao");
+            migrationBuilder.DropTable(name: "Banco");
+            migrationBuilder.DropTable(name: "Usuario");
         }
     }
 }

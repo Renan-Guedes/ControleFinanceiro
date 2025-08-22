@@ -15,7 +15,16 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     // Recupera a Connection String do appsettings.json
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+
+    /* SQL SERVER
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    */
+
+    // MySQL
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+    );
 });
 
 // Registra os serviços de aplicação //

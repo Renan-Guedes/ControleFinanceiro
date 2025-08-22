@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ControleFinanceiro.Infra.Data;
 
@@ -15,7 +16,16 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
             .Build();
 
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-        optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+
+        /* SQL SERVER
+            optionsBuilder.UseMySql(configuration.GetConnectionString("DefaultConnection"));
+        */
+
+        // MySQL
+        optionsBuilder.UseMySql(
+            configuration.GetConnectionString("DefaultConnection"),
+            ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection")) // detecta a versão automaticamente
+        );
 
         return new AppDbContext(optionsBuilder.Options);
     }
