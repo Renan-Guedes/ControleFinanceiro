@@ -61,4 +61,12 @@ public class GastoFixoRepository : IGastoFixoRepository
             .Include(g => g.TipoTransacao)
             .FirstOrDefault(g => g.Id == gastoFixoId && g.UsuarioId == usuarioId && g.DataExclusao == null);
     }
+
+    public decimal ObterTotalGastosFixos(int usuarioId)
+    {
+        var totalGastosFixos = _db.GastosFixos
+            .Where(g => g.UsuarioId == usuarioId && g.DataExclusao == null);
+
+        return totalGastosFixos.Any() ? totalGastosFixos.Sum(g => g.Valor) : 0;
+    }
 }

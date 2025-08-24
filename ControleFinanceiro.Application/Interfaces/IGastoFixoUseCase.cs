@@ -13,4 +13,6 @@ public interface IGastoFixoUseCase
     void Atualizar(GastoFixoModel gastoFixoModel);
 
     void Deletar(int gastoFixoId, int usuarioId);
+
+    decimal ObterTotalGastosFixos(int usuarioId);
 }

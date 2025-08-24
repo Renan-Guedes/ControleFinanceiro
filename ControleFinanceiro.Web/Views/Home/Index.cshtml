@@ -1,8 +1,146 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model ControleFinanceiro.Web.ViewModels.HomeViewModel
+
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Cards de resumo -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-3 col-md-6">
+        <div class="financial-card success fade-in">
+            <div class="card-icon success">
+                <i class="bi bi-arrow-up-circle"></i>
+            </div>
+            <h6 class="text-muted mb-2">Total de Receitas</h6>
+            <h3 class="text-success mb-1">@Model.TotalReceitas.ToString("C")</h3>
+            @* <small class="text-success">+12% este mês</small> *@
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="financial-card danger fade-in">
+            <div class="card-icon danger">
+                <i class="bi bi-arrow-down-circle"></i>
+            </div>
+            <h6 class="text-muted mb-2">Total de Despesas</h6>
+            <h3 class="text-danger mb-1">@Model.TotalDespesas.ToString("C")</h3>
+            @* <small class="text-danger">-5% este mês</small> *@
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="financial-card primary fade-in">
+            <div class="card-icon info">
+                <i class="bi bi-piggy-bank"></i>
+            </div>
+            <h6 class="text-muted mb-2">Saldo Atual</h6>
+            <h3 class="text-primary mb-1">@Model.SaldoAtual.ToString("C")</h3>
+            <small class="text-muted">Disponível</small>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="financial-card warning fade-in">
+            <div class="card-icon warning">
+                <i class="bi bi-wallet2"></i>
+            </div>
+            <h6 class="text-muted mb-2">Custo de Vida</h6>
+            <h3 class="text-warning mb-1">@Model.TotalGastosFixos.ToString("C")</h3>
+            <small class="text-muted">Mensais</small>
+        </div>
+    </div>
+</div>
+
+<!-- Gráfico de evolução -->
+@* <div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card fade-in">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Evolução Financeira</h5>
+                <select class="form-select w-auto">
+                    <option>Últimos 6 meses</option>
+                    <option>Últimos 12 meses</option>
+                    <option>Este ano</option>
+                </select>
+            </div>
+            <div class="card-body">
+                <canvas id="financeChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div> *@
+
+<!-- Transações recentes + Ações rápidas -->
+<div class="row g-4">
+    <!-- Transações recentes -->
+    <div class="col-lg-8">
+        <div class="card fade-in">
+            <div class="card-header">
+                <h5 class="mb-0">Transações Recentes</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Categoria</th>
+                                <th>Tipo</th>
+                                <th>Valor</th>
+                                <th>Data da Transação</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var transacao in Model.UltimasTransacoes)
+                            {
+                                <tr>
+                                    <td>@transacao.CategoriaNome</td>
+                                    <td>
+                                        <span class="badge @(transacao.TipoTransacaoNome == "Receita" ? "bg-success" : "bg-danger")">
+                                            @transacao.TipoTransacaoNome
+                                        </span>
+                                    </td>
+                                    <td class="@(transacao.TipoTransacaoNome == "Receita" ? "text-success" : "text-danger")">
+                                        R$ @transacao.ValorPago.ToString("N2")
+                                    </td>
+                                    <td>@transacao.DataTransacao.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <a href="@Url.Action("Detalhes", "Transacoes", new { id = transacao.Id })" class="btn btn-sm btn-outline-secondary">
+                                            Detalhes
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="~/Transacoes/Index" class="btn btn-outline-primary">Ver todas transações</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ações rápidas -->
+    <div class="col-lg-4">
+        <div class="card fade-in">
+            <div class="card-header">
+                <h5 class="mb-0">Ações Rápidas</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success" onclick="openModal('receita')">
+                        <i class="bi bi-plus-circle"></i> Nova Receita
+                    </button>
+                    <button class="btn btn-danger" onclick="openModal('despesa')">
+                        <i class="bi bi-dash-circle"></i> Nova Despesa
+                    </button>
+                    <button class="btn btn-warning" onclick="openModal('gastoFixo')">
+                        <i class="bi bi-calendar-plus"></i> Novo Gasto Fixo
+                    </button>
+                    <button class="btn btn-info">
+                        <i class="bi bi-file-earmark-text"></i> Gerar Relatório
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

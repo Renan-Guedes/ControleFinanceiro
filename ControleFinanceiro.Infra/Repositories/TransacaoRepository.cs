@@ -1,6 +1,7 @@
 ﻿using ControleFinanceiro.Domain.Interfaces;
 using ControleFinanceiro.Domain.Models;
 using ControleFinanceiro.Infra.Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace ControleFinanceiro.Infra.Repositories;
@@ -59,5 +60,19 @@ public class TransacaoRepository : ITransacaoRepository
     {
         return _db.Transacoes
             .FirstOrDefault(t => t.Id == transacaoId && t.UsuarioId == usuarioId);
+    }
+
+    public decimal ObterTotalReceitas(int usuarioId)
+    {
+        return _db.Transacoes
+            .Where(t => t.DataExclusao == null && t.UsuarioId == usuarioId && t.TipoTransacaoId == 1)
+            .Sum(t => t.ValorPago);
+    }
+
+    public decimal ObterTotalDespesas(int usuarioId)
+    {
+        return _db.Transacoes
+            .Where(t => t.DataExclusao == null && t.UsuarioId == usuarioId && t.TipoTransacaoId == 2)
+            .Sum(t => t.ValorPago);
     }
 }

@@ -27,4 +27,7 @@ public class GastoFixoUseCase : IGastoFixoUseCase
 
     public GastoFixoModel? BuscarPorId(int gastoFixoId, int usuarioId)
         => _repository.BuscarPorId(gastoFixoId, usuarioId);
+
+    public decimal ObterTotalGastosFixos(int usuarioId)
+        => _repository.ObterTotalGastosFixos(usuarioId);
 }

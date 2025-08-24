@@ -1,4 +1,5 @@
 ﻿using ControleFinanceiro.Domain.Models;
+using System.Runtime.CompilerServices;
 
 namespace ControleFinanceiro.Domain.Interfaces;
 
@@ -13,4 +14,6 @@ public interface IGastoFixoRepository
     void Atualizar(GastoFixoModel gastoFixoModel);
     
     void Deletar(int gastoFixoId, int usuarioId);
+
+    decimal ObterTotalGastosFixos(int usuarioId);
 }

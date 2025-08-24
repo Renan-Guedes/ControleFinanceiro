@@ -13,4 +13,8 @@ public interface ITransacaoUseCase
     void Atualizar(TransacaoModel transacaoModel);
 
     void Deletar(int transacaoId, int usuarioId);
+
+    decimal ObterTotalReceitas(int usuarioId);
+
+    decimal ObterTotalDespesas(int usuarioId);
 }
