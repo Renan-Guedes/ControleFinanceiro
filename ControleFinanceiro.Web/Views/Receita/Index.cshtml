@@ -44,13 +44,13 @@
                                     <td class="text-success">R$ @receita.ValorPago.ToString("N2")</td>
                                     <td>@receita.DataTransacaoFormatada</td>
                                     <td class="text-end">
-                                        <a href="@Url.Action("Details", "Receitas", new { id = receita.Id })" class="btn btn-sm btn-outline-secondary">
+                                        <a asp-action="Detalhes" asp-route-receitaId="@receita.Id" class="btn btn-sm btn-outline-secondary">
                                             Detalhes
                                         </a>
-                                        <a href="@Url.Action("Edit", "Receitas", new { id = receita.Id })" class="btn btn-sm btn-outline-warning">
+                                        <a asp-action="Editar" asp-route-receitaId="@receita.Id" class="btn btn-sm btn-outline-warning">
                                             Editar
                                         </a>
-                                        <a href="@Url.Action("Delete", "Receitas", new { id = receita.Id })" class="btn btn-sm btn-outline-danger">
+                                        <a href="#" data-receita-id="@receita.Id" class="botao-Excluir btn btn-sm btn-outline-danger">
                                             Excluir
                                         </a>
                                     </td>
@@ -63,3 +63,37 @@
         </div>
     </div>
 </div>
+
+<form id="form-excluir" method="post" asp-action="Excluir" asp-controller="Receita">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="receitaId" id="receitaIdExcluir" />
+</form>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.botao-Excluir').forEach(function (botao) {
+            botao.addEventListener('click', function (e) {
+                e.preventDefault();
+                const receitaId = botao.getAttribute('data-receita-id')
+
+                swal({
+                    title: "Confirmação de Exclusão",
+                    text: "Tem certeza que deseja excluir esta receita? Esta ação não pode ser desfeita.",
+                    icon: "warning",
+                    buttons: ["Cancelar", "Excluir"],
+                    dangerMode: true,
+                })
+                .then((confirmado) => {
+                    if (confirmado) {
+                        document.getElementById("receitaIdExcluir").value = receitaId;
+                        document.getElementById("form-excluir").submit();
+                    } else {
+                        swal("A exclusão foi cancelada.", {
+                            icon: "info",
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

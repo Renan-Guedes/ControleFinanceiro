@@ -1,0 +1,16 @@
+﻿@model ControleFinanceiro.Web.ViewModels.TransacaoViewModel
+
+<div class="card mt-4 fade-in">
+    <div class="card-header">
+        <h5>Excluir Transação</h5>
+    </div>
+    <div class="card-body">
+        <p>Tem certeza que deseja excluir a transação <strong>@Model.Descricao</strong> de R$ @Model.ValorPago.ToString("N2")?</p>
+
+        <form asp-action="Excluir" method="post">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

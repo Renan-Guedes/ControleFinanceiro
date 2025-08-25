@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Transactions;
 
 namespace ControleFinanceiro.Web.Controllers
 {
@@ -35,6 +36,7 @@ namespace ControleFinanceiro.Web.Controllers
 
             var vm = receitas.Select(r => new TransacaoViewModel()
             {
+                Id = r.Id,
                 BancoNome = r.Banco?.Nome ?? "Banco não encontrado",
                 CategoriaNome = r.Categoria?.Nome ?? "Categoria não encontrada",
                 DataTransacao = r.DataTransacao,
@@ -86,6 +88,96 @@ namespace ControleFinanceiro.Web.Controllers
 
             PreencherViewBags(usuarioId);
             return View(viewModel);
+        }
+
+        // GET: /Receita/Detalhes/{id}
+        public IActionResult Detalhes(int receitaId)
+        {
+            var usuarioId = 1; // Trocar pelo usuário autenticado
+
+            var transacao = _transacaoUseCase.BuscarPorId(receitaId, usuarioId);
+            if (transacao == null) return NotFound();
+
+            var vm = new TransacaoViewModel
+            {
+                Id = transacao.Id,
+                BancoNome = transacao.Banco?.Nome ?? "Banco não encontrado",
+                CategoriaNome = transacao.Categoria?.Nome ?? "Categoria não encontrada",
+                Descricao = transacao.Descricao,
+                ValorPlanejado = transacao.ValorPlanejado,
+                ValorPago = transacao.ValorPago,
+                DataTransacao = transacao.DataTransacao,
+                DataVencimento = transacao.DataVencimento
+            };
+
+            return View(vm);
+        }
+
+        // GET: /Receita/Editar/5
+        public IActionResult Editar(int receitaId)
+        {
+            int usuarioId = 1; // Usuário autenticado
+            var transacao = _transacaoUseCase.BuscarPorId(receitaId, usuarioId);
+            if (transacao == null) return NotFound();
+
+            var vm = new TransacaoViewModel
+            {
+                Id = transacao.Id,
+                CategoriaId = transacao.CategoriaId,
+                BancoId = transacao.BancoId,
+                TipoTransacaoId = transacao.TipoTransacaoId,
+                Descricao = transacao.Descricao,
+                ValorPlanejado = transacao.ValorPlanejado,
+                ValorPago = transacao.ValorPago,
+                DataTransacao = transacao.DataTransacao,
+                DataVencimento = transacao.DataVencimento
+            };
+
+            PreencherViewBags(usuarioId);
+            return View(vm);
+        }
+
+        // POST: /Receita/Editar
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Editar(TransacaoViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                PreencherViewBags(1); // usuário
+                return View(vm);
+            }
+
+            var receita = new TransacaoModel
+            {
+                Id = vm.Id,
+                UsuarioId = 1, // Alterar para o usuário autenticado
+                TipoTransacaoId = 1, // Sempre Receita
+                CategoriaId = vm.CategoriaId,
+                BancoId = vm.BancoId,
+                Descricao = vm.Descricao,
+                ValorPlanejado = vm.ValorPlanejado,
+                ValorPago = vm.ValorPago,
+                DataTransacao = vm.DataTransacao
+            };
+
+            _transacaoUseCase.Atualizar(receita);
+
+            return RedirectToAction("Index");
+        }
+
+        // POST: /Receita/Excluir/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Excluir(int receitaId)
+        {
+            var usuarioId = 1; // Trocar pelo usuário autenticado
+
+            var transacao = _transacaoUseCase.BuscarPorId(receitaId, usuarioId);
+            if (transacao == null) return NotFound();
+
+            _transacaoUseCase.Deletar(receitaId, usuarioId);
+            return RedirectToAction("Index");
         }
 
         private void PreencherViewBags(int usuarioId)

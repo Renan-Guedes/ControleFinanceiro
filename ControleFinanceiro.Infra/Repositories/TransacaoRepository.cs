@@ -59,6 +59,8 @@ public class TransacaoRepository : ITransacaoRepository
     public TransacaoModel? BuscarPorId(int transacaoId, int usuarioId)
     {
         return _db.Transacoes
+            .Include(c => c.Categoria)
+            .Include(b => b.Banco)
             .FirstOrDefault(t => t.Id == transacaoId && t.UsuarioId == usuarioId);
     }
 
@@ -72,6 +74,7 @@ public class TransacaoRepository : ITransacaoRepository
             .Include(t => t.TipoTransacao)
             .Include(b => b.Banco)
             .OrderByDescending(t => t.DataTransacao)
+            .ThenByDescending(t => t.DataInclusao)
             .ToList();
     }
 

@@ -1,17 +1,18 @@
 ﻿@model ControleFinanceiro.Web.ViewModels.TransacaoViewModel
 
 @{
-    ViewData["Title"] = "Nova Receita";
+    ViewData["Title"] = "Editar Receita";
 }
 
 <div class="container mt-4">
     <div class="card fade-in">
         <div class="card-header">
-            <h5 class="mb-0">Cadastrar Nova Receita</h5>
+            <h5 class="mb-0">Editar Receita</h5>
         </div>
         <div class="card-body">
-            <form id="formReceita" asp-action="Criar" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <form id="formReceita" asp-action="Editar" method="post">
+                
+                <input type="hidden" asp-for="Id" />
 
                 <div class="mb-3">
                     <label asp-for="CategoriaId" class="form-label">Categoria</label>
@@ -31,7 +32,8 @@
 
                 <div class="mb-3">
                     <label asp-for="Descricao" class="form-label">Descrição</label>
-                    <textarea asp-for="Descricao" class="form-control" aria-label="With textarea"></textarea>
+                    <input asp-for="Descricao" class="form-control" />
+                    <span asp-validation-for="Descricao" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">

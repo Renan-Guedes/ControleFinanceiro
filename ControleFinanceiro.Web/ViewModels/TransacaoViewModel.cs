@@ -22,9 +22,13 @@ public class TransacaoViewModel
     [DisplayName("Valor Planejado")]
     public decimal ValorPlanejado { get; set; }
 
+    public string ValorPlanejadoFormatado => ValorPlanejado.ToString("C2");
+
     [Required()]
     [DisplayName("Valor Pago")]
     public decimal ValorPago { get; set; }
+
+    public string ValorPagoFormatado => ValorPago.ToString("C2");
 
     [Required()]
     [DisplayName("Categoria")]
