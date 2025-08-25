@@ -71,6 +71,7 @@ public class TransacaoRepository : ITransacaoRepository
             .Include(c => c.Categoria)
             .Include(t => t.TipoTransacao)
             .Include(b => b.Banco)
+            .OrderByDescending(t => t.DataTransacao)
             .ToList();
     }
 

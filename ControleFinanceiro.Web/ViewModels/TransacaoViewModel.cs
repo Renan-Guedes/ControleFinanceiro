@@ -1,4 +1,5 @@
 ﻿using ControleFinanceiro.Domain.Models;
+using Microsoft.CodeAnalysis.FlowAnalysis;
 using Microsoft.Extensions.Primitives;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -9,35 +10,35 @@ public class TransacaoViewModel
 {
     public int Id { get; set; }
 
-    [Required(ErrorMessage = "* obrigatório")]
+    [Required()]
     [DisplayName("Descrição")]
     public string Descricao { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "* obrigatório")]
+    [Required()]
     [DisplayName("É uma Fatura?")]
     public bool Fatura { get; set; } = false;
 
-    [Required(ErrorMessage = "* obrigatório")]
+    [Required()]
     [DisplayName("Valor Planejado")]
     public decimal ValorPlanejado { get; set; }
 
-    [Required(ErrorMessage = "* obrigatório")]
+    [Required()]
     [DisplayName("Valor Pago")]
     public decimal ValorPago { get; set; }
 
-    [Required(ErrorMessage = "* obrigatório")]
+    [Required()]
     [DisplayName("Categoria")]
     public int CategoriaId { get; set; }
 
     public string CategoriaNome { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "* obrigatório")]
+    [Required()]
     [DisplayName("Banco")]
     public int BancoId { get; set; }
 
     public string BancoNome { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "* obrigatório")]
+    [Required()]
     [DisplayName("Tipo de Transação")]
     public int TipoTransacaoId { get; set; }
 
@@ -48,7 +49,7 @@ public class TransacaoViewModel
 
     public string DataVencimentoFormatada => DataVencimento.HasValue ? DataVencimento.Value.ToString("dd/MM/yyyy") : string.Empty;
 
-    [Required(ErrorMessage = "* obrigatório")]
+    [Required()]
     [DisplayName("Data da Transação")]
     public DateTime DataTransacao { get; set; } = DateTime.Now;
 

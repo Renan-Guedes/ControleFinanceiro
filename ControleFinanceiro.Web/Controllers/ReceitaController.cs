@@ -6,6 +6,7 @@ using ControleFinanceiro.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ControleFinanceiro.Web.Controllers
 {
@@ -83,7 +84,6 @@ namespace ControleFinanceiro.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Se cair aqui, houve erro de validação -> precisa repopular combos
             PreencherViewBags(usuarioId);
             return View(viewModel);
         }
