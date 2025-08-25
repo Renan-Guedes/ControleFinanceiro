@@ -4,29 +4,9 @@ let currentModalType = '';
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', function () {
-    initializeApp();
+    //initializeApp();
     loadCharts();
 });
-
-function initializeApp() {
-    // Set current date
-    //document.getElementById('date').value = new Date().toISOString().split('T')[0];
-
-    // Add navigation listeners
-    document.querySelectorAll('.sidebar-item').forEach(item => {
-        item.addEventListener('click', function (e) {
-            e.preventDefault();
-            const page = this.getAttribute('data-page');
-            if (page) {
-                navigateTo(page);
-
-                // Update active state
-                document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-            }
-        });
-    });
-}
 
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');

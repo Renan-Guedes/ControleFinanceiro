@@ -28,6 +28,9 @@ public class TransacaoUseCase : ITransacaoUseCase
     public TransacaoModel BuscarPorId(int transacaoId, int usuarioId)
         => _transacaoRepository.BuscarPorId(transacaoId, usuarioId);
 
+    public List<TransacaoModel> ListarTodasAsReceitas(int usuarioId)
+        => _transacaoRepository.ListarTodasAsReceitas(usuarioId);
+
     public decimal ObterTotalReceitas(int usuarioId)
         => _transacaoRepository.ObterTotalReceitas(usuarioId);
 

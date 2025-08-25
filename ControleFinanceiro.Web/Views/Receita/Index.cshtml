@@ -1,0 +1,65 @@
+﻿@model IEnumerable<ControleFinanceiro.Web.ViewModels.TransacaoViewModel>
+
+@{
+    ViewData["Title"] = "Receitas";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fade-in">Minhas Receitas</h2>
+        <a href="@Url.Action("Criar", "Receita")" class="btn btn-primary fade-in">
+            <i class="bi bi-plus-circle"></i> Nova Receita
+        </a>
+    </div>
+
+    <div class="card fade-in">
+        <div class="card-body">
+            @if (Model == null || !Model.Any())
+            {
+                <div class="alert alert-info text-center">
+                    Nenhuma receita cadastrada ainda.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Categoria</th>
+                                <th>Banco</th>
+                                <th>Valor Planejado</th>
+                                <th>Valor Recebido</th>
+                                <th>Data do Recebimento</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var receita in Model)
+                            {
+                                <tr>
+                                    <td>@receita.CategoriaNome</td>
+                                    <td>@receita.BancoNome</td>
+                                    <td class="text-success">R$ @receita.ValorPlanejado.ToString("N2")</td>
+                                    <td class="text-success">R$ @receita.ValorPago.ToString("N2")</td>
+                                    <td>@receita.DataTransacaoFormatada</td>
+                                    <td class="text-end">
+                                        <a href="@Url.Action("Details", "Receitas", new { id = receita.Id })" class="btn btn-sm btn-outline-secondary">
+                                            Detalhes
+                                        </a>
+                                        <a href="@Url.Action("Edit", "Receitas", new { id = receita.Id })" class="btn btn-sm btn-outline-warning">
+                                            Editar
+                                        </a>
+                                        <a href="@Url.Action("Delete", "Receitas", new { id = receita.Id })" class="btn btn-sm btn-outline-danger">
+                                            Excluir
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

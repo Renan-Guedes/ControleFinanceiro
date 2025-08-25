@@ -19,7 +19,6 @@ public class TransacaoViewModel
 
     [Required(ErrorMessage = "* obrigatório")]
     [DisplayName("Valor Planejado")]
-
     public decimal ValorPlanejado { get; set; }
 
     [Required(ErrorMessage = "* obrigatório")]

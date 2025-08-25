@@ -14,6 +14,8 @@ public interface ITransacaoRepository
     
     void Deletar(int transacaoId, int usuarioid);
 
+    List<TransacaoModel> ListarTodasAsReceitas(int usuarioId);
+
     decimal ObterTotalReceitas(int usuarioId);
 
     decimal ObterTotalDespesas(int usuarioId);

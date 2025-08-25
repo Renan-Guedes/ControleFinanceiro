@@ -62,12 +62,26 @@ public class TransacaoRepository : ITransacaoRepository
             .FirstOrDefault(t => t.Id == transacaoId && t.UsuarioId == usuarioId);
     }
 
+    #region Receitas
+
+    public List<TransacaoModel> ListarTodasAsReceitas(int usuarioId)
+    {
+        return _db.Transacoes
+            .Where(t => t.DataExclusao == null && t.UsuarioId == usuarioId && t.TipoTransacaoId == 1)
+            .Include(c => c.Categoria)
+            .Include(t => t.TipoTransacao)
+            .Include(b => b.Banco)
+            .ToList();
+    }
+
     public decimal ObterTotalReceitas(int usuarioId)
     {
         return _db.Transacoes
             .Where(t => t.DataExclusao == null && t.UsuarioId == usuarioId && t.TipoTransacaoId == 1)
             .Sum(t => t.ValorPago);
     }
+
+    #endregion
 
     public decimal ObterTotalDespesas(int usuarioId)
     {
