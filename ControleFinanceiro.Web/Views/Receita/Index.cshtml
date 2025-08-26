@@ -74,22 +74,46 @@
         document.querySelectorAll('.botao-Excluir').forEach(function (botao) {
             botao.addEventListener('click', function (e) {
                 e.preventDefault();
-                const receitaId = botao.getAttribute('data-receita-id')
+                const receitaId = botao.getAttribute('data-receita-id');
 
-                swal({
-                    title: "Confirmação de Exclusão",
+                Swal.fire({
+                    title: 'Confirmação de Exclusão',
                     text: "Tem certeza que deseja excluir esta receita? Esta ação não pode ser desfeita.",
-                    icon: "warning",
-                    buttons: ["Cancelar", "Excluir"],
-                    dangerMode: true,
-                })
-                .then((confirmado) => {
-                    if (confirmado) {
-                        document.getElementById("receitaIdExcluir").value = receitaId;
-                        document.getElementById("form-excluir").submit();
-                    } else {
-                        swal("A exclusão foi cancelada.", {
-                            icon: "info",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Excluir',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Excluindo...',
+                            text: 'Aguarde um momento.',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        fetch('/Receita/Excluir', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                            },
+                            body: JSON.stringify(receitaId)
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                Swal.fire('Excluída!', 'A receita foi excluída com sucesso.', 'success');
+                                botao.closest('tr').remove();
+                            } else {
+                                Swal.fire('Erro!', 'Ocorreu um problema ao excluir.', 'error');
+                            }
+                        })
+                        .catch(() => {
+                            Swal.fire('Erro!', 'Não foi possível conectar ao servidor.', 'error');
                         });
                     }
                 });
@@ -97,3 +121,5 @@
         });
     </script>
 }
+
+

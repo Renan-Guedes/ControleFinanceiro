@@ -169,15 +169,16 @@ namespace ControleFinanceiro.Web.Controllers
         // POST: /Receita/Excluir/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Excluir(int receitaId)
+        public IActionResult Excluir([FromBody] int receitaId)
         {
             var usuarioId = 1; // Trocar pelo usuário autenticado
 
             var transacao = _transacaoUseCase.BuscarPorId(receitaId, usuarioId);
-            if (transacao == null) return NotFound();
+            if (transacao == null)
+                return NotFound(new { mensagem = "Receita não encontrada." });
 
             _transacaoUseCase.Deletar(receitaId, usuarioId);
-            return RedirectToAction("Index");
+            return Ok(new { mensagem = "Receita excluída com sucesso." });
         }
 
         private void PreencherViewBags(int usuarioId)
