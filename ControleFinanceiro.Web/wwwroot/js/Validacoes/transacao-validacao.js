@@ -5,7 +5,6 @@
         { id: "BancoId", cond: (v) => v && v !== "0", msg: "Escolha um banco." },
         { id: "Descricao", cond: (v) => v && v.trim() !== "", msg: "Informe uma descrição." },
         { id: "ValorPlanejado", cond: (v) => v && parseFloat(v) > 0, msg: "Digite um valor maior que 0." },
-        { id: "ValorRecebido", cond: (v) => v && parseFloat(v) > 0, msg: "Digite um valor maior que 0." }
     ];
 
     // Função para validar e exibir mensagem
@@ -45,7 +44,7 @@
     });
 
     // Validação geral no submit
-    const form = document.getElementById("formReceita");
+    const form = document.getElementById("formTransacao");
     form.addEventListener("submit", function (e) {
         let valido = true;
         regras.forEach(r => {

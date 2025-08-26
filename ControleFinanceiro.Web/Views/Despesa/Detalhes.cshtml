@@ -13,7 +13,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="BancoId" class="form-label">Categoria</label>
+                    <label asp-for="BancoId" class="form-label">Banco</label>
                     <input asp-for="BancoNome" class="form-control" readonly />
                 </div>
 
@@ -30,6 +30,11 @@
                 <div class="mb-3">
                     <label asp-for="ValorPago" class="form-label">Valor Recebido</label>
                     <input asp-for="ValorPago" class="form-control" type="number" readonly />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="DataVencimento" class="form-label">Data do Vencimento</label>
+                    <input asp-for="DataVencimento" class="form-control" type="date" readonly/>
                 </div>
 
                 <div class="mb-3">

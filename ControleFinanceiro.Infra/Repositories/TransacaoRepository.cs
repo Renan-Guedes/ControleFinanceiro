@@ -82,15 +82,31 @@ public class TransacaoRepository : ITransacaoRepository
     {
         return _db.Transacoes
             .Where(t => t.DataExclusao == null && t.UsuarioId == usuarioId && t.TipoTransacaoId == 1)
-            .Sum(t => t.ValorPago);
+            .Sum(t => t.ValorPago) ?? 0;
     }
 
     #endregion
+
+    #region Despesas
+    
+    public List<TransacaoModel> ListarTodasAsDespesas(int usuarioId)
+    {
+        return _db.Transacoes
+            .Where(t => t.DataExclusao == null && t.UsuarioId == usuarioId && t.TipoTransacaoId == 2)
+            .Include(c => c.Categoria)
+            .Include(t => t.TipoTransacao)
+            .Include(b => b.Banco)
+            .OrderByDescending(t => t.DataTransacao)
+            .ThenByDescending(t => t.DataInclusao)
+            .ToList();
+    }
 
     public decimal ObterTotalDespesas(int usuarioId)
     {
         return _db.Transacoes
             .Where(t => t.DataExclusao == null && t.UsuarioId == usuarioId && t.TipoTransacaoId == 2)
-            .Sum(t => t.ValorPago);
+            .Sum(t => t.ValorPago) ?? 0;
     }
+
+    #endregion
 }

@@ -1,16 +1,16 @@
 ﻿@model ControleFinanceiro.Web.ViewModels.TransacaoViewModel
 
 @{
-    ViewData["Title"] = "Editar Receita";
+    ViewData["Title"] = "Nova Despesa";
 }
 
 <div class="container mt-4">
     <div class="card fade-in">
         <div class="card-header">
-            <h5 class="mb-0">Editar Receita</h5>
+            <h5 class="mb-0">Cadastrar Nova Despesa</h5>
         </div>
         <div class="card-body">
-            <form id="formTransacao" asp-action="Editar" method="post">
+            <form id="formTransacao" asp-action="Criar" method="post">
                 
                 <input type="hidden" asp-for="Id" />
 
@@ -19,7 +19,6 @@
                     <select asp-for="CategoriaId" class="form-select" asp-items="ViewBag.Categorias">
                         <option value="0">-- Selecione --</option>
                     </select>
-                    <span asp-validation-for="CategoriaId" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
@@ -27,31 +26,31 @@
                     <select asp-for="BancoId" class="form-select" asp-items="ViewBag.Bancos">
                         <option value="0">-- Selecione --</option>
                     </select>
-                    <span asp-validation-for="BancoId" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label asp-for="Descricao" class="form-label">Descrição</label>
-                    <input asp-for="Descricao" class="form-control" />
-                    <span asp-validation-for="Descricao" class="text-danger"></span>
+                    <textarea asp-for="Descricao" class="form-control" aria-label="With textarea"></textarea>
                 </div>
 
                 <div class="mb-3">
                     <label asp-for="ValorPlanejado" class="form-label">Valor Planejado</label>
                     <input asp-for="ValorPlanejado" class="form-control" type="number" step="0.01" />
-                    <span asp-validation-for="ValorPlanejado" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="ValorPago" class="form-label">Valor Recebido</label>
-                    <input id="ValorRecebido" asp-for="ValorPago" class="form-control" type="number" step="0.01" />
-                    <span asp-validation-for="ValorPago" class="text-danger"></span>
+                    <label asp-for="ValorPago" class="form-label">Valor Pago</label>
+                    <input asp-for="ValorPago" class="form-control" type="number" step="0.01" />
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="DataTransacao" class="form-label">Data do Recebimento</label>
+                    <label asp-for="DataVencimento" class="form-label">Data do Vencimento</label>
+                    <input asp-for="DataVencimento" class="form-control" type="date" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="DataTransacao" class="form-label">Data do Pagamento</label>
                     <input asp-for="DataTransacao" class="form-control" type="date" />
-                    <span asp-validation-for="DataTransacao" class="text-danger"></span>
                 </div>
 
                 <div class="d-flex justify-content-between">
@@ -64,5 +63,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/Validacoes/receita-validacao.js"></script>
+    <script src="~/js/Validacoes/transacao-validacao.js"></script>
 }

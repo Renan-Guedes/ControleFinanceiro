@@ -99,9 +99,9 @@
                                         </span>
                                     </td>
                                     <td class="@(transacao.TipoTransacaoNome == "Receita" ? "text-success" : "text-danger")">
-                                        R$ @transacao.ValorPago.ToString("N2")
+                                        R$ @transacao.ValorPagoFormatado
                                     </td>
-                                    <td>@transacao.DataTransacao.ToString("dd/MM/yyyy")</td>
+                                    <td>@transacao.DataTransacaoFormatada</td>
                                     <td>
                                         <a href="@Url.Action("Detalhes", "Transacoes", new { id = transacao.Id })" class="btn btn-sm btn-outline-secondary">
                                             Detalhes

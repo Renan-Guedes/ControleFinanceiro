@@ -1,24 +1,20 @@
 ﻿using ControleFinanceiro.Application.Interfaces;
-using ControleFinanceiro.Application.UseCase;
 using ControleFinanceiro.Domain.Interfaces;
 using ControleFinanceiro.Domain.Models;
 using ControleFinanceiro.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Transactions;
 
 namespace ControleFinanceiro.Web.Controllers
 {
-    public class ReceitaController : Controller
+    public class DespesaController : Controller
     {
         private readonly ITransacaoUseCase _transacaoUseCase;
         private readonly ICategoriaUseCase _categoriaUseCase;
         private readonly ITipoTransacaoUseCase _tipoTransacaoUseCase;
         private readonly IBancoUseCase _bancoUseCase;
 
-        public ReceitaController(ITransacaoUseCase transacaoUseCase, ICategoriaUseCase categoriaUseCase, ITipoTransacaoUseCase tipoTransacaoUseCase, IBancoUseCase bancoUseCase)
+        public DespesaController(ITransacaoUseCase transacaoUseCase, ICategoriaUseCase categoriaUseCase, ITipoTransacaoUseCase tipoTransacaoUseCase, IBancoUseCase bancoUseCase)
         {
             _transacaoUseCase = transacaoUseCase;
             _categoriaUseCase = categoriaUseCase;
@@ -27,14 +23,14 @@ namespace ControleFinanceiro.Web.Controllers
         }
 
 
-        // GET: /Receita
+        // GET: /Despesa
         public IActionResult Index()
         {
             int usuarioId = 1; // Trocar pelo usuário autenticado
 
-            var receitas = _transacaoUseCase.ListarTodasAsReceitas(usuarioId);
+            var despesas = _transacaoUseCase.ListarTodasAsDespesas(usuarioId);
 
-            var vm = receitas.Select(r => new TransacaoViewModel()
+            var vm = despesas.Select(r => new TransacaoViewModel()
             {
                 Id = r.Id,
                 BancoNome = r.Banco?.Nome ?? "Banco não encontrado",
@@ -50,7 +46,7 @@ namespace ControleFinanceiro.Web.Controllers
             return View(vm);
         }
 
-        //GET: /Receita/Criar
+        //GET: /Despesa/Criar
         public IActionResult Criar()
         {
             int usuarioId = 1; // Substituir pelo usuário autenticado
@@ -59,7 +55,7 @@ namespace ControleFinanceiro.Web.Controllers
             return View(new TransacaoViewModel());
         }
 
-        // POST: /Receita/Criar
+        // POST: /Despesa/Criar
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Criar(TransacaoViewModel viewModel)
@@ -68,20 +64,21 @@ namespace ControleFinanceiro.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                var receita = new TransacaoModel
+                var despesa = new TransacaoModel
                 {
                     CategoriaId = viewModel.CategoriaId,
-                    TipoTransacaoId = 1, // Já cadastra como Receita
+                    TipoTransacaoId = 2, // Sempre Despesa
                     BancoId = viewModel.BancoId,
                     UsuarioId = usuarioId,
                     Descricao = viewModel.Descricao,
-                    Fatura = false,
+                    Fatura = viewModel.Fatura,
+                    DataVencimento = viewModel.DataVencimento,
                     ValorPlanejado = viewModel.ValorPlanejado,
                     ValorPago = viewModel.ValorPago,
                     DataTransacao = viewModel.DataTransacao
                 };
 
-                _transacaoUseCase.Criar(receita);
+                _transacaoUseCase.Criar(despesa);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -90,12 +87,12 @@ namespace ControleFinanceiro.Web.Controllers
             return View(viewModel);
         }
 
-        // GET: /Receita/Detalhes/{id}
-        public IActionResult Detalhes(int receitaId)
+        // GET: /Despesa/Detalhes/{despesaId}
+        public IActionResult Detalhes(int despesaId)
         {
             var usuarioId = 1; // Trocar pelo usuário autenticado
 
-            var transacao = _transacaoUseCase.BuscarPorId(receitaId, usuarioId);
+            var transacao = _transacaoUseCase.BuscarPorId(despesaId, usuarioId);
             if (transacao == null) return NotFound();
 
             var vm = new TransacaoViewModel
@@ -113,11 +110,11 @@ namespace ControleFinanceiro.Web.Controllers
             return View(vm);
         }
 
-        // GET: /Receita/Editar/5
-        public IActionResult Editar(int receitaId)
+        // GET: /Despesa/Editar/{despesaId}
+        public IActionResult Editar(int despesaId)
         {
             int usuarioId = 1; // Usuário autenticado
-            var transacao = _transacaoUseCase.BuscarPorId(receitaId, usuarioId);
+            var transacao = _transacaoUseCase.BuscarPorId(despesaId, usuarioId);
             if (transacao == null) return NotFound();
 
             var vm = new TransacaoViewModel
@@ -137,7 +134,7 @@ namespace ControleFinanceiro.Web.Controllers
             return View(vm);
         }
 
-        // POST: /Receita/Editar
+        // POST: /Despesa/Editar
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Editar(TransacaoViewModel vm)
@@ -148,11 +145,11 @@ namespace ControleFinanceiro.Web.Controllers
                 return View(vm);
             }
 
-            var receita = new TransacaoModel
+            var despesa = new TransacaoModel
             {
                 Id = vm.Id,
                 UsuarioId = 1, // Alterar para o usuário autenticado
-                TipoTransacaoId = 1, // Sempre Receita
+                TipoTransacaoId = 2, // Sempre Despesa
                 CategoriaId = vm.CategoriaId,
                 BancoId = vm.BancoId,
                 Descricao = vm.Descricao,
@@ -161,24 +158,24 @@ namespace ControleFinanceiro.Web.Controllers
                 DataTransacao = vm.DataTransacao
             };
 
-            _transacaoUseCase.Atualizar(receita);
+            _transacaoUseCase.Atualizar(despesa);
 
             return RedirectToAction("Index");
         }
 
-        // POST: /Receita/Excluir/5
+        // POST: /Despesa/Excluir/{despesaId}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Excluir([FromBody] int receitaId)
+        public IActionResult Excluir([FromBody] int despesaId)
         {
             var usuarioId = 1; // Trocar pelo usuário autenticado
 
-            var transacao = _transacaoUseCase.BuscarPorId(receitaId, usuarioId);
+            var transacao = _transacaoUseCase.BuscarPorId(despesaId, usuarioId);
             if (transacao == null)
-                return NotFound(new { mensagem = "Receita não encontrada." });
+                return NotFound(new { mensagem = "Despesa não encontrada." });
 
-            _transacaoUseCase.Deletar(receitaId, usuarioId);
-            return Ok(new { mensagem = "Receita excluída com sucesso." });
+            _transacaoUseCase.Deletar(despesaId, usuarioId);
+            return Ok(new { mensagem = "Despesa excluída com sucesso." });
         }
 
         private void PreencherViewBags(int usuarioId)

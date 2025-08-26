@@ -24,11 +24,10 @@ public class TransacaoViewModel
 
     public string ValorPlanejadoFormatado => ValorPlanejado.ToString("C2");
 
-    [Required()]
     [DisplayName("Valor Pago")]
-    public decimal ValorPago { get; set; }
+    public decimal? ValorPago { get; set; }
 
-    public string ValorPagoFormatado => ValorPago.ToString("C2");
+    public string? ValorPagoFormatado => ValorPago?.ToString("C2");
 
     [Required()]
     [DisplayName("Categoria")]
@@ -51,11 +50,10 @@ public class TransacaoViewModel
     [DisplayName("Data de Vencimento")]
     public DateTime? DataVencimento { get; set; }
 
-    public string DataVencimentoFormatada => DataVencimento.HasValue ? DataVencimento.Value.ToString("dd/MM/yyyy") : string.Empty;
+    public string DataVencimentoFormatada => DataVencimento.HasValue ? DataVencimento.Value.ToString("dd/MM/yyyy") : "-";
 
-    [Required()]
     [DisplayName("Data da Transação")]
-    public DateTime DataTransacao { get; set; } = DateTime.Now;
+    public DateTime? DataTransacao { get; set; } = null;
 
-    public string DataTransacaoFormatada => DataTransacao.ToString("dd/MM/yyyy");
+    public string? DataTransacaoFormatada => DataTransacao?.ToString("dd/MM/yyyy") ?? "-";
 }

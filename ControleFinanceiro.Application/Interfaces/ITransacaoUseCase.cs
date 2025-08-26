@@ -16,6 +16,8 @@ public interface ITransacaoUseCase
 
     List<TransacaoModel> ListarTodasAsReceitas(int usuarioId);
 
+    List<TransacaoModel> ListarTodasAsDespesas(int usuarioId);
+
     decimal ObterTotalReceitas(int usuarioId);
 
     decimal ObterTotalDespesas(int usuarioId);

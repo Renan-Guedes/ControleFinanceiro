@@ -10,7 +10,7 @@
             <h5 class="mb-0">Cadastrar Nova Receita</h5>
         </div>
         <div class="card-body">
-            <form id="formReceita" asp-action="Criar" method="post">
+            <form id="formTransacao" asp-action="Criar" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <div class="mb-3">
@@ -42,7 +42,7 @@
 
                 <div class="mb-3">
                     <label asp-for="ValorPago" class="form-label">Valor Recebido</label>
-                    <input id="ValorRecebido" asp-for="ValorPago" class="form-control" type="number" step="0.01" />
+                    <input asp-for="ValorPago" class="form-control" type="number" step="0.01" />
                     <span asp-validation-for="ValorPago" class="text-danger"></span>
                 </div>
 
@@ -62,5 +62,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/Validacoes/receita-validacao.js"></script>
+    <script src="~/js/Validacoes/transacao-validacao.js"></script>
 }

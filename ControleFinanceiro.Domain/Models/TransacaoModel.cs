@@ -26,15 +26,15 @@ public class TransacaoModel
 
     public string Descricao { get; set; } = string.Empty;
 
-    public bool Fatura { get; set; }
+    public bool Fatura { get; set; } = false;
 
     public decimal ValorPlanejado { get; set; }
 
-    public decimal ValorPago { get; set; }
+    public decimal? ValorPago { get; set; } = null;
 
-    public DateTime? DataVencimento { get; set; }
+    public DateTime? DataVencimento { get; set; } = null;
 
-    public DateTime DataTransacao { get; set; }
+    public DateTime? DataTransacao { get; set; } = null;
 
     public DateTime DataInclusao { get; set; } = DateTime.Now;
     

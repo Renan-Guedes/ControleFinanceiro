@@ -36,4 +36,7 @@ public class TransacaoUseCase : ITransacaoUseCase
 
     public decimal ObterTotalDespesas(int usuarioId)
         => _transacaoRepository.ObterTotalDespesas(usuarioId);
+
+    public List<TransacaoModel> ListarTodasAsDespesas(int usuarioId)
+        => _transacaoRepository.ListarTodasAsDespesas(usuarioId);
 }

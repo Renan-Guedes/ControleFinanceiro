@@ -1,14 +1,14 @@
 ﻿@model IEnumerable<ControleFinanceiro.Web.ViewModels.TransacaoViewModel>
 
 @{
-    ViewData["Title"] = "Receitas";
+    ViewData["Title"] = "Despesas";
 }
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fade-in">Minhas Receitas</h2>
-        <a href="@Url.Action("Criar", "Receita")" class="btn btn-primary fade-in">
-            <i class="bi bi-plus-circle"></i> Nova Receita
+        <h2 class="fade-in">Minhas Despesas</h2>
+        <a href="@Url.Action("Criar", "Despesa")" class="btn btn-primary fade-in">
+            <i class="bi bi-plus-circle"></i> Nova Despesa
         </a>
     </div>
 
@@ -17,40 +17,41 @@
             @if (Model == null || !Model.Any())
             {
                 <div class="alert alert-info text-center">
-                    Nenhuma receita cadastrada ainda.
+                    Nenhuma despesa cadastrada ainda.
                 </div>
             }
             else
             {
                 <div class="table-responsive">
                     <table class="table align-middle">
-                        <thead>
-                            <tr class="text-center">
+                        <thead class="text-center">
+                            <tr>
                                 <th>Categoria</th>
                                 <th>Banco</th>
                                 <th>Valor Planejado</th>
-                                <th>Valor Recebido</th>
-                                <th>Data do Recebimento</th>
-                                <th></th>
+                                <th>Valor Pago</th>
+                                <th>Data do Pagamento</th>
+                                <th>Data do Vencimento</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var receita in Model)
+                            @foreach (var despesa in Model)
                             {
                                 <tr class="text-center">
-                                    <td>@receita.CategoriaNome</td>
-                                    <td>@receita.BancoNome</td>
-                                    <td class="text-success">@receita.ValorPlanejadoFormatado</td>
-                                    <td class="text-success">@receita.ValorPagoFormatado</td>
-                                    <td>@receita.DataTransacaoFormatada</td>
+                                    <td>@despesa.CategoriaNome</td>
+                                    <td>@despesa.BancoNome</td>
+                                    <td class="text-danger">@despesa.ValorPlanejadoFormatado</td>
+                                    <td class="text-danger">@despesa.ValorPagoFormatado</td>
+                                    <td>@despesa.DataTransacaoFormatada</td>
+                                    <td>@despesa.DataVencimentoFormatada</td>
                                     <td class="text-end">
-                                        <a asp-action="Detalhes" asp-route-receitaId="@receita.Id" class="btn btn-sm btn-outline-secondary">
+                                        <a asp-action="Detalhes" asp-route-despesaId="@despesa.Id" class="btn btn-sm btn-outline-secondary">
                                             Detalhes
                                         </a>
-                                        <a asp-action="Editar" asp-route-receitaId="@receita.Id" class="btn btn-sm btn-outline-warning">
+                                        <a asp-action="Editar" asp-route-despesaId="@despesa.Id" class="btn btn-sm btn-outline-warning">
                                             Editar
                                         </a>
-                                        <a href="#" data-receita-id="@receita.Id" class="botao-Excluir btn btn-sm btn-outline-danger">
+                                        <a href="#" data-despesa-id="@despesa.Id" class="botao-Excluir btn btn-sm btn-outline-danger">
                                             Excluir
                                         </a>
                                     </td>
@@ -64,9 +65,9 @@
     </div>
 </div>
 
-<form id="form-excluir" method="post" asp-action="Excluir" asp-controller="Receita">
+<form id="form-excluir" method="post" asp-action="Excluir" asp-controller="Despesa">
     @Html.AntiForgeryToken()
-    <input type="hidden" name="receitaId" id="receitaIdExcluir" />
+    <input type="hidden" name="despesaId" id="despesaIdExcluir" />
 </form>
 
 @section Scripts {
@@ -74,11 +75,11 @@
         document.querySelectorAll('.botao-Excluir').forEach(function (botao) {
             botao.addEventListener('click', function (e) {
                 e.preventDefault();
-                const receitaId = botao.getAttribute('data-receita-id');
+                const despesaId = botao.getAttribute('data-despesa-id');
 
                 Swal.fire({
                     title: 'Confirmação de Exclusão',
-                    text: "Tem certeza que deseja excluir esta receita? Esta ação não pode ser desfeita.",
+                    text: "Tem certeza que deseja excluir esta despesa? Esta ação não pode ser desfeita.",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
@@ -96,17 +97,17 @@
                             }
                         });
 
-                        fetch('/Receita/Excluir', {
+                        fetch('/Despesa/Excluir', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
                             },
-                            body: JSON.stringify(receitaId)
+                            body: JSON.stringify(despesaId)
                         })
                         .then(response => {
                             if (response.ok) {
-                                Swal.fire('Excluída!', 'A receita foi excluída com sucesso.', 'success');
+                                Swal.fire('Excluída!', 'A despesa foi excluída com sucesso.', 'success');
                                 botao.closest('tr').remove();
                             } else {
                                 Swal.fire('Erro!', 'Ocorreu um problema ao excluir.', 'error');
@@ -121,5 +122,3 @@
         });
     </script>
 }
-
-

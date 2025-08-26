@@ -16,10 +16,10 @@
     <dd class="col-sm-9">@Model.TipoTransacaoId</dd>
 
     <dt class="col-sm-3">Valor Pago</dt>
-    <dd class="col-sm-9">@Model.ValorPago.ToString("C")</dd>
+    <dd class="col-sm-9">@Model.ValorPagoFormatado</dd>
 
     <dt class="col-sm-3">Data</dt>
-    <dd class="col-sm-9">@Model.DataTransacao.ToShortDateString()</dd>
+    <dd class="col-sm-9">@Model.DataTransacaoFormatada</dd>
 </dl>
 
 <form asp-action="Deletar" asp-route-transacaoId="@Model.Id" method="post">
