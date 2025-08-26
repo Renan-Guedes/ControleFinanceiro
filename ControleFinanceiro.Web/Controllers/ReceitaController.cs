@@ -104,8 +104,8 @@ namespace ControleFinanceiro.Web.Controllers
                 BancoNome = transacao.Banco?.Nome ?? "Banco não encontrado",
                 CategoriaNome = transacao.Categoria?.Nome ?? "Categoria não encontrada",
                 Descricao = transacao.Descricao,
-                ValorPlanejado = transacao.ValorPlanejado,
-                ValorPago = transacao.ValorPago,
+                ValorPlanejado = Math.Round(transacao.ValorPlanejado, 2),
+                ValorPago = Math.Round(transacao.ValorPago, 2),
                 DataTransacao = transacao.DataTransacao,
                 DataVencimento = transacao.DataVencimento
             };
@@ -127,8 +127,8 @@ namespace ControleFinanceiro.Web.Controllers
                 BancoId = transacao.BancoId,
                 TipoTransacaoId = transacao.TipoTransacaoId,
                 Descricao = transacao.Descricao,
-                ValorPlanejado = transacao.ValorPlanejado,
-                ValorPago = transacao.ValorPago,
+                ValorPlanejado = Math.Round(transacao.ValorPlanejado, 2),
+                ValorPago = Math.Round(transacao.ValorPago, 2),
                 DataTransacao = transacao.DataTransacao,
                 DataVencimento = transacao.DataVencimento
             };
@@ -156,8 +156,8 @@ namespace ControleFinanceiro.Web.Controllers
                 CategoriaId = vm.CategoriaId,
                 BancoId = vm.BancoId,
                 Descricao = vm.Descricao,
-                ValorPlanejado = vm.ValorPlanejado,
-                ValorPago = vm.ValorPago,
+                ValorPlanejado = Math.Round(vm.ValorPlanejado, 2),
+                ValorPago = Math.Round(vm.ValorPago, 2),
                 DataTransacao = vm.DataTransacao
             };
 
