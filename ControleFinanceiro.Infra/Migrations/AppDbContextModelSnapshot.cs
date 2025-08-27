@@ -86,10 +86,15 @@ namespace ControleFinanceiro.Infra.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
+                    b.Property<int>("TipoTransacaoId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TipoTransacaoId");
 
                     b.HasIndex("UsuarioId");
 
@@ -355,11 +360,19 @@ namespace ControleFinanceiro.Infra.Migrations
 
             modelBuilder.Entity("ControleFinanceiro.Domain.Models.CategoriaModel", b =>
                 {
+                    b.HasOne("ControleFinanceiro.Domain.Models.TipoTransacaoModel", "TipoTransacao")
+                        .WithMany("Categorias")
+                        .HasForeignKey("TipoTransacaoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("ControleFinanceiro.Domain.Models.UsuarioModel", "Usuario")
                         .WithMany("Categorias")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("TipoTransacao");
 
                     b.Navigation("Usuario");
                 });
@@ -478,6 +491,8 @@ namespace ControleFinanceiro.Infra.Migrations
 
             modelBuilder.Entity("ControleFinanceiro.Domain.Models.TipoTransacaoModel", b =>
                 {
+                    b.Navigation("Categorias");
+
                     b.Navigation("GastosFixos");
 
                     b.Navigation("Transacoes");

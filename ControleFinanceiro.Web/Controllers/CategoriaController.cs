@@ -2,6 +2,8 @@
 using ControleFinanceiro.Domain.Models;
 using ControleFinanceiro.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace ControleFinanceiro.Web.Controllers
 {
@@ -18,13 +20,12 @@ namespace ControleFinanceiro.Web.Controllers
         {
             int usuarioId = 1; // Substitua pelo ID do usuário autenticado
 
-            var categorias = _categoriaUseCase
-                .ListarTodos(usuarioId)
-                .ToList();
+            var categorias = _categoriaUseCase.ListarTodos(usuarioId);
 
             var vm = categorias.Select(c => new CategoriaViewModel
             {
                 Id = c.Id,
+                TipoTransacaoId = c.TipoTransacaoId,
                 Nome = c.Nome,
                 Ativo = c.Ativo,
             }).ToList();
@@ -53,7 +54,8 @@ namespace ControleFinanceiro.Web.Controllers
                 {
                     Nome = vm.Nome,
                     UsuarioId = usuarioId,
-                    Ativo = vm.Ativo
+                    Ativo = true, // Sempre cria ativo
+                    TipoTransacaoId = vm.TipoTransacaoId
                 };
 
                 _categoriaUseCase.Criar(novaCategoria);
@@ -76,13 +78,20 @@ namespace ControleFinanceiro.Web.Controllers
 
             if (categoria == null)
                 return NotFound();
-            
+
             var vm = new CategoriaViewModel
             {
                 Id = categoria.Id,
+                TipoTransacaoId = categoria.TipoTransacaoId,
                 Nome = categoria.Nome,
-                Ativo = categoria.Ativo,
+                Ativo = categoria.Ativo
             };
+            
+            ViewBag.Ativos = new SelectList(new[]
+            {
+                new { Value = true, Text = "Ativo" },
+                new { Value = false, Text = "Inativo" }
+            }, "Value", "Text", categoria.Ativo);
 
             return View(vm);
         }
@@ -107,6 +116,7 @@ namespace ControleFinanceiro.Web.Controllers
 
                 categoria.Nome = vm.Nome;
                 categoria.Ativo = vm.Ativo;
+                categoria.TipoTransacaoId = vm.TipoTransacaoId;
 
                 _categoriaUseCase.Atualizar(categoria);
 
@@ -119,51 +129,19 @@ namespace ControleFinanceiro.Web.Controllers
             }
         }
 
-        // GET: /Categoria/Deletar/{id}
-        public IActionResult Deletar(int categoriaId)
-        {
-            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
-
-            var categoria = _categoriaUseCase
-                .BuscarPorId(categoriaId, usuarioId);
-
-            if (categoria is null)
-                return NotFound();
-
-            var vm = new CategoriaViewModel
-            {
-                Id = categoria.Id,
-                Nome = categoria.Nome,
-                Ativo = categoria.Ativo
-            };
-
-            return View(vm);
-        }
-
-        // POST: /Categoria/Deletar/{id}
-        [HttpPost, ActionName("Deletar")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmarDeletar(int categoriaId)
+        public IActionResult Excluir([FromBody] int categoriaId)
         {
             int usuarioId = 1; // Substitua pelo ID do usuário autenticado
 
-            try
-            {
-                var categoria = _categoriaUseCase
-                    .BuscarPorId(categoriaId, usuarioId);
+            var categoria = _categoriaUseCase.BuscarPorId(categoriaId, usuarioId);
 
-                if (categoria is null)
-                    return NotFound();
+            if (categoria == null) 
+                return NotFound(new { mensagem = "Categoria não encontrada." });
 
-                _categoriaUseCase.Deletar(categoriaId, usuarioId);
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, "Erro ao salvar: " + ex.Message);
-                return View();
-            }
+            _categoriaUseCase.Deletar(categoriaId, usuarioId);
+            return Ok(new { mensagem = "Categoria excluída com sucesso!" });
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ControleFinanceiro.Domain.Interfaces;
 using ControleFinanceiro.Domain.Models;
 using ControleFinanceiro.Infra.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ControleFinanceiro.Infra;
 
@@ -53,6 +54,8 @@ public class CategoriaRepository : ICategoriaRepository
     {
         return _db.Categorias
             .Where(c => c.UsuarioId == usuarioId && c.DataExclusao == null)
+            .Include(t => t.TipoTransacao)
+            .OrderBy(c => c.Nome)
             .ToList();
     }
 

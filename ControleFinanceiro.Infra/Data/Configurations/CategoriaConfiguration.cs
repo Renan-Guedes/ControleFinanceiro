@@ -23,6 +23,11 @@ public class CategoriaConfiguration : IEntityTypeConfiguration<CategoriaModel>
             .HasForeignKey(c => c.UsuarioId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasOne(t => t.TipoTransacao)
+            .WithMany(t => t.Categorias)
+            .HasForeignKey(t => t.TipoTransacaoId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         // Configuração de DataInclusao
         builder.Property(c => c.DataInclusao).HasDefaultValueSql("GETDATE()");
     }

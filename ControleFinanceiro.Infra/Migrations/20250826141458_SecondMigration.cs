@@ -26,11 +26,22 @@ namespace ControleFinanceiro.Infra.Migrations
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "datetime(6)");
+
+            migrationBuilder.AddColumn<int>(
+                name: "TipoTransacaoId",
+                table: "Categoria",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "TipoTransacaoId",
+                table: "Categoria");
+
             migrationBuilder.AlterColumn<decimal>(
                 name: "ValorPago",
                 table: "Transacao",

@@ -1,5 +1,70 @@
 ﻿@model ControleFinanceiro.Web.ViewModels.CategoriaViewModel
 
-<h2>@ViewContext.RouteData.Values["action"]?.ToString() Categoria</h2>
+@{
+    ViewData["Title"] = "Editar Categoria";
+}
 
-@await Html.PartialAsync("_FormCategoria", Model)
+<div class="container mt-4">
+    <div class="card shadow-sm border-0">
+        <div id="card-header" class="card-header bg-warning text-dark fw-bold">
+            <i class="bi bi-pencil-square me-2"></i> Editar Categoria
+        </div>
+        <div class="card-body">
+            <form asp-action="Editar" method="post" id="categoriaForm">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label asp-for="Nome" class="form-label fw-semibold"></label>
+                    <input asp-for="Nome" class="form-control" placeholder="Digite o nome da categoria" />
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+
+                <!-- Ativo -->
+                <div class="mb-3">
+                    <label asp-for="Ativo" class="form-label fw-semibold">Status</label>
+                    <select asp-for="Ativo" class="form-select" asp-items="ViewBag.Ativos">
+                    </select>
+                    <span asp-validation-for="Ativo" class="text-danger"></span>
+                </div>
+
+                <!-- TipoTransacao -->
+                <div class="mb-3">
+                    <label asp-for="TipoTransacaoId" class="form-label fw-semibold">Tipo</label>
+                    <select asp-for="TipoTransacaoId" class="form-select" id="tipoTransacaoSelect">
+                        <option value="">Selecione</option>
+                        <option value="1">Receita</option>
+                        <option value="2">Despesa</option>
+                    </select>
+                    <span asp-validation-for="TipoTransacaoId" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary">Voltar</a>
+                    <button type="submit" class="btn btn-warning px-4">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const selectTipo = document.getElementById("tipoTransacaoSelect");
+        const header = document.getElementById("card-header");
+
+        function atualizarCor() {
+            header.classList.remove("bg-success", "bg-danger", "bg-warning", "text-white", "text-dark");
+
+            if (selectTipo.value === "1") {
+                header.classList.add("bg-success", "text-white");
+            } else if (selectTipo.value === "2") {
+                header.classList.add("bg-danger", "text-white");
+            } else {
+                header.classList.add("bg-warning", "text-dark");
+            }
+        }
+
+        atualizarCor();
+        selectTipo.addEventListener("change", atualizarCor);
+    </script>
+}

@@ -10,6 +10,10 @@ public class CategoriaModel
 
     public UsuarioModel? Usuario { get; set; }
 
+    public int TipoTransacaoId { get; set; }
+
+    public TipoTransacaoModel? TipoTransacao { get; set; }
+
     #endregion
 
     #region Collections
@@ -22,7 +26,7 @@ public class CategoriaModel
 
     public string Nome { get; set; } = string.Empty;
 
-    public bool Ativo { get; set; }
+    public bool Ativo { get; set; } = true;
 
     public DateTime DataInclusao { get; set; } = DateTime.Now;
     
