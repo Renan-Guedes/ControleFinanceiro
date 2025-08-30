@@ -31,5 +31,7 @@ namespace ControleFinanceiro.Web.ViewModels
         public int BancoId { get; set; }
 
         public string BancoNome { get; set; } = string.Empty;
+
+        public bool IsPago { get; set; } = false;
     }
 }
