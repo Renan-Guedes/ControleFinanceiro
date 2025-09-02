@@ -11,20 +11,23 @@ public class AppDbContext : DbContext
 
     // O DbSet representa todas as tabelas do banco de dados em sistema
 
+    #region DbSets
+    
     public DbSet<BancoModel> Bancos { get; set; }
 
     public DbSet<CategoriaModel> Categorias { get; set; }
 
     public DbSet<GastoFixoModel> GastosFixos { get; set; }
 
-    public DbSet<PlanejamentoMensalModel> PlanejamentosMensais { get; set; }
+    public DbSet<CarteiraModel> Carteiras { get; set; }
 
     public DbSet<TipoTransacaoModel> TipoTransacoes { get; set; }
 
     public DbSet<TransacaoModel> Transacoes { get; set; }
 
     public DbSet<UsuarioModel> Usuarios { get; set; }
-
+    
+    #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -4,40 +4,27 @@ using ControleFinanceiro.Domain.Models;
 
 namespace ControleFinanceiro.Application.UseCase;
 
-public class PlanejamentoMensalUseCase : IPlanejamentoMensalUseCase
+public class CarteiraUseCase : ICarteiraUseCase
 {
-    private readonly IPlanejamentoMensalRepository _repository;
+    private readonly ICarteiraRepository _repository;
 
-    public PlanejamentoMensalUseCase(IPlanejamentoMensalRepository repository)
+    public CarteiraUseCase(ICarteiraRepository repository)
     {
         _repository = repository;
     }
 
-    public void Criar(PlanejamentoMensalModel planejamentoMensalModel)
-    {
-        // Impede que um planejamento mensal seja criado no mesmo período para o mesmo banco
-        var existePlanejamento = _repository
-            .ListarTodos(planejamentoMensalModel.UsuarioId)
-            .Any(p => p.Ano == planejamentoMensalModel.Ano
-                && p.Mes == planejamentoMensalModel.Mes
-                && p.BancoId == planejamentoMensalModel.BancoId);
+    public void Criar(CarteiraModel carteiraModel)
+        => _repository.Criar(carteiraModel);
 
-        if (existePlanejamento)
-            throw new Exception("Já existe um planejamento para este mês");
-        else
-            _repository.Criar(planejamentoMensalModel);
-    }
+    public void Atualizar(CarteiraModel carteiraModel)
+        => _repository.Atualizar(carteiraModel);
 
-    public void Atualizar(PlanejamentoMensalModel planejamentoMensalModel)
-        => _repository.Atualizar(planejamentoMensalModel);
-    
+    public void Deletar(int carteiraId, int usuarioId)
+        => _repository.Deletar(carteiraId, usuarioId);
 
-    public void Deletar(int planejamentoMensalId, int usuarioId)
-        => _repository.Deletar(planejamentoMensalId, usuarioId);
-
-    public List<PlanejamentoMensalModel> ListarTodos(int usuarioId)
+    public List<CarteiraModel> ListarTodos(int usuarioId)
         => _repository.ListarTodos(usuarioId);
 
-    public PlanejamentoMensalModel? BuscarPorId(int planejamentoMensalId, int usuarioId)
-        => _repository.BuscarPorId(planejamentoMensalId, usuarioId);
+    public CarteiraModel? BuscarPorId(int carteiraId, int usuarioId)
+        => _repository.BuscarPorId(carteiraId, usuarioId);
 }

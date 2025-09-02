@@ -5,57 +5,57 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ControleFinanceiro.Infra.Repositories;
 
-public class PlanejamentoMensalRepository : IPlanejamentoMensalRepository
+public class CarteiraRepository : ICarteiraRepository
 {
     private readonly AppDbContext _db;
 
-    public PlanejamentoMensalRepository(AppDbContext db)
+    public CarteiraRepository(AppDbContext db)
     {
         _db = db;
     }
 
-    public void Criar(PlanejamentoMensalModel planejamentoMensalModel)
+    public void Criar(CarteiraModel carteiraModel)
     {
-        _db.PlanejamentosMensais.Add(planejamentoMensalModel);
+        _db.Carteiras.Add(carteiraModel);
         _db.SaveChanges();
     }
 
-    public void Atualizar(PlanejamentoMensalModel planejamentoMensalModel)
+    public void Atualizar(CarteiraModel carteiraModel)
     {
-        _db.PlanejamentosMensais.Update(planejamentoMensalModel);
+        _db.Carteiras.Update(carteiraModel);
         _db.SaveChanges();
     }
 
-    public void Deletar(int planejamentoMensalId, int usuarioId)
+    public void Deletar(int carteiraId, int usuarioId)
     {
-        var planejamentoMensal = _db.PlanejamentosMensais
+        var carteira = _db.Carteiras
             .Include(b => b.Banco)
-            .FirstOrDefault(p => p.Id == planejamentoMensalId && p.UsuarioId == usuarioId);
+            .FirstOrDefault(p => p.Id == carteiraId && p.UsuarioId == usuarioId);
 
-        if (planejamentoMensal != null)
+        if (carteira != null)
         {
-            planejamentoMensal.DataExclusao = DateTime.Now;
-            _db.PlanejamentosMensais.Update(planejamentoMensal);
+            carteira.DataExclusao = DateTime.Now;
+            _db.Carteiras.Update(carteira);
             _db.SaveChanges();
         }
         else
         {
-            throw new Exception("Planejamento mensal não encontrado ou não pertence ao usuário.");
+            throw new Exception("Carteira não encontrada ou não pertence ao usuário.");
         }
     }
 
-    public List<PlanejamentoMensalModel> ListarTodos(int usuarioId)
+    public List<CarteiraModel> ListarTodos(int usuarioId)
     {
-        return _db.PlanejamentosMensais
+        return _db.Carteiras
             .Include(b => b.Banco)
             .Where(p => p.UsuarioId == usuarioId && p.DataExclusao == null)
             .ToList();
     }
 
-    public PlanejamentoMensalModel? BuscarPorId(int planejamentoMensalId, int usuarioId)
+    public CarteiraModel? BuscarPorId(int carteiraId, int usuarioId)
     {
-        return _db.PlanejamentosMensais
+        return _db.Carteiras
             .Include(b => b.Banco)
-            .FirstOrDefault(p => p.Id == planejamentoMensalId && p.UsuarioId == usuarioId && p.DataExclusao == null);
+            .FirstOrDefault(p => p.Id == carteiraId && p.UsuarioId == usuarioId && p.DataExclusao == null);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace ControleFinanceiro.Domain.Models;
 
-public class PlanejamentoMensalModel
+public class CarteiraModel
 {
     public int Id { get; set; }
 

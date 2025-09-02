@@ -59,6 +59,49 @@ namespace ControleFinanceiro.Infra.Migrations
                     b.ToTable("Banco", (string)null);
                 });
 
+            modelBuilder.Entity("ControleFinanceiro.Domain.Models.CarteiraModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Ano")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BancoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DataAtualizacao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DataExclusao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DataInclusao")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("Mes")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("SaldoInicial")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BancoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Carteira", (string)null);
+                });
+
             modelBuilder.Entity("ControleFinanceiro.Domain.Models.CategoriaModel", b =>
                 {
                     b.Property<int>("Id")
@@ -112,6 +155,9 @@ namespace ControleFinanceiro.Infra.Migrations
                     b.Property<int>("BancoId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CarteiraId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CategoriaId")
                         .HasColumnType("int");
 
@@ -130,9 +176,6 @@ namespace ControleFinanceiro.Infra.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
 
-                    b.Property<int?>("PlanejamentoMensalModelId")
-                        .HasColumnType("int");
-
                     b.Property<int>("TipoTransacaoId")
                         .HasColumnType("int");
 
@@ -146,58 +189,15 @@ namespace ControleFinanceiro.Infra.Migrations
 
                     b.HasIndex("BancoId");
 
-                    b.HasIndex("CategoriaId");
+                    b.HasIndex("CarteiraId");
 
-                    b.HasIndex("PlanejamentoMensalModelId");
+                    b.HasIndex("CategoriaId");
 
                     b.HasIndex("TipoTransacaoId");
 
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("GastoFixo", (string)null);
-                });
-
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.PlanejamentoMensalModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Ano")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BancoId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("DataAtualizacao")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("DataExclusao")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("DataInclusao")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("Mes")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("SaldoInicial")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BancoId");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.ToTable("PlanejamentoMensal", (string)null);
                 });
 
             modelBuilder.Entity("ControleFinanceiro.Domain.Models.TipoTransacaoModel", b =>
@@ -358,6 +358,25 @@ namespace ControleFinanceiro.Infra.Migrations
                     b.Navigation("Usuario");
                 });
 
+            modelBuilder.Entity("ControleFinanceiro.Domain.Models.CarteiraModel", b =>
+                {
+                    b.HasOne("ControleFinanceiro.Domain.Models.BancoModel", "Banco")
+                        .WithMany()
+                        .HasForeignKey("BancoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ControleFinanceiro.Domain.Models.UsuarioModel", "Usuario")
+                        .WithMany("Carteiras")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Banco");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("ControleFinanceiro.Domain.Models.CategoriaModel", b =>
                 {
                     b.HasOne("ControleFinanceiro.Domain.Models.TipoTransacaoModel", "TipoTransacao")
@@ -385,15 +404,17 @@ namespace ControleFinanceiro.Infra.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("ControleFinanceiro.Domain.Models.CarteiraModel", "Carteira")
+                        .WithMany("GastosFixos")
+                        .HasForeignKey("CarteiraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ControleFinanceiro.Domain.Models.CategoriaModel", "Categoria")
                         .WithMany("GastosFixos")
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("ControleFinanceiro.Domain.Models.PlanejamentoMensalModel", null)
-                        .WithMany("GastosFixos")
-                        .HasForeignKey("PlanejamentoMensalModelId");
 
                     b.HasOne("ControleFinanceiro.Domain.Models.TipoTransacaoModel", "TipoTransacao")
                         .WithMany("GastosFixos")
@@ -409,28 +430,11 @@ namespace ControleFinanceiro.Infra.Migrations
 
                     b.Navigation("Banco");
 
+                    b.Navigation("Carteira");
+
                     b.Navigation("Categoria");
 
                     b.Navigation("TipoTransacao");
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.PlanejamentoMensalModel", b =>
-                {
-                    b.HasOne("ControleFinanceiro.Domain.Models.BancoModel", "Banco")
-                        .WithMany()
-                        .HasForeignKey("BancoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ControleFinanceiro.Domain.Models.UsuarioModel", "Usuario")
-                        .WithMany("PlanejamentosMensais")
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Banco");
 
                     b.Navigation("Usuario");
                 });
@@ -477,16 +481,16 @@ namespace ControleFinanceiro.Infra.Migrations
                     b.Navigation("Transacoes");
                 });
 
+            modelBuilder.Entity("ControleFinanceiro.Domain.Models.CarteiraModel", b =>
+                {
+                    b.Navigation("GastosFixos");
+                });
+
             modelBuilder.Entity("ControleFinanceiro.Domain.Models.CategoriaModel", b =>
                 {
                     b.Navigation("GastosFixos");
 
                     b.Navigation("Transacoes");
-                });
-
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.PlanejamentoMensalModel", b =>
-                {
-                    b.Navigation("GastosFixos");
                 });
 
             modelBuilder.Entity("ControleFinanceiro.Domain.Models.TipoTransacaoModel", b =>
@@ -502,11 +506,11 @@ namespace ControleFinanceiro.Infra.Migrations
                 {
                     b.Navigation("Bancos");
 
+                    b.Navigation("Carteiras");
+
                     b.Navigation("Categorias");
 
                     b.Navigation("GastosFixos");
-
-                    b.Navigation("PlanejamentosMensais");
 
                     b.Navigation("Transacoes");
                 });

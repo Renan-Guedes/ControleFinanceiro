@@ -25,9 +25,9 @@ namespace ControleFinanceiro.Infra.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    DataInclusao = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(6)"),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    DataExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                    DataInclusao = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DataExclusao = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -47,9 +47,9 @@ namespace ControleFinanceiro.Infra.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     SenhaHash = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    DataInclusao = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(6)"),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    DataExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                    DataInclusao = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DataExclusao = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -67,9 +67,9 @@ namespace ControleFinanceiro.Infra.Migrations
                     Nome = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Ativo = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DataInclusao = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(6)"),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    DataExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                    DataInclusao = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DataExclusao = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -90,16 +90,23 @@ namespace ControleFinanceiro.Infra.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    TipoTransacaoId = table.Column<int>(type: "int", nullable: false),
                     Nome = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Ativo = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DataInclusao = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(6)"),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    DataExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                    DataInclusao = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DataExclusao = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categoria", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Categoria_TipoTransacao_TipoTransacaoId",
+                        column: x => x.TipoTransacaoId,
+                        principalTable: "TipoTransacao",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Categoria_Usuario_UsuarioId",
                         column: x => x.UsuarioId,
@@ -110,7 +117,7 @@ namespace ControleFinanceiro.Infra.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "PlanejamentoMensal",
+                name: "Carteira",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -120,21 +127,21 @@ namespace ControleFinanceiro.Infra.Migrations
                     Ano = table.Column<int>(type: "int", nullable: false),
                     Mes = table.Column<int>(type: "int", nullable: false),
                     SaldoInicial = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    DataInclusao = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(6)"),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    DataExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                    DataInclusao = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DataExclusao = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PlanejamentoMensal", x => x.Id);
+                    table.PrimaryKey("PK_Carteira", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PlanejamentoMensal_Banco_BancoId",
+                        name: "FK_Carteira_Banco_BancoId",
                         column: x => x.BancoId,
                         principalTable: "Banco",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PlanejamentoMensal_Usuario_UsuarioId",
+                        name: "FK_Carteira_Usuario_UsuarioId",
                         column: x => x.UsuarioId,
                         principalTable: "Usuario",
                         principalColumn: "Id",
@@ -156,12 +163,12 @@ namespace ControleFinanceiro.Infra.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Fatura = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     ValorPlanejado = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    ValorPago = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    DataVencimento = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    DataTransacao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    DataInclusao = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(6)"),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    DataExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                    ValorPago = table.Column<decimal>(type: "decimal(65,30)", nullable: true),
+                    DataVencimento = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DataTransacao = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DataInclusao = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DataExclusao = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -203,13 +210,13 @@ namespace ControleFinanceiro.Infra.Migrations
                     TipoTransacaoId = table.Column<int>(type: "int", nullable: false),
                     BancoId = table.Column<int>(type: "int", nullable: false),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    CarteiraId = table.Column<int>(type: "int", nullable: false),
                     Descricao = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Valor = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    DataInclusao = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(6)"),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    DataExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    PlanejamentoMensalModelId = table.Column<int>(type: "int", nullable: true)
+                    DataInclusao = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DataExclusao = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -221,16 +228,17 @@ namespace ControleFinanceiro.Infra.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
+                        name: "FK_GastoFixo_Carteira_CarteiraId",
+                        column: x => x.CarteiraId,
+                        principalTable: "Carteira",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_GastoFixo_Categoria_CategoriaId",
                         column: x => x.CategoriaId,
                         principalTable: "Categoria",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_GastoFixo_PlanejamentoMensal_PlanejamentoMensalModelId",
-                        column: x => x.PlanejamentoMensalModelId,
-                        principalTable: "PlanejamentoMensal",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_GastoFixo_TipoTransacao_TipoTransacaoId",
                         column: x => x.TipoTransacaoId,
@@ -261,6 +269,21 @@ namespace ControleFinanceiro.Infra.Migrations
                 column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Carteira_BancoId",
+                table: "Carteira",
+                column: "BancoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Carteira_UsuarioId",
+                table: "Carteira",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Categoria_TipoTransacaoId",
+                table: "Categoria",
+                column: "TipoTransacaoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Categoria_UsuarioId",
                 table: "Categoria",
                 column: "UsuarioId");
@@ -271,14 +294,14 @@ namespace ControleFinanceiro.Infra.Migrations
                 column: "BancoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GastoFixo_CarteiraId",
+                table: "GastoFixo",
+                column: "CarteiraId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_GastoFixo_CategoriaId",
                 table: "GastoFixo",
                 column: "CategoriaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GastoFixo_PlanejamentoMensalModelId",
-                table: "GastoFixo",
-                column: "PlanejamentoMensalModelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GastoFixo_TipoTransacaoId",
@@ -288,16 +311,6 @@ namespace ControleFinanceiro.Infra.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_GastoFixo_UsuarioId",
                 table: "GastoFixo",
-                column: "UsuarioId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PlanejamentoMensal_BancoId",
-                table: "PlanejamentoMensal",
-                column: "BancoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PlanejamentoMensal_UsuarioId",
-                table: "PlanejamentoMensal",
                 column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
@@ -330,13 +343,26 @@ namespace ControleFinanceiro.Infra.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(name: "GastoFixo");
-            migrationBuilder.DropTable(name: "Transacao");
-            migrationBuilder.DropTable(name: "PlanejamentoMensal");
-            migrationBuilder.DropTable(name: "Categoria");
-            migrationBuilder.DropTable(name: "TipoTransacao");
-            migrationBuilder.DropTable(name: "Banco");
-            migrationBuilder.DropTable(name: "Usuario");
+            migrationBuilder.DropTable(
+                name: "GastoFixo");
+
+            migrationBuilder.DropTable(
+                name: "Transacao");
+
+            migrationBuilder.DropTable(
+                name: "Carteira");
+
+            migrationBuilder.DropTable(
+                name: "Categoria");
+
+            migrationBuilder.DropTable(
+                name: "Banco");
+
+            migrationBuilder.DropTable(
+                name: "TipoTransacao");
+
+            migrationBuilder.DropTable(
+                name: "Usuario");
         }
     }
 }

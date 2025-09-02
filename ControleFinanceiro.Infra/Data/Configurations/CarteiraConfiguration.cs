@@ -4,19 +4,19 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ControleFinanceiro.Infra.Data.Configurations
 {
-    public class PlanejamentoMensalConfiguration : IEntityTypeConfiguration<PlanejamentoMensalModel>
+    public class CarteiraConfiguration : IEntityTypeConfiguration<CarteiraModel>
     {
-        public void Configure(EntityTypeBuilder<PlanejamentoMensalModel> builder)
+        public void Configure(EntityTypeBuilder<CarteiraModel> builder)
         {
             // Configurações da tabela
-            builder.ToTable("PlanejamentoMensal");
+            builder.ToTable("Carteira");
 
             // Configurações das colunas
             builder.HasKey(p => p.Id);
 
             // Configurações de relacionamento
             builder.HasOne(p => p.Usuario)
-                .WithMany(u => u.PlanejamentosMensais)
+                .WithMany(u => u.Carteiras)
                 .HasForeignKey(p => p.UsuarioId)
                 .OnDelete(DeleteBehavior.Restrict);
 

@@ -22,6 +22,10 @@ public class GastoFixoModel
 
     public UsuarioModel? Usuario { get; set; }
 
+    public int CarteiraId { get; set; }
+
+    public CarteiraModel? Carteira { get; set; }
+
     #endregion
 
     public string? Descricao { get; set; } = string.Empty;

@@ -12,7 +12,7 @@ public class UsuarioModel
 
     public ICollection<GastoFixoModel> GastosFixos { get; set; } = new List<GastoFixoModel>();
 
-    public ICollection<PlanejamentoMensalModel> PlanejamentosMensais { get; set; } = new List<PlanejamentoMensalModel>();
+    public ICollection<CarteiraModel> Carteiras { get; set; } = new List<CarteiraModel>();
 
     public ICollection<TransacaoModel> Transacoes { get; set; } = new List<TransacaoModel>();
 

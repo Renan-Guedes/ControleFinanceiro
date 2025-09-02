@@ -45,9 +45,9 @@ builder.Services.AddScoped<ITipoTransacaoRepository, TipoTransacaoRepository>();
 builder.Services.AddScoped<IBancoUseCase, BancoUseCase>();
 builder.Services.AddScoped<IBancoRepository, BancoRepository>();
 
-// Planejamento Mensal
-builder.Services.AddScoped<IPlanejamentoMensalUseCase, PlanejamentoMensalUseCase>();
-builder.Services.AddScoped<IPlanejamentoMensalRepository, PlanejamentoMensalRepository>();
+// Carteira
+builder.Services.AddScoped<ICarteiraUseCase, CarteiraUseCase>();
+builder.Services.AddScoped<ICarteiraRepository, CarteiraRepository>();
 
 // Gastos Fixos
 builder.Services.AddScoped<IGastoFixoUseCase, GastoFixoUseCase>();

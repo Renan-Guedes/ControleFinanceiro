@@ -2,15 +2,15 @@
 
 namespace ControleFinanceiro.Domain.Interfaces;
 
-public interface IPlanejamentoMensalRepository
+public interface ICarteiraRepository
 {
-    List<PlanejamentoMensalModel> ListarTodos(int usuarioId);
+    List<CarteiraModel> ListarTodos(int usuarioId);
 
-    PlanejamentoMensalModel? BuscarPorId(int planejamentoMensalId, int usuarioId);
+    CarteiraModel? BuscarPorId(int carteiraId, int usuarioId);
 
-    void Criar(PlanejamentoMensalModel planejamentoMensalModel);
+    void Criar(CarteiraModel carteiraModel);
 
-    void Atualizar(PlanejamentoMensalModel planejamentoMensalModel);
+    void Atualizar(CarteiraModel carteiraModel);
 
-    void Deletar(int planejamentoMensalId, int usuarioId);
+    void Deletar(int carteiraId, int usuarioId);
 }
