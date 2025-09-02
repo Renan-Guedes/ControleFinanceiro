@@ -3,6 +3,7 @@ using ControleFinanceiro.Application.UseCase;
 using ControleFinanceiro.Domain.Models;
 using ControleFinanceiro.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ControleFinanceiro.Web.Controllers
 {
@@ -43,106 +44,28 @@ namespace ControleFinanceiro.Web.Controllers
                 })
                 .ToList();
 
-            return View(vm);
-        }
-        
-        // GET: /GastoFixo/Criar
-        public IActionResult Criar()
-        {
-            var usuarioId = 1; // Substituir depois com o usuário logado
             PreencherViewBags(usuarioId);
 
-            return View(new GastoFixoViewModel());
+            return View(vm);
         }
 
-        // POST: /GastoFixo/Criar
+        // POST: CriarTransacao
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Criar(GastoFixoViewModel vm)
+        public IActionResult CriarTransacao(GastoFixoViewModel vm)
         {
-            int usuarioId = 1; // Substituir depois com o usuário logado
-
-            try
+            int usuarioId = 1;
+            
+            if (!ModelState.IsValid)
             {
-                ValidarCampos(vm);
-
-                if (!ModelState.IsValid)
-                {
-                    PreencherViewBags(usuarioId);
-                    return View(vm);
-                }
-
-                var novoGastoFixo = new GastoFixoModel
-                {
-                    CategoriaId = vm.CategoriaId,
-                    TipoTransacaoId = vm.TipoTransacaoId,
-                    BancoId = vm.BancoId,
-                    UsuarioId = usuarioId,
-                    Descricao = vm.Descricao,
-                    Valor = vm.Valor
-                };
-
-                _gastoFixoUseCase.Criar(novoGastoFixo);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, "Erro ao salvar: " + ex.Message);
                 PreencherViewBags(usuarioId);
-                return View(vm);
+                return View("Index", vm);
             }
-        }
-
-        // GET: /GastoFixo/Editar/{id}
-        public IActionResult Editar(int gastoFixoId)
-        {
-            int usuarioId = 1; // Substituir depois com o usuário logado
-
-            var gastoFixo = _gastoFixoUseCase
-                .BuscarPorId(gastoFixoId, usuarioId);
-
-            if (gastoFixo == null)
-            {
-                return NotFound();
-            }
-
-            var vm = new GastoFixoViewModel
-            {
-                Id = gastoFixo.Id,
-                CategoriaId = gastoFixo.CategoriaId,
-                CategoriaNome = gastoFixo.Categoria?.Nome ?? "Categoria não encontrada",
-                TipoTransacaoId = gastoFixo.TipoTransacaoId,
-                BancoId = gastoFixo.BancoId,
-                BancoNome = gastoFixo.Banco?.Nome ?? "Banco não encontrado",
-                UsuarioId = gastoFixo.UsuarioId,
-                Descricao = gastoFixo.Descricao ?? string.Empty,
-                Valor = gastoFixo.Valor
-            };
-
-            PreencherViewBags(usuarioId);
-            return View(vm);
-        }
-
-        // POST: /GastoFixo/Editar
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Editar(GastoFixoViewModel vm)
-        {
-            int usuarioId = 1; // Substituir depois com o usuário logado
 
             try
             {
-                ValidarCampos(vm);
-
-                if (!ModelState.IsValid)
-                {
-                    PreencherViewBags(usuarioId);
-                    return View(vm);
-                }
-
                 var gastoFixo = new GastoFixoModel
                 {
-                    Id = vm.Id,
                     CategoriaId = vm.CategoriaId,
                     TipoTransacaoId = vm.TipoTransacaoId,
                     BancoId = vm.BancoId,
@@ -151,86 +74,25 @@ namespace ControleFinanceiro.Web.Controllers
                     Valor = vm.Valor
                 };
 
-                _gastoFixoUseCase.Atualizar(gastoFixo);
+                _gastoFixoUseCase.Criar(gastoFixo);
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "Erro ao salvar: " + ex.Message);
+                TempData["MensagemErro"] = "Erro ao salvar gasto fixo: " + ex.Message;
                 PreencherViewBags(usuarioId);
-                return View(vm);
-            }
-        }
-
-        // GET: /GastoFixo/Deletar/{id}
-        public IActionResult Deletar(int gastoFixoId)
-        {
-            int usuarioId = 1; // Substituir depois com o usuário logado
-            
-            var gastoFixo = _gastoFixoUseCase
-                    .BuscarPorId(gastoFixoId, usuarioId);
-            
-            if (gastoFixo == null)
-                return NotFound();
-            
-            
-            var vm = new GastoFixoViewModel
-            {
-                Id = gastoFixo.Id,
-                CategoriaId = gastoFixo.CategoriaId,
-                CategoriaNome = gastoFixo.Categoria?.Nome ?? "Categoria não encontrada",
-                TipoTransacaoId = gastoFixo.TipoTransacaoId,
-                BancoId = gastoFixo.BancoId,
-                BancoNome = gastoFixo.Banco?.Nome ?? "Banco não encontrado",
-                UsuarioId = gastoFixo.UsuarioId,
-                Descricao = gastoFixo.Descricao ?? string.Empty,
-                Valor = gastoFixo.Valor
-            };
-            
-            PreencherViewBags(usuarioId);
-            return View(vm);
-        }
-
-        // POST: /GastoFixo/Deletar
-        [HttpPost, ActionName("Deletar")]
-        [ValidateAntiForgeryToken]
-        public IActionResult ConfirmarDeletar(int gastoFixoId)
-        {
-            int usuarioId = 1; // Substituir depois com o usuário logado
-
-            try
-            {
-                var gastoFixo = _gastoFixoUseCase
-                    .BuscarPorId(gastoFixoId, usuarioId);
-
-                if (gastoFixo == null)
-                    return NotFound();
-
-                _gastoFixoUseCase.Deletar(gastoFixoId, usuarioId);
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, "Erro ao excluir: " + ex.Message);
-                return View();
+                return View("Index", vm);
             }
         }
 
         private void PreencherViewBags(int usuarioId)
         {
-            ViewBag.Bancos = _bancoUseCase
-                .ListarTodos(usuarioId)
-                .ToList();
+            var bancos = _bancoUseCase.ListarTodos(usuarioId).ToList();
+            var categorias = _categoriaUseCase.ListarTodos(usuarioId).ToList();
 
-            ViewBag.Categorias = _categoriaUseCase
-                .ListarTodos(usuarioId)
-                .ToList();
-        }
-
-        private void ValidarCampos(GastoFixoViewModel vm)
-        {
-            
+            ViewBag.Bancos = new SelectList(bancos, "Id", "Nome");
+            ViewBag.Categorias = new SelectList(categorias, "Id", "Nome");
         }
     }
 }

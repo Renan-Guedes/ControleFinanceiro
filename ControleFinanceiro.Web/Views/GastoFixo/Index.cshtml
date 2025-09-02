@@ -7,7 +7,10 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Gastos Fixos</h2>
-        <a asp-action="Criar" class="btn btn-success shadow-sm px-4">+ Adicionar Gasto Fixo</a>
+        <button type="button" class="btn btn-success shadow-sm px-4"
+                data-bs-toggle="modal" data-bs-target="#gastoFixoModal">
+            + Adicionar Gasto Fixo
+        </button>
     </div>
 
     <!-- Filtro -->
@@ -57,24 +60,53 @@
                         </td>
                         <td>@item.Descricao</td>
                         <td>@item.BancoNome</td>
-                        <td>@item.Valor.ToString("C2")</td>
+                        <td>@item.ValorFormatado</td>
                         <td>
                             <span class="badge @(isPago ? "bg-success" : "bg-danger")">
-                                @(isPago ? "Pago" : "Pendente")
+                                @if (isPago)
+                                {
+                                    if (item.TipoTransacaoId == 1)
+                                    {
+                                        <span>Recebido</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Pago</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span>Pendente</span>
+                                }
                             </span>
                         </td>
                         <td>
                             @if (!isPago)
                             {
-                                <button type="button" class="btn btn-sm btn-danger"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#pagamentoModal"
-                                        data-id="@item.Id"
-                                        data-descricao="@item.Descricao"
-                                        data-valor="@item.Valor"
-                                        data-banco="@item.BancoNome">
-                                    💳 Realizar Pagamento
-                                </button>
+                                if (item.TipoTransacaoId == 1)
+                                {
+                                    <button type="button" class="btn btn-sm btn-success"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#recebimentoModal"
+                                            data-id="@item.Id"
+                                            data-descricao="@item.Descricao"
+                                            data-valor="@item.Valor"
+                                            data-banco="@item.BancoNome">
+                                        💳 Receber
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#pagamentoModal"
+                                            data-id="@item.Id"
+                                            data-descricao="@item.Descricao"
+                                            data-valor="@item.Valor"
+                                            data-banco="@item.BancoNome">
+                                        💳 Pagar
+                                    </button>
+                                }
                             }
                             else
                             {
@@ -88,11 +120,74 @@
     </table>
 </div>
 
+<!-- Modal para cadastro -->
+<div class="modal fade" id="gastoFixoModal" tabindex="-1" aria-labelledby="gastoFixoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="gastoFixoModalLabel">Novo Gasto Fixo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+
+            <div class="modal-body">
+                <form asp-action="CriarTransacao" method="post" id="formGastoFixo">
+
+                    <div class="mb-3">
+                        <label class="form-label">Descrição</label>
+                        <input name="Descricao" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Valor</label>
+                        <input name="Valor" type="text" inputmode="decimal" step="0.01" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Banco</label>
+                        <select name="BancoId" asp-items="ViewBag.Bancos" class="form-select" required>
+                            <option value="">Selecione um banco</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Categoria</label>
+                        <select name="CategoriaId" asp-items="ViewBag.Categorias" class="form-select" required>
+                            <option value="">Selecione uma Categoria</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de Transação</label>
+                        <select name="TipoTransacaoId" class="form-select" required>
+                            <option value="1">Receita</option>
+                            <option value="2" selected>Despesa</option>
+                        </select>
+                    </div>
+
+                    @* <div class="mb-3">
+                        <label class="form-label">Dia do Vencimento / Recebimento</label>
+                        <input name="DataInclusao" type="number" min="1" max="31" class="form-control" value="" required />
+                    </div> *@
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="formGastoFixo" class="btn btn-success">Salvar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
 <!-- Modal para Pagamento -->
 <div class="modal fade" id="pagamentoModal" tabindex="-1" aria-labelledby="pagamentoModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="formPagamento" method="post" asp-action="RealizarPagamento">
+            <form id="formPagamento" method="post" asp-action="Salvar">
                 <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title" id="pagamentoModalLabel">💳 Realizar Pagamento</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
@@ -106,8 +201,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="valor" class="form-label">Valor (R$)</label>
-                        <input type="number" step="0.01" class="form-control" id="valor" name="valor" required />
+                        <label for="valor" class="form-label">Valor Pago (R$)</label>
+                        <input type="text" inputmode="decimal" class="form-control" id="valor" name="valor" required />
                     </div>
 
                     <div class="mb-3">
@@ -129,6 +224,47 @@
     </div>
 </div>
 
+<!-- Modal para Recebimento -->
+<div class="modal fade" id="recebimentoModal" tabindex="-1" aria-labelledby="recebimentoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formRecebimento" method="post" asp-action="RealizarRecebimento">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="recebimentoModalLabel">💳 Realizar Recebimento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="gastoFixoId" />
+
+                    <div class="mb-3">
+                        <label for="descricao" class="form-label">Descrição</label>
+                        <input type="text" class="form-control" id="descricao" name="descricao" readonly />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="valor" class="form-label">Valor Recebido (R$)</label>
+                        <input type="text" inputmode="decimal" class="form-control" id="valor" name="valor" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="dataPagamento" class="form-label">Data do Recebimento</label>
+                        <input type="date" class="form-control" id="dataRecebimento" name="dataRecebimento" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="banco" class="form-label">Banco</label>
+                        <input type="text" class="form-control" id="banco" name="banco" readonly />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Confirmar Recebimento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         const filtro = document.getElementById("tipoTransacaoFiltro");
@@ -136,6 +272,7 @@
         const tabela = document.getElementById("gastosTableBody");
         const filtroCard = document.getElementById("filtroGastoFixo");
         const pagamentoModal = document.getElementById('pagamentoModal');
+        const recebimentoModal = document.getElementById('recebimentoModal');
 
         // Filtro
         filtro.addEventListener("change", function () {
@@ -166,8 +303,21 @@
             filtroCard.classList.remove("border-success", "border-danger", "bg-light", "bg-opacity-10");
         });
 
-        // Modal
+        // Modal Pagamento
         pagamentoModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const descricao = button.getAttribute('data-descricao');
+            const valor = button.getAttribute('data-valor');
+            const banco = button.getAttribute('data-banco');
+
+            document.getElementById('gastoFixoId').value = id;
+            document.getElementById('descricao').value = descricao;
+            document.getElementById('valor').value = parseFloat(valor).toFixed(2);
+            document.getElementById('banco').value = banco;
+
+        // Modal Recebimento
+        recebimentoModal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
             const id = button.getAttribute('data-id');
             const descricao = button.getAttribute('data-descricao');

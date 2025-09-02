@@ -24,7 +24,10 @@ namespace ControleFinanceiro.Web.ViewModels
 
         [Required(ErrorMessage = "* obrigatório")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Valor deve ser maior que zero.")]
+        
         public decimal Valor { get; set; }
+
+        public string ValorFormatado => Valor.ToString("C2");
 
         [Required(ErrorMessage = "* obrigatório")]
         [Display(Name = "Banco")]
