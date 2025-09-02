@@ -50,7 +50,6 @@
                 @foreach (var item in Model)
                 {
                     var isPago = item.IsPago;
-
                     <tr class="text-center" data-tipo="@item.TipoTransacaoId">
                         <td>@item.CategoriaNome</td>
                         <td>
@@ -63,50 +62,21 @@
                         <td>@item.ValorFormatado</td>
                         <td>
                             <span class="badge @(isPago ? "bg-success" : "bg-danger")">
-                                @if (isPago)
-                                {
-                                    if (item.TipoTransacaoId == 1)
-                                    {
-                                        <span>Recebido</span>
-                                    }
-                                    else
-                                    {
-                                        <span>Pago</span>
-                                    }
-                                }
-                                else
-                                {
-                                    <span>Pendente</span>
-                                }
+                                @(isPago ? (item.TipoTransacaoId == 1 ? "Recebido" : "Pago") : "Pendente")
                             </span>
                         </td>
                         <td>
                             @if (!isPago)
                             {
-                                if (item.TipoTransacaoId == 1)
-                                {
-                                    <button type="button" class="btn btn-sm btn-success"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#recebimentoModal"
-                                            data-id="@item.Id"
-                                            data-descricao="@item.Descricao"
-                                            data-valor="@item.Valor"
-                                            data-banco="@item.BancoNome">
-                                        💳 Receber
-                                    </button>
-                                }
-                                else
-                                {
-                                    <button type="button" class="btn btn-sm btn-danger"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#pagamentoModal"
-                                            data-id="@item.Id"
-                                            data-descricao="@item.Descricao"
-                                            data-valor="@item.Valor"
-                                            data-banco="@item.BancoNome">
-                                        💳 Pagar
-                                    </button>
-                                }
+                                <button type="button" class="btn btn-sm @(item.TipoTransacaoId == 1 ? "btn-success" : "btn-danger")"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="@(item.TipoTransacaoId == 1 ? "#recebimentoModal" : "#pagamentoModal")"
+                                        data-id="@item.Id"
+                                        data-descricao="@item.Descricao"
+                                        data-valor="@item.Valor"
+                                        data-banco="@item.BancoNome">
+                                    💳 @(item.TipoTransacaoId == 1 ? "Receber" : "Pagar")
+                                </button>
                             }
                             else
                             {
@@ -120,34 +90,19 @@
     </table>
 </div>
 
-<!-- Modal para cadastro -->
+<!-- Modal Cadastro/Atualização -->
 <div class="modal fade" id="gastoFixoModal" tabindex="-1" aria-labelledby="gastoFixoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="gastoFixoModalLabel">Novo Gasto Fixo</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-            </div>
-
-            <div class="modal-body">
-                <form asp-action="CriarTransacao" method="post" id="formGastoFixo">
-
+            <form asp-action="CriarTransacao" method="post" id="formGastoFixo">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="gastoFixoModalLabel">Novo Gasto Fixo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Descrição</label>
                         <input name="Descricao" class="form-control" required />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Valor</label>
-                        <input name="Valor" type="text" inputmode="decimal" step="0.01" class="form-control" required />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Banco</label>
-                        <select name="BancoId" asp-items="ViewBag.Bancos" class="form-select" required>
-                            <option value="">Selecione um banco</option>
-                        </select>
                     </div>
 
                     <div class="mb-3">
@@ -158,32 +113,38 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label">Banco</label>
+                        <select name="BancoId" asp-items="ViewBag.Bancos" class="form-select" required>
+                            <option value="">Selecione um banco</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Valor</label>
+                        <div class="input-group">
+                            <span class="input-group-text">R$</span>
+                            <input type="text" inputmode="decimal" name="Valor" id="valorInputCadastro" class="form-control" placeholder="0,00" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label">Tipo de Transação</label>
                         <select name="TipoTransacaoId" class="form-select" required>
                             <option value="1">Receita</option>
                             <option value="2" selected>Despesa</option>
                         </select>
                     </div>
-
-                    @* <div class="mb-3">
-                        <label class="form-label">Dia do Vencimento / Recebimento</label>
-                        <input name="DataInclusao" type="number" min="1" max="31" class="form-control" value="" required />
-                    </div> *@
-
-                </form>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" form="formGastoFixo" class="btn btn-success">Salvar</button>
-            </div>
-
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-
-<!-- Modal para Pagamento -->
+<!-- Modal Pagamento -->
 <div class="modal fade" id="pagamentoModal" tabindex="-1" aria-labelledby="pagamentoModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -193,26 +154,25 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="id" id="gastoFixoId" />
-
+                    <input type="hidden" name="id" id="pagamentoId" />
                     <div class="mb-3">
-                        <label for="descricao" class="form-label">Descrição</label>
-                        <input type="text" class="form-control" id="descricao" name="descricao" readonly />
+                        <label class="form-label">Descrição</label>
+                        <input type="text" class="form-control" id="pagamentoDescricao" readonly />
                     </div>
-
                     <div class="mb-3">
-                        <label for="valor" class="form-label">Valor Pago (R$)</label>
-                        <input type="text" inputmode="decimal" class="form-control" id="valor" name="valor" required />
+                        <label class="form-label">Valor Pago</label>
+                        <div class="input-group">
+                            <span class="input-group-text">R$</span>
+                            <input type="text" inputmode="decimal" class="form-control" id="pagamentoValor" name="valor" required />
+                        </div>
                     </div>
-
                     <div class="mb-3">
-                        <label for="dataPagamento" class="form-label">Data do Pagamento</label>
-                        <input type="date" class="form-control" id="dataPagamento" name="dataPagamento" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                        <label class="form-label">Data do Pagamento</label>
+                        <input type="date" class="form-control" name="dataPagamento" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
                     </div>
-
                     <div class="mb-3">
-                        <label for="banco" class="form-label">Banco</label>
-                        <input type="text" class="form-control" id="banco" name="banco" readonly />
+                        <label class="form-label">Banco</label>
+                        <input type="text" class="form-control" id="pagamentoBanco" readonly />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -224,36 +184,35 @@
     </div>
 </div>
 
-<!-- Modal para Recebimento -->
+<!-- Modal Recebimento -->
 <div class="modal fade" id="recebimentoModal" tabindex="-1" aria-labelledby="recebimentoModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="formRecebimento" method="post" asp-action="RealizarRecebimento">
-                <div class="modal-header bg-danger text-white">
+                <div class="modal-header bg-success text-white">
                     <h5 class="modal-title" id="recebimentoModalLabel">💳 Realizar Recebimento</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="id" id="gastoFixoId" />
-
+                    <input type="hidden" name="id" id="recebimentoId" />
                     <div class="mb-3">
-                        <label for="descricao" class="form-label">Descrição</label>
-                        <input type="text" class="form-control" id="descricao" name="descricao" readonly />
+                        <label class="form-label">Descrição</label>
+                        <input type="text" class="form-control" id="recebimentoDescricao" readonly />
                     </div>
-
                     <div class="mb-3">
-                        <label for="valor" class="form-label">Valor Recebido (R$)</label>
-                        <input type="text" inputmode="decimal" class="form-control" id="valor" name="valor" required />
+                        <label class="form-label">Valor Recebido</label>
+                        <div class="input-group">
+                            <span class="input-group-text">R$</span>
+                            <input type="text" inputmode="decimal" class="form-control" id="recebimentoValor" name="valor" required />
+                        </div>
                     </div>
-
                     <div class="mb-3">
-                        <label for="dataPagamento" class="form-label">Data do Recebimento</label>
+                        <label class="form-label">Data do Recebimento</label>
                         <input type="date" class="form-control" id="dataRecebimento" name="dataRecebimento" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
                     </div>
-
                     <div class="mb-3">
-                        <label for="banco" class="form-label">Banco</label>
-                        <input type="text" class="form-control" id="banco" name="banco" readonly />
+                        <label class="form-label">Banco</label>
+                        <input type="text" class="form-control" id="recebimentoBanco" readonly />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -267,67 +226,82 @@
 
 @section Scripts {
     <script>
-        const filtro = document.getElementById("tipoTransacaoFiltro");
-        const limpar = document.getElementById("btnLimparFiltro");
-        const tabela = document.getElementById("gastosTableBody");
-        const filtroCard = document.getElementById("filtroGastoFixo");
-        const pagamentoModal = document.getElementById('pagamentoModal');
-        const recebimentoModal = document.getElementById('recebimentoModal');
+        document.addEventListener("DOMContentLoaded", function () {
+            const filtro = document.getElementById("tipoTransacaoFiltro");
+            const limpar = document.getElementById("btnLimparFiltro");
+            const tabela = document.getElementById("gastosTableBody");
+            const filtroCard = document.getElementById("filtroGastoFixo");
 
-        // Filtro
-        filtro.addEventListener("change", function () {
-            const valor = this.value;
-            const linhas = tabela.querySelectorAll("tr[data-tipo]");
+            function aplicarMascaraMoeda(input) {
+                input.addEventListener("input", (e) => {
+                    let value = e.target.value.replace(/\D/g, "");
+                    let numberValue = parseFloat(value) / 100;
+                    if (!isNaN(numberValue)) {
+                        e.target.value = numberValue.toLocaleString("pt-BR", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                    } else {
+                        e.target.value = "";
+                    }
+                });
 
-            filtroCard.classList.remove("border-success", "border-danger", "bg-light", "bg-opacity-10");
-            filtroCard.classList.add("bg-light", "bg-opacity-10");
-
-            if (valor === "1") {
-                filtroCard.classList.add("border-success");
-            } else if (valor === "2") {
-                filtroCard.classList.add("border-danger");
+                if (input.form) {
+                    input.form.addEventListener("submit", () => {
+                        if (input.value) {
+                            let raw = input.value.replace(/\./g, "");
+                            input.value = raw;
+                        }
+                    });
+                }
             }
 
-            linhas.forEach(linha => {
-                if (!valor || linha.getAttribute("data-tipo") === valor) {
-                    linha.style.display = "";
-                } else {
-                    linha.style.display = "none";
-                }
+            document.querySelectorAll("#valorInputCadastro, #pagamentoValor, #recebimentoValor")
+                .forEach(aplicarMascaraMoeda);
+
+            // Filtro
+            filtro.addEventListener("change", function () {
+                const valor = this.value;
+                const linhas = tabela.querySelectorAll("tr[data-tipo]");
+
+                filtroCard.classList.remove("border-success", "border-danger", "bg-light", "bg-opacity-10");
+                filtroCard.classList.add("bg-light", "bg-opacity-10");
+
+                if (valor === "1") filtroCard.classList.add("border-success");
+                else if (valor === "2") filtroCard.classList.add("border-danger");
+
+                linhas.forEach(linha => {
+                    linha.style.display = !valor || linha.getAttribute("data-tipo") === valor ? "" : "none";
+                });
             });
-        });
 
-        limpar.addEventListener("click", function () {
-            filtro.value = "";
-            filtro.dispatchEvent(new Event("change"));
-            filtroCard.classList.remove("border-success", "border-danger", "bg-light", "bg-opacity-10");
-        });
+            limpar.addEventListener("click", function () {
+                filtro.value = "";
+                filtro.dispatchEvent(new Event("change"));
+                filtroCard.classList.remove("border-success", "border-danger", "bg-light", "bg-opacity-10");
+            });
 
-        // Modal Pagamento
-        pagamentoModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const id = button.getAttribute('data-id');
-            const descricao = button.getAttribute('data-descricao');
-            const valor = button.getAttribute('data-valor');
-            const banco = button.getAttribute('data-banco');
+            // Modal Pagamento
+            const pagamentoModal = document.getElementById('pagamentoModal');
+            pagamentoModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                document.getElementById('pagamentoId').value = button.getAttribute('data-id');
+                document.getElementById('pagamentoDescricao').value = button.getAttribute('data-descricao');
+                document.getElementById('pagamentoValor').value = parseFloat(button.getAttribute('data-valor'))
+                    .toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                document.getElementById('pagamentoBanco').value = button.getAttribute('data-banco');
+            });
 
-            document.getElementById('gastoFixoId').value = id;
-            document.getElementById('descricao').value = descricao;
-            document.getElementById('valor').value = parseFloat(valor).toFixed(2);
-            document.getElementById('banco').value = banco;
-
-        // Modal Recebimento
-        recebimentoModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const id = button.getAttribute('data-id');
-            const descricao = button.getAttribute('data-descricao');
-            const valor = button.getAttribute('data-valor');
-            const banco = button.getAttribute('data-banco');
-
-            document.getElementById('gastoFixoId').value = id;
-            document.getElementById('descricao').value = descricao;
-            document.getElementById('valor').value = parseFloat(valor).toFixed(2);
-            document.getElementById('banco').value = banco;
+            // 🔹 Modal Recebimento
+            const recebimentoModal = document.getElementById('recebimentoModal');
+            recebimentoModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                document.getElementById('recebimentoId').value = button.getAttribute('data-id');
+                document.getElementById('recebimentoDescricao').value = button.getAttribute('data-descricao');
+                document.getElementById('recebimentoValor').value = parseFloat(button.getAttribute('data-valor'))
+                    .toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                document.getElementById('recebimentoBanco').value = button.getAttribute('data-banco');
+            });
         });
     </script>
 }
