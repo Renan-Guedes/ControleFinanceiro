@@ -2,7 +2,7 @@
 
 namespace ControleFinanceiro.Application.Interfaces;
 
-public interface ICategoriaUseCase
+public interface ICategoriaService
 {
     List<CategoriaModel> ListarTodos(int usuarioId);
 

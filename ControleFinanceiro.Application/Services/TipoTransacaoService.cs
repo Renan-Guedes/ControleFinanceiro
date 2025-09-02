@@ -1,13 +1,13 @@
 ﻿using ControleFinanceiro.Domain.Interfaces;
 using ControleFinanceiro.Domain.Models;
 
-namespace ControleFinanceiro.Application.UseCase;
+namespace ControleFinanceiro.Application.Service;
 
-public class TipoTransacaoUseCase : ITipoTransacaoUseCase
+public class TipoTransacaoService : ITipoTransacaoService
 {
     private readonly ITipoTransacaoRepository _tipoTransacaoRepository;
 
-    public TipoTransacaoUseCase(ITipoTransacaoRepository tipoTransacaoRepository)
+    public TipoTransacaoService(ITipoTransacaoRepository tipoTransacaoRepository)
     {
         _tipoTransacaoRepository = tipoTransacaoRepository;
     }

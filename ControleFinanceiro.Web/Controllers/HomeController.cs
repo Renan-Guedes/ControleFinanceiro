@@ -8,13 +8,13 @@ namespace ControleFinanceiro.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ITransacaoUseCase _transacaoUseCase;
-        private readonly IGastoFixoUseCase _gastoFixoUseCase;
+        private readonly ITransacaoService _transacaoService;
+        private readonly IGastoFixoService _gastoFixoService;
 
-        public HomeController(ITransacaoUseCase transacaoUseCase, IGastoFixoUseCase gastoFixoUseCase)
+        public HomeController(ITransacaoService transacaoService, IGastoFixoService gastoFixoService)
         {
-            _transacaoUseCase = transacaoUseCase;
-            _gastoFixoUseCase = gastoFixoUseCase;
+            _transacaoService = transacaoService;
+            _gastoFixoService = gastoFixoService;
         }
 
         // GET: /Home
@@ -22,11 +22,11 @@ namespace ControleFinanceiro.Web.Controllers
         {
             int usuarioId = 1; // Substitua pelo ID do usuário autenticado
 
-            var totalReceitas = _transacaoUseCase.ObterTotalReceitas(usuarioId);
-            var totalDespesas = _transacaoUseCase.ObterTotalDespesas(usuarioId);
+            var totalReceitas = _transacaoService.ObterTotalReceitas(usuarioId);
+            var totalDespesas = _transacaoService.ObterTotalDespesas(usuarioId);
             var saldoAtual = totalReceitas - totalDespesas;
-            var totalGastosFixos = _gastoFixoUseCase.ObterTotalGastosFixos(usuarioId);
-            var ultimasTransacoes = _transacaoUseCase
+            var totalGastosFixos = _gastoFixoService.ObterTotalGastosFixos(usuarioId);
+            var ultimasTransacoes = _transacaoService
                                     .ListarTodos(usuarioId)
                                     .OrderByDescending(t => t.DataTransacao)
                                     .Take(5)

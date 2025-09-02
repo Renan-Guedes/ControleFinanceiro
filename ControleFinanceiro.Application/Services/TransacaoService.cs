@@ -2,13 +2,13 @@
 using ControleFinanceiro.Domain.Interfaces;
 using ControleFinanceiro.Domain.Models;
 
-namespace ControleFinanceiro.Application.UseCase;
+namespace ControleFinanceiro.Application.Service;
 
-public class TransacaoUseCase : ITransacaoUseCase
+public class TransacaoService : ITransacaoService
 {
     private readonly ITransacaoRepository _transacaoRepository;
 
-    public TransacaoUseCase(ITransacaoRepository transacaoRepository)
+    public TransacaoService(ITransacaoRepository transacaoRepository)
     {
         _transacaoRepository = transacaoRepository;
     }

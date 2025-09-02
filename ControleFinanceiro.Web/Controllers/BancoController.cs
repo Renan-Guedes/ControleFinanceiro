@@ -1,5 +1,5 @@
 ﻿using ControleFinanceiro.Application.Interfaces;
-using ControleFinanceiro.Application.UseCase;
+using ControleFinanceiro.Application.Service;
 using ControleFinanceiro.Domain.Models;
 using ControleFinanceiro.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +9,10 @@ namespace ControleFinanceiro.Web.Controllers
 {
     public class BancoController : Controller
     {
-        private readonly IBancoUseCase _bancoUseCase;
+        private readonly IBancoService _bancoService;
 
-        public BancoController(IBancoUseCase bancoUseCase)
-            => _bancoUseCase = bancoUseCase;
+        public BancoController(IBancoService bancoService)
+            => _bancoService = bancoService;
 
 
         // GET: /Banco
@@ -20,7 +20,7 @@ namespace ControleFinanceiro.Web.Controllers
         {
             int usuarioId = 1; // Substitua pelo ID do usuário autenticado
 
-            var bancos = _bancoUseCase
+            var bancos = _bancoService
                 .ListarTodos(usuarioId)
                 .ToList();
 
@@ -61,7 +61,7 @@ namespace ControleFinanceiro.Web.Controllers
                     Ativo = vm.Ativo
                 };
 
-                _bancoUseCase.Criar(novoBanco);
+                _bancoService.Criar(novoBanco);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -77,7 +77,7 @@ namespace ControleFinanceiro.Web.Controllers
         {
             int usuarioid = 1; // Substitua pelo ID do usuário autenticado
 
-            var banco = _bancoUseCase
+            var banco = _bancoService
                 .BuscarPorId(bancoId, usuarioid);
 
             if (banco == null)
@@ -105,7 +105,7 @@ namespace ControleFinanceiro.Web.Controllers
                 if (!ModelState.IsValid)
                     return View(vm);
 
-                var bancoExistente = _bancoUseCase
+                var bancoExistente = _bancoService
                     .BuscarPorId(vm.Id, usuarioId);
 
                 if (bancoExistente == null)
@@ -113,7 +113,7 @@ namespace ControleFinanceiro.Web.Controllers
 
                 bancoExistente.Nome = vm.Nome;
                 bancoExistente.Ativo = vm.Ativo;
-                _bancoUseCase.Atualizar(bancoExistente);
+                _bancoService.Atualizar(bancoExistente);
 
                 return RedirectToAction(nameof(Index));
 
@@ -130,7 +130,7 @@ namespace ControleFinanceiro.Web.Controllers
         {
             int usuarioId = 1; // Substitua pelo ID do usuário autenticado
 
-            var banco = _bancoUseCase
+            var banco = _bancoService
                 .BuscarPorId(bancoId, usuarioId);
 
             if (banco == null)
@@ -156,13 +156,13 @@ namespace ControleFinanceiro.Web.Controllers
 
             try
             {
-                var banco = _bancoUseCase
+                var banco = _bancoService
                     .BuscarPorId(bancoId, usuarioId);
 
                 if (banco == null)
                     return NotFound();
 
-                _bancoUseCase.Deletar(bancoId, usuarioId);
+                _bancoService.Deletar(bancoId, usuarioId);
 
                 return RedirectToAction(nameof(Index));
             }

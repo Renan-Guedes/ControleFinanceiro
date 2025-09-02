@@ -2,7 +2,7 @@
 
 namespace ControleFinanceiro.Application.Interfaces;
 
-public interface IBancoUseCase
+public interface IBancoService
 {
     List<BancoModel> ListarTodos(int usuarioId);
     BancoModel? BuscarPorId(int bancoId, int usuarioId);

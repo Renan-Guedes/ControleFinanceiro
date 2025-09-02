@@ -2,7 +2,7 @@
 
 namespace ControleFinanceiro.Application.Interfaces;
 
-public interface IGastoFixoUseCase
+public interface IGastoFixoService
 {
     List<GastoFixoModel> ListarTodos(int usuarioId, int? bancoId = null, int? categoriaId = null, int? tipoTransacaoId = null);
 

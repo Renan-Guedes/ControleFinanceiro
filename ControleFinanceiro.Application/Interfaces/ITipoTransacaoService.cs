@@ -2,7 +2,7 @@
 
 namespace ControleFinanceiro.Domain.Interfaces;
 
-public interface ITipoTransacaoUseCase
+public interface ITipoTransacaoService
 {
     List<TipoTransacaoModel> ListarTodos();
 }

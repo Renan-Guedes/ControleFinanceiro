@@ -9,10 +9,10 @@ namespace ControleFinanceiro.Web.Controllers
 {
     public class CategoriaController : Controller
     {
-        private readonly ICategoriaUseCase _categoriaUseCase;
+        private readonly ICategoriaService _categoriaService;
 
-        public CategoriaController(ICategoriaUseCase categoriaUseCase)
-            => _categoriaUseCase = categoriaUseCase;
+        public CategoriaController(ICategoriaService categoriaService)
+            => _categoriaService = categoriaService;
         
 
         // GET: /Categoria        
@@ -20,7 +20,7 @@ namespace ControleFinanceiro.Web.Controllers
         {
             int usuarioId = 1; // Substitua pelo ID do usuário autenticado
 
-            var categorias = _categoriaUseCase.ListarTodos(usuarioId);
+            var categorias = _categoriaService.ListarTodos(usuarioId);
 
             var vm = categorias.Select(c => new CategoriaViewModel
             {
@@ -58,7 +58,7 @@ namespace ControleFinanceiro.Web.Controllers
                     TipoTransacaoId = vm.TipoTransacaoId
                 };
 
-                _categoriaUseCase.Criar(novaCategoria);
+                _categoriaService.Criar(novaCategoria);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -73,7 +73,7 @@ namespace ControleFinanceiro.Web.Controllers
         {
             int usuarioId = 1; // Substitua pelo ID do usuário autenticado
 
-            var categoria = _categoriaUseCase
+            var categoria = _categoriaService
                 .BuscarPorId(categoriaId, usuarioId);
 
             if (categoria == null)
@@ -108,7 +108,7 @@ namespace ControleFinanceiro.Web.Controllers
                 if (!ModelState.IsValid)
                     return View(vm);
 
-                var categoria = _categoriaUseCase
+                var categoria = _categoriaService
                     .BuscarPorId(vm.Id, usuarioId);
 
                 if (categoria == null)
@@ -118,7 +118,7 @@ namespace ControleFinanceiro.Web.Controllers
                 categoria.Ativo = vm.Ativo;
                 categoria.TipoTransacaoId = vm.TipoTransacaoId;
 
-                _categoriaUseCase.Atualizar(categoria);
+                _categoriaService.Atualizar(categoria);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -135,12 +135,12 @@ namespace ControleFinanceiro.Web.Controllers
         {
             int usuarioId = 1; // Substitua pelo ID do usuário autenticado
 
-            var categoria = _categoriaUseCase.BuscarPorId(categoriaId, usuarioId);
+            var categoria = _categoriaService.BuscarPorId(categoriaId, usuarioId);
 
             if (categoria == null) 
                 return NotFound(new { mensagem = "Categoria não encontrada." });
 
-            _categoriaUseCase.Deletar(categoriaId, usuarioId);
+            _categoriaService.Deletar(categoriaId, usuarioId);
             return Ok(new { mensagem = "Categoria excluída com sucesso!" });
         }
     }

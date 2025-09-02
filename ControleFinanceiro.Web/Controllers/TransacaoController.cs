@@ -8,17 +8,17 @@ namespace ControleFinanceiro.Web.Controllers
 {
     public class TransacaoController : Controller
     {
-        private readonly ITransacaoUseCase _transacaoUseCase;
-        private readonly ICategoriaUseCase _categoriaUseCase;
-        private readonly ITipoTransacaoUseCase _tipoTransacaoUseCase;
-        private readonly IBancoUseCase _bancoUseCase;
+        private readonly ITransacaoService _transacaoService;
+        private readonly ICategoriaService _categoriaService;
+        private readonly ITipoTransacaoService _tipoTransacaoService;
+        private readonly IBancoService _bancoService;
 
-        public TransacaoController(ITransacaoUseCase transacaoUseCase, ICategoriaUseCase categoriaUseCase, ITipoTransacaoUseCase tipoTransacaoUseCase, IBancoUseCase bancoUseCase)
+        public TransacaoController(ITransacaoService transacaoService, ICategoriaService categoriaService, ITipoTransacaoService tipoTransacaoService, IBancoService bancoService)
         {
-            _transacaoUseCase = transacaoUseCase;
-            _categoriaUseCase = categoriaUseCase;
-            _tipoTransacaoUseCase = tipoTransacaoUseCase;
-            _bancoUseCase = bancoUseCase;
+            _transacaoService = transacaoService;
+            _categoriaService = categoriaService;
+            _tipoTransacaoService = tipoTransacaoService;
+            _bancoService = bancoService;
         }
 
         // GET: /Transacao
@@ -26,7 +26,7 @@ namespace ControleFinanceiro.Web.Controllers
         {
             int usuarioId = 1; // Substitua pelo ID do usuário autenticado
 
-            var transacoes = _transacaoUseCase
+            var transacoes = _transacaoService
                 .ListarTodos(usuarioId)
                 .ToList();
 
@@ -88,7 +88,7 @@ namespace ControleFinanceiro.Web.Controllers
                     DataTransacao = vm.DataTransacao
                 };
 
-                _transacaoUseCase.Criar(novaTransacao);
+                _transacaoService.Criar(novaTransacao);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -105,7 +105,7 @@ namespace ControleFinanceiro.Web.Controllers
         {
             int usuarioId = 1; // Substitua pelo ID do usuário autenticado
 
-            var transacao = _transacaoUseCase
+            var transacao = _transacaoService
                 .BuscarPorId(transacaoId, usuarioId);
 
             if (transacao == null)
@@ -157,7 +157,7 @@ namespace ControleFinanceiro.Web.Controllers
                 DataTransacao = transacaoViewModel.DataTransacao
             };
 
-            _transacaoUseCase.Atualizar(transacao);
+            _transacaoService.Atualizar(transacao);
 
             return RedirectToAction("Index");
         }
@@ -167,7 +167,7 @@ namespace ControleFinanceiro.Web.Controllers
         {
             var usuarioId = 1; // Substitua pelo ID do usuário autenticado
 
-            var transacao = _transacaoUseCase
+            var transacao = _transacaoService
                 .BuscarPorId(transacaoId, usuarioId);
 
             if (transacao == null) return NotFound();
@@ -193,13 +193,13 @@ namespace ControleFinanceiro.Web.Controllers
 
             try
             {
-                var transacao = _transacaoUseCase
+                var transacao = _transacaoService
                     .BuscarPorId(transacaoId, usuarioId);
 
                 if (transacao == null)
                     return NotFound();
 
-                _transacaoUseCase.Deletar(transacaoId, usuarioId);
+                _transacaoService.Deletar(transacaoId, usuarioId);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -212,15 +212,15 @@ namespace ControleFinanceiro.Web.Controllers
 
         private void PreencherViewBags(int usuarioId)
         {
-            ViewBag.Categorias = _categoriaUseCase
+            ViewBag.Categorias = _categoriaService
                 .ListarTodos(usuarioId)
                 .ToList();
 
-            ViewBag.TipoTransacao = _tipoTransacaoUseCase
+            ViewBag.TipoTransacao = _tipoTransacaoService
                 .ListarTodos()
                 .ToList();
 
-            ViewBag.Bancos = _bancoUseCase
+            ViewBag.Bancos = _bancoService
                 .ListarTodos(usuarioId)
                 .ToList();
         }

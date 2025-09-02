@@ -2,13 +2,13 @@
 using ControleFinanceiro.Domain.Interfaces;
 using ControleFinanceiro.Domain.Models;
 
-namespace ControleFinanceiro.Application.UseCase;
+namespace ControleFinanceiro.Application.Service;
 
-public class CarteiraUseCase : ICarteiraUseCase
+public class CarteiraService : ICarteiraService
 {
     private readonly ICarteiraRepository _repository;
 
-    public CarteiraUseCase(ICarteiraRepository repository)
+    public CarteiraService(ICarteiraRepository repository)
     {
         _repository = repository;
     }

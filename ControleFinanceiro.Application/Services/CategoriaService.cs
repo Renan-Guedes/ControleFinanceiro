@@ -2,13 +2,13 @@
 using ControleFinanceiro.Domain.Interfaces;
 using ControleFinanceiro.Domain.Models;
 
-namespace ControleFinanceiro.Application.UseCase;
+namespace ControleFinanceiro.Application.Service;
 
-public class CategoriaUseCase : ICategoriaUseCase
+public class CategoriaService : ICategoriaService
 {
     private readonly ICategoriaRepository _repository;
 
-    public CategoriaUseCase(ICategoriaRepository repository)
+    public CategoriaService(ICategoriaRepository repository)
     {
         _repository = repository;
     }

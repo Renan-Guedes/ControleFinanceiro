@@ -2,13 +2,13 @@
 using ControleFinanceiro.Domain.Interfaces;
 using ControleFinanceiro.Domain.Models;
 
-namespace ControleFinanceiro.Application.UseCase;
+namespace ControleFinanceiro.Application.Service;
 
-public class GastoFixoUseCase : IGastoFixoUseCase
+public class GastoFixoService : IGastoFixoService
 {
     private readonly IGastoFixoRepository _repository;
 
-    public GastoFixoUseCase(IGastoFixoRepository repository)
+    public GastoFixoService(IGastoFixoRepository repository)
     {
         _repository = repository;
     }

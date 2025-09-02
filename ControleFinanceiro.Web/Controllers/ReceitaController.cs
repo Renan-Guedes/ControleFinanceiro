@@ -1,5 +1,5 @@
 ﻿using ControleFinanceiro.Application.Interfaces;
-using ControleFinanceiro.Application.UseCase;
+using ControleFinanceiro.Application.Service;
 using ControleFinanceiro.Domain.Interfaces;
 using ControleFinanceiro.Domain.Models;
 using ControleFinanceiro.Web.ViewModels;
@@ -13,17 +13,17 @@ namespace ControleFinanceiro.Web.Controllers
 {
     public class ReceitaController : Controller
     {
-        private readonly ITransacaoUseCase _transacaoUseCase;
-        private readonly ICategoriaUseCase _categoriaUseCase;
-        private readonly ITipoTransacaoUseCase _tipoTransacaoUseCase;
-        private readonly IBancoUseCase _bancoUseCase;
+        private readonly ITransacaoService _transacaoService;
+        private readonly ICategoriaService _categoriaService;
+        private readonly ITipoTransacaoService _tipoTransacaoService;
+        private readonly IBancoService _bancoService;
 
-        public ReceitaController(ITransacaoUseCase transacaoUseCase, ICategoriaUseCase categoriaUseCase, ITipoTransacaoUseCase tipoTransacaoUseCase, IBancoUseCase bancoUseCase)
+        public ReceitaController(ITransacaoService transacaoService, ICategoriaService categoriaService, ITipoTransacaoService tipoTransacaoService, IBancoService bancoService)
         {
-            _transacaoUseCase = transacaoUseCase;
-            _categoriaUseCase = categoriaUseCase;
-            _tipoTransacaoUseCase = tipoTransacaoUseCase;
-            _bancoUseCase = bancoUseCase;
+            _transacaoService = transacaoService;
+            _categoriaService = categoriaService;
+            _tipoTransacaoService = tipoTransacaoService;
+            _bancoService = bancoService;
         }
 
 
@@ -32,7 +32,7 @@ namespace ControleFinanceiro.Web.Controllers
         {
             int usuarioId = 1; // Trocar pelo usuário autenticado
 
-            var receitas = _transacaoUseCase.ListarTodasAsReceitas(usuarioId);
+            var receitas = _transacaoService.ListarTodasAsReceitas(usuarioId);
 
             var vm = receitas.Select(r => new TransacaoViewModel()
             {
@@ -81,7 +81,7 @@ namespace ControleFinanceiro.Web.Controllers
                     DataTransacao = viewModel.DataTransacao
                 };
 
-                _transacaoUseCase.Criar(receita);
+                _transacaoService.Criar(receita);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -95,7 +95,7 @@ namespace ControleFinanceiro.Web.Controllers
         {
             var usuarioId = 1; // Trocar pelo usuário autenticado
 
-            var transacao = _transacaoUseCase.BuscarPorId(receitaId, usuarioId);
+            var transacao = _transacaoService.BuscarPorId(receitaId, usuarioId);
             if (transacao == null) return NotFound();
 
             var vm = new TransacaoViewModel
@@ -117,7 +117,7 @@ namespace ControleFinanceiro.Web.Controllers
         public IActionResult Editar(int receitaId)
         {
             int usuarioId = 1; // Usuário autenticado
-            var transacao = _transacaoUseCase.BuscarPorId(receitaId, usuarioId);
+            var transacao = _transacaoService.BuscarPorId(receitaId, usuarioId);
             if (transacao == null) return NotFound();
 
             var vm = new TransacaoViewModel
@@ -161,7 +161,7 @@ namespace ControleFinanceiro.Web.Controllers
                 DataTransacao = vm.DataTransacao
             };
 
-            _transacaoUseCase.Atualizar(receita);
+            _transacaoService.Atualizar(receita);
 
             return RedirectToAction("Index");
         }
@@ -173,30 +173,30 @@ namespace ControleFinanceiro.Web.Controllers
         {
             var usuarioId = 1; // Trocar pelo usuário autenticado
 
-            var transacao = _transacaoUseCase.BuscarPorId(receitaId, usuarioId);
+            var transacao = _transacaoService.BuscarPorId(receitaId, usuarioId);
             if (transacao == null)
                 return NotFound(new { mensagem = "Receita não encontrada." });
 
-            _transacaoUseCase.Deletar(receitaId, usuarioId);
+            _transacaoService.Deletar(receitaId, usuarioId);
             return Ok(new { mensagem = "Receita excluída com sucesso." });
         }
 
         private void PreencherViewBags(int usuarioId)
         {
             ViewBag.Categorias = new SelectList(
-                _categoriaUseCase.ListarTodos(usuarioId).ToList(),
+                _categoriaService.ListarTodos(usuarioId).ToList(),
                 "Id",
                 "Nome"
             );
 
             ViewBag.TipoTransacao = new SelectList(
-                _tipoTransacaoUseCase.ListarTodos().ToList(),
+                _tipoTransacaoService.ListarTodos().ToList(),
                 "Id",
                 "Nome"
             );
 
             ViewBag.Bancos = new SelectList(
-                _bancoUseCase.ListarTodos(usuarioId).ToList(),
+                _bancoService.ListarTodos(usuarioId).ToList(),
                 "Id",
                 "Nome"
             );

@@ -1,5 +1,5 @@
 using ControleFinanceiro.Application.Interfaces;
-using ControleFinanceiro.Application.UseCase;
+using ControleFinanceiro.Application.Service;
 using ControleFinanceiro.Domain.Interfaces;
 using ControleFinanceiro.Infra;
 using ControleFinanceiro.Infra.Data;
@@ -30,27 +30,27 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Registra os serviços de aplicação //
 
 // Categoria
-builder.Services.AddScoped<ICategoriaUseCase, CategoriaUseCase>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 
 // Transação
-builder.Services.AddScoped<ITransacaoUseCase, TransacaoUseCase>();
+builder.Services.AddScoped<ITransacaoService, TransacaoService>();
 builder.Services.AddScoped<ITransacaoRepository, TransacaoRepository>();
 
 // Tipo de Transação
-builder.Services.AddScoped<ITipoTransacaoUseCase, TipoTransacaoUseCase>();
+builder.Services.AddScoped<ITipoTransacaoService, TipoTransacaoService>();
 builder.Services.AddScoped<ITipoTransacaoRepository, TipoTransacaoRepository>();
 
 // Banco
-builder.Services.AddScoped<IBancoUseCase, BancoUseCase>();
+builder.Services.AddScoped<IBancoService, BancoService>();
 builder.Services.AddScoped<IBancoRepository, BancoRepository>();
 
 // Carteira
-builder.Services.AddScoped<ICarteiraUseCase, CarteiraUseCase>();
+builder.Services.AddScoped<ICarteiraService, CarteiraService>();
 builder.Services.AddScoped<ICarteiraRepository, CarteiraRepository>();
 
 // Gastos Fixos
-builder.Services.AddScoped<IGastoFixoUseCase, GastoFixoUseCase>();
+builder.Services.AddScoped<IGastoFixoService, GastoFixoService>();
 builder.Services.AddScoped<IGastoFixoRepository, GastoFixoRepository>();
 
 var app = builder.Build();

@@ -2,7 +2,7 @@
 
 namespace ControleFinanceiro.Application.Interfaces;
 
-public interface ITransacaoUseCase
+public interface ITransacaoService
 {
     List<TransacaoModel> ListarTodos(int usuarioId);
 

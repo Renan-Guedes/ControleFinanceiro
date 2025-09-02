@@ -1,5 +1,5 @@
 ﻿using ControleFinanceiro.Application.Interfaces;
-using ControleFinanceiro.Application.UseCase;
+using ControleFinanceiro.Application.Service;
 using ControleFinanceiro.Domain.Models;
 using ControleFinanceiro.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,15 +9,15 @@ namespace ControleFinanceiro.Web.Controllers
 {
     public class GastoFixoController : Controller
     {
-        private readonly IGastoFixoUseCase _gastoFixoUseCase;
-        private readonly IBancoUseCase _bancoUseCase;
-        private readonly ICategoriaUseCase _categoriaUseCase;
+        private readonly IGastoFixoService _gastoFixoService;
+        private readonly IBancoService _bancoService;
+        private readonly ICategoriaService _categoriaService;
 
-        public GastoFixoController(IGastoFixoUseCase gastoFixoUseCase, IBancoUseCase bancoUseCase, ICategoriaUseCase categoriaUseCase)
+        public GastoFixoController(IGastoFixoService gastoFixoService, IBancoService bancoService, ICategoriaService categoriaService)
         { 
-            _gastoFixoUseCase = gastoFixoUseCase; 
-            _bancoUseCase = bancoUseCase;
-            _categoriaUseCase = categoriaUseCase;
+            _gastoFixoService = gastoFixoService; 
+            _bancoService = bancoService;
+            _categoriaService = categoriaService;
         }
         
 
@@ -26,7 +26,7 @@ namespace ControleFinanceiro.Web.Controllers
         {
             int usuarioId = 1; // Substituir depois com o usuário logado
 
-            var gastosFixos = _gastoFixoUseCase
+            var gastosFixos = _gastoFixoService
                 .ListarTodos(usuarioId);
 
             var vm = gastosFixos
@@ -74,7 +74,7 @@ namespace ControleFinanceiro.Web.Controllers
                     Valor = vm.Valor
                 };
 
-                _gastoFixoUseCase.Criar(gastoFixo);
+                _gastoFixoService.Criar(gastoFixo);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -88,8 +88,8 @@ namespace ControleFinanceiro.Web.Controllers
 
         private void PreencherViewBags(int usuarioId)
         {
-            var bancos = _bancoUseCase.ListarTodos(usuarioId).ToList();
-            var categorias = _categoriaUseCase.ListarTodos(usuarioId).ToList();
+            var bancos = _bancoService.ListarTodos(usuarioId).ToList();
+            var categorias = _categoriaService.ListarTodos(usuarioId).ToList();
 
             ViewBag.Bancos = new SelectList(bancos, "Id", "Nome");
             ViewBag.Categorias = new SelectList(categorias, "Id", "Nome");

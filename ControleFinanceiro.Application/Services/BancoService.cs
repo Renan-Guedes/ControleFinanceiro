@@ -2,13 +2,13 @@
 using ControleFinanceiro.Domain.Interfaces;
 using ControleFinanceiro.Domain.Models;
 
-namespace ControleFinanceiro.Application.UseCase;
+namespace ControleFinanceiro.Application.Service;
 
-public class BancoUseCase : IBancoUseCase
+public class BancoService : IBancoService
 {
     private readonly IBancoRepository _bancoRepository;
 
-    public BancoUseCase(IBancoRepository bancoRepository)
+    public BancoService(IBancoRepository bancoRepository)
     {
         _bancoRepository = bancoRepository;
     }

@@ -2,7 +2,7 @@
 
 namespace ControleFinanceiro.Application.Interfaces;
 
-public interface ICarteiraUseCase
+public interface ICarteiraService
 {
     List<CarteiraModel> ListarTodos(int usuarioId);
 
