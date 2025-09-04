@@ -10,7 +10,7 @@ public class TransacaoModel
 
     public CategoriaModel? Categoria { get; set; }
 
-    public int TipoTransacaoId { get; set; } = 2; // Despesa por padrão
+    public int TipoTransacaoId { get; set; }
 
     public TipoTransacaoModel? TipoTransacao { get; set; }
 
@@ -21,6 +21,14 @@ public class TransacaoModel
     public int UsuarioId { get; set; }
 
     public UsuarioModel? Usuario { get; set; }
+
+    public int CarteiraId { get; set; }
+
+    public CarteiraModel? Carteira { get; set; }
+
+    public int? GastoFixoId { get; set; }
+
+    public GastoFixoModel? GastoFixo { get; set; }
 
     #endregion
 

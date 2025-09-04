@@ -17,6 +17,32 @@ public class TransacaoRepository : ITransacaoRepository
 
     public void Criar(TransacaoModel transacaoModel)
     {
+        var anoAtual = DateTime.Now.Year;
+        var mesAtual = DateTime.Now.Month;
+
+        var carteiraAtual = _db.Carteiras
+            .FirstOrDefault(c => c.UsuarioId == transacaoModel.UsuarioId
+                              && c.Ano == anoAtual
+                              && c.Mes == mesAtual
+                              && c.DataExclusao == null);
+
+        // Se não houver carteira no mês vigente, cria uma nova
+        if (carteiraAtual == null)
+        {
+            carteiraAtual = new CarteiraModel
+            {
+                UsuarioId = transacaoModel.UsuarioId,
+                BancoId = transacaoModel.BancoId,
+                Ano = anoAtual,
+                Mes = mesAtual,
+                SaldoInicial = 0
+            };
+
+            _db.Carteiras.Add(carteiraAtual);
+        }
+
+        transacaoModel.Carteira = carteiraAtual;
+
         _db.Transacoes.Add(transacaoModel);
         _db.SaveChanges();
     }
@@ -53,6 +79,8 @@ public class TransacaoRepository : ITransacaoRepository
             .Include(c => c.Categoria)
             .Include(t => t.TipoTransacao)
             .Include(b => b.Banco)
+            .Include(c => c.Carteira)
+            .Include(g => g.GastoFixo)
             .ToList();
     }
 

@@ -16,4 +16,6 @@ public interface IGastoFixoRepository
     void Deletar(int gastoFixoId, int usuarioId);
 
     decimal ObterTotalGastosFixos(int usuarioId);
+
+    decimal ObterContasEmAberto(int usuarioId);
 }

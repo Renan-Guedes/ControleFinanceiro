@@ -22,9 +22,11 @@ public class GastoFixoModel
 
     public UsuarioModel? Usuario { get; set; }
 
-    public int CarteiraId { get; set; }
+    #endregion
 
-    public CarteiraModel? Carteira { get; set; }
+    #region Collections
+
+    public ICollection<TransacaoModel> Transacoes { get; set; } = new List<TransacaoModel>();
 
     #endregion
 

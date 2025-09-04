@@ -69,4 +69,25 @@ public class GastoFixoRepository : IGastoFixoRepository
 
         return totalGastosFixos.Any() ? totalGastosFixos.Sum(g => g.Valor) : 0;
     }
+
+    public decimal ObterContasEmAberto(int usuarioId)
+    {
+        var sql = @"
+        SELECT COALESCE(SUM(gf.Valor), 0) 
+        FROM GastoFixo gf
+        WHERE gf.UsuarioId = {0}
+          AND gf.DataExclusao IS NULL
+          AND gf.TipoTransacaoId = 2
+          AND NOT EXISTS (
+              SELECT 1 
+              FROM Transacao t
+              WHERE t.GastoFixoId = gf.Id
+                AND t.DataExclusao IS NULL
+          )";
+
+        return _db.Database
+                  .SqlQueryRaw<decimal>(sql, usuarioId)
+                  .AsEnumerable()
+                  .FirstOrDefault();
+    }
 }

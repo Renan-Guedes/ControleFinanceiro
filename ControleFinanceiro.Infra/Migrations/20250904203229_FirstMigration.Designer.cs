@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ControleFinanceiro.Infra.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250902205843_FirstMigration")]
+    [Migration("20250904203229_FirstMigration")]
     partial class FirstMigration
     {
         /// <inheritdoc />
@@ -158,9 +158,6 @@ namespace ControleFinanceiro.Infra.Migrations
                     b.Property<int>("BancoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CarteiraId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CategoriaId")
                         .HasColumnType("int");
 
@@ -191,8 +188,6 @@ namespace ControleFinanceiro.Infra.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BancoId");
-
-                    b.HasIndex("CarteiraId");
 
                     b.HasIndex("CategoriaId");
 
@@ -257,6 +252,9 @@ namespace ControleFinanceiro.Infra.Migrations
                     b.Property<int>("BancoId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CarteiraId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CategoriaId")
                         .HasColumnType("int");
 
@@ -284,6 +282,9 @@ namespace ControleFinanceiro.Infra.Migrations
                     b.Property<bool>("Fatura")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int?>("GastoFixoId")
+                        .HasColumnType("int");
+
                     b.Property<int>("TipoTransacaoId")
                         .HasColumnType("int");
 
@@ -300,7 +301,11 @@ namespace ControleFinanceiro.Infra.Migrations
 
                     b.HasIndex("BancoId");
 
+                    b.HasIndex("CarteiraId");
+
                     b.HasIndex("CategoriaId");
+
+                    b.HasIndex("GastoFixoId");
 
                     b.HasIndex("TipoTransacaoId");
 
@@ -407,12 +412,6 @@ namespace ControleFinanceiro.Infra.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("ControleFinanceiro.Domain.Models.CarteiraModel", "Carteira")
-                        .WithMany("GastosFixos")
-                        .HasForeignKey("CarteiraId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ControleFinanceiro.Domain.Models.CategoriaModel", "Categoria")
                         .WithMany("GastosFixos")
                         .HasForeignKey("CategoriaId")
@@ -432,8 +431,6 @@ namespace ControleFinanceiro.Infra.Migrations
                         .IsRequired();
 
                     b.Navigation("Banco");
-
-                    b.Navigation("Carteira");
 
                     b.Navigation("Categoria");
 
@@ -450,11 +447,22 @@ namespace ControleFinanceiro.Infra.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("ControleFinanceiro.Domain.Models.CarteiraModel", "Carteira")
+                        .WithMany("Transacoes")
+                        .HasForeignKey("CarteiraId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("ControleFinanceiro.Domain.Models.CategoriaModel", "Categoria")
                         .WithMany("Transacoes")
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("ControleFinanceiro.Domain.Models.GastoFixoModel", "GastoFixo")
+                        .WithMany("Transacoes")
+                        .HasForeignKey("GastoFixoId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("ControleFinanceiro.Domain.Models.TipoTransacaoModel", "TipoTransacao")
                         .WithMany("Transacoes")
@@ -470,7 +478,11 @@ namespace ControleFinanceiro.Infra.Migrations
 
                     b.Navigation("Banco");
 
+                    b.Navigation("Carteira");
+
                     b.Navigation("Categoria");
+
+                    b.Navigation("GastoFixo");
 
                     b.Navigation("TipoTransacao");
 
@@ -486,13 +498,18 @@ namespace ControleFinanceiro.Infra.Migrations
 
             modelBuilder.Entity("ControleFinanceiro.Domain.Models.CarteiraModel", b =>
                 {
-                    b.Navigation("GastosFixos");
+                    b.Navigation("Transacoes");
                 });
 
             modelBuilder.Entity("ControleFinanceiro.Domain.Models.CategoriaModel", b =>
                 {
                     b.Navigation("GastosFixos");
 
+                    b.Navigation("Transacoes");
+                });
+
+            modelBuilder.Entity("ControleFinanceiro.Domain.Models.GastoFixoModel", b =>
+                {
                     b.Navigation("Transacoes");
                 });
 

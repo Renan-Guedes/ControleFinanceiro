@@ -35,6 +35,15 @@ public class TransacaoConfiguration : IEntityTypeConfiguration<TransacaoModel>
             .HasForeignKey(t => t.TipoTransacaoId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasOne(t => t.Carteira)
+            .WithMany(t => t.Transacoes)
+            .HasForeignKey(t => t.CarteiraId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(t => t.GastoFixo)
+            .WithMany(t => t.Transacoes)
+            .HasForeignKey(t => t.GastoFixoId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         // Configuração de DataInclusao
         builder.Property(t => t.DataInclusao).HasDefaultValueSql("GETDATE()");

@@ -1,4 +1,6 @@
-﻿namespace ControleFinanceiro.Domain.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ControleFinanceiro.Domain.Models;
 
 public class CarteiraModel
 {
@@ -18,13 +20,13 @@ public class CarteiraModel
 
     #region Collections
 
-    public ICollection<GastoFixoModel> GastosFixos { get; set; } = new List<GastoFixoModel>();
+    public ICollection<TransacaoModel> Transacoes { get; set; } = new List<TransacaoModel>();
 
     #endregion
 
-    public int Ano { get; set; }
+    public int Ano { get; set; } = DateTime.Now.Year;
 
-    public int Mes { get; set; }
+    public int Mes { get; set; } = DateTime.Now.Month;
 
     public decimal SaldoInicial { get; set; }
 

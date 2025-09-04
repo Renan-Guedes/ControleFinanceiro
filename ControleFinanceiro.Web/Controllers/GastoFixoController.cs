@@ -12,12 +12,14 @@ namespace ControleFinanceiro.Web.Controllers
         private readonly IGastoFixoService _gastoFixoService;
         private readonly IBancoService _bancoService;
         private readonly ICategoriaService _categoriaService;
+        private readonly ITransacaoService _transacaoService;
 
-        public GastoFixoController(IGastoFixoService gastoFixoService, IBancoService bancoService, ICategoriaService categoriaService)
+        public GastoFixoController(IGastoFixoService gastoFixoService, IBancoService bancoService, ICategoriaService categoriaService, ITransacaoService transacaoService)
         { 
             _gastoFixoService = gastoFixoService; 
             _bancoService = bancoService;
             _categoriaService = categoriaService;
+            _transacaoService = transacaoService;
         }
         
 
@@ -28,6 +30,12 @@ namespace ControleFinanceiro.Web.Controllers
 
             var gastosFixos = _gastoFixoService
                 .ListarTodos(usuarioId);
+
+            // Pega todos os IDs de gasto fixo que têm transação
+            var transacoesIds = _transacaoService.ListarTodos(usuarioId)
+                .Where(t => t.GastoFixoId.HasValue)
+                .Select(t => t.GastoFixoId!.Value)
+                .ToHashSet();
 
             var vm = gastosFixos
                 .Select(g => new GastoFixoViewModel
@@ -40,7 +48,8 @@ namespace ControleFinanceiro.Web.Controllers
                     BancoNome = g.Banco?.Nome ?? "Banco não encontrado",
                     UsuarioId = g.UsuarioId,
                     Descricao = g.Descricao ?? string.Empty,
-                    Valor = g.Valor
+                    Valor = g.Valor,
+                    IsPago = transacoesIds.Contains(g.Id)
                 })
                 .ToList();
 
@@ -93,6 +102,9 @@ namespace ControleFinanceiro.Web.Controllers
 
             ViewBag.Bancos = new SelectList(bancos, "Id", "Nome");
             ViewBag.Categorias = new SelectList(categorias, "Id", "Nome");
+
+            ViewBag.TotalGastosFixos = _gastoFixoService.ObterTotalGastosFixos(usuarioId).ToString("C2");
+            ViewBag.TotalContasEmAberto = _gastoFixoService.ObterContasEmAberto(usuarioId).ToString("C2");
         }
     }
 }

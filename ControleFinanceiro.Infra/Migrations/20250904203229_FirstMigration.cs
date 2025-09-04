@@ -150,6 +150,53 @@ namespace ControleFinanceiro.Infra.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "GastoFixo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CategoriaId = table.Column<int>(type: "int", nullable: false),
+                    TipoTransacaoId = table.Column<int>(type: "int", nullable: false),
+                    BancoId = table.Column<int>(type: "int", nullable: false),
+                    UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    Descricao = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Valor = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    DataInclusao = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DataExclusao = table.Column<DateTime>(type: "datetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GastoFixo", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GastoFixo_Banco_BancoId",
+                        column: x => x.BancoId,
+                        principalTable: "Banco",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GastoFixo_Categoria_CategoriaId",
+                        column: x => x.CategoriaId,
+                        principalTable: "Categoria",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GastoFixo_TipoTransacao_TipoTransacaoId",
+                        column: x => x.TipoTransacaoId,
+                        principalTable: "TipoTransacao",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GastoFixo_Usuario_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuario",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Transacao",
                 columns: table => new
                 {
@@ -159,6 +206,8 @@ namespace ControleFinanceiro.Infra.Migrations
                     TipoTransacaoId = table.Column<int>(type: "int", nullable: false),
                     BancoId = table.Column<int>(type: "int", nullable: false),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    CarteiraId = table.Column<int>(type: "int", nullable: false),
+                    GastoFixoId = table.Column<int>(type: "int", nullable: true),
                     Descricao = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Fatura = table.Column<bool>(type: "tinyint(1)", nullable: false),
@@ -180,9 +229,21 @@ namespace ControleFinanceiro.Infra.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
+                        name: "FK_Transacao_Carteira_CarteiraId",
+                        column: x => x.CarteiraId,
+                        principalTable: "Carteira",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Transacao_Categoria_CategoriaId",
                         column: x => x.CategoriaId,
                         principalTable: "Categoria",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Transacao_GastoFixo_GastoFixoId",
+                        column: x => x.GastoFixoId,
+                        principalTable: "GastoFixo",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -193,60 +254,6 @@ namespace ControleFinanceiro.Infra.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Transacao_Usuario_UsuarioId",
-                        column: x => x.UsuarioId,
-                        principalTable: "Usuario",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "GastoFixo",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CategoriaId = table.Column<int>(type: "int", nullable: false),
-                    TipoTransacaoId = table.Column<int>(type: "int", nullable: false),
-                    BancoId = table.Column<int>(type: "int", nullable: false),
-                    UsuarioId = table.Column<int>(type: "int", nullable: false),
-                    CarteiraId = table.Column<int>(type: "int", nullable: false),
-                    Descricao = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Valor = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    DataInclusao = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime", nullable: true),
-                    DataExclusao = table.Column<DateTime>(type: "datetime", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GastoFixo", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_GastoFixo_Banco_BancoId",
-                        column: x => x.BancoId,
-                        principalTable: "Banco",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_GastoFixo_Carteira_CarteiraId",
-                        column: x => x.CarteiraId,
-                        principalTable: "Carteira",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GastoFixo_Categoria_CategoriaId",
-                        column: x => x.CategoriaId,
-                        principalTable: "Categoria",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_GastoFixo_TipoTransacao_TipoTransacaoId",
-                        column: x => x.TipoTransacaoId,
-                        principalTable: "TipoTransacao",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_GastoFixo_Usuario_UsuarioId",
                         column: x => x.UsuarioId,
                         principalTable: "Usuario",
                         principalColumn: "Id",
@@ -294,11 +301,6 @@ namespace ControleFinanceiro.Infra.Migrations
                 column: "BancoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GastoFixo_CarteiraId",
-                table: "GastoFixo",
-                column: "CarteiraId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_GastoFixo_CategoriaId",
                 table: "GastoFixo",
                 column: "CategoriaId");
@@ -319,9 +321,19 @@ namespace ControleFinanceiro.Infra.Migrations
                 column: "BancoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Transacao_CarteiraId",
+                table: "Transacao",
+                column: "CarteiraId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transacao_CategoriaId",
                 table: "Transacao",
                 column: "CategoriaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transacao_GastoFixoId",
+                table: "Transacao",
+                column: "GastoFixoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transacao_TipoTransacaoId",
@@ -344,19 +356,19 @@ namespace ControleFinanceiro.Infra.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "GastoFixo");
-
-            migrationBuilder.DropTable(
                 name: "Transacao");
 
             migrationBuilder.DropTable(
                 name: "Carteira");
 
             migrationBuilder.DropTable(
-                name: "Categoria");
+                name: "GastoFixo");
 
             migrationBuilder.DropTable(
                 name: "Banco");
+
+            migrationBuilder.DropTable(
+                name: "Categoria");
 
             migrationBuilder.DropTable(
                 name: "TipoTransacao");

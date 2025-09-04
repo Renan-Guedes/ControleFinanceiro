@@ -30,4 +30,7 @@ public class GastoFixoService : IGastoFixoService
 
     public decimal ObterTotalGastosFixos(int usuarioId)
         => _repository.ObterTotalGastosFixos(usuarioId);
+
+    public decimal ObterContasEmAberto(int usuarioId)
+        => _repository.ObterContasEmAberto(usuarioId);
 }
