@@ -43,7 +43,7 @@ namespace ControleFinanceiro.Web.Controllers
                     UsuarioId = g.UsuarioId,
                     Descricao = g.Descricao ?? string.Empty,
                     Valor = g.Valor,
-                    IsPago = _transacaoService.ListarTodos(usuarioId).Any(t => t.GastoFixoId == g.Id)
+                    IsPago = _transacaoService.ListarTodos(usuarioId).Any(t => t.GastoFixoId == g.Id && g.DataExclusao == null)
                 })
                 .ToList();
 
@@ -56,7 +56,7 @@ namespace ControleFinanceiro.Web.Controllers
         // POST: CriarTransacao
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CriarTransacao(GastoFixoViewModel vm)
+        public IActionResult Criar(GastoFixoViewModel vm)
         {
             int usuarioId = 1;
             
@@ -88,6 +88,21 @@ namespace ControleFinanceiro.Web.Controllers
                 PreencherViewBags(usuarioId);
                 return View("Index", vm);
             }
+        }
+
+        // POST: Excluir
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Excluir([FromBody] int gastoFixoId)
+        {
+            var usuarioId = 1; // Trocar pelo usuário autenticado
+
+            var gastoFixo = _gastoFixoService.BuscarPorId(gastoFixoId, usuarioId);
+            if (gastoFixo == null)
+                return NotFound(new { mensagem = "Conta não encontrada." });
+
+            _gastoFixoService.Deletar(gastoFixoId, usuarioId);
+            return Ok(new { mensagem = "Conta excluída com sucesso." });
         }
 
         private void PreencherViewBags(int usuarioId)

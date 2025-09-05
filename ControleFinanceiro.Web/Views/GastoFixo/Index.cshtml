@@ -96,20 +96,22 @@
                         <td>
                             @if (!isPago)
                             {
-                                <button type="button" class="btn btn-sm @(item.TipoTransacaoId == 1 ? "btn-success" : "btn-danger")"
+                                <button type="button" class="btn btn-outline-success border-0"
                                         data-bs-toggle="modal"
                                         data-bs-target="@(item.TipoTransacaoId == 1 ? "#recebimentoModal" : "#pagamentoModal")"
                                         data-id="@item.Id"
                                         data-descricao="@item.Descricao"
                                         data-valor="@item.Valor"
                                         data-banco="@item.BancoNome">
-                                    💳 @(item.TipoTransacaoId == 1 ? "Receber" : "Pagar")
+                                    <i class="bi bi-cash"></i>
                                 </button>
                             }
                             else
                             {
-                                <button class="btn btn-sm btn-secondary" disabled>✔ Pago</button>
+                                <button class="btn btn-sm btn-secondary" disabled><i class="bi bi-check-circle-fill"></i> Pago</button>
                             }
+                            <button type="button" class="btn btn-outline-warning border-0"><i class="bi bi-pencil"></i></button>
+                            <a href="#" data-id="@item.Id" class="botao-Excluir btn btn-outline-danger border-0"><i class="bi bi-trash"></i></a>
                         </td>
                     </tr>
                 }
@@ -118,11 +120,16 @@
     </table>
 </div>
 
+<form id="form-excluir" method="post" asp-action="Excluir" asp-controller="GastoFixo">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="gastoFixoId" id="gastoFixoIdExcluir" />
+</form>
+
 <!-- Modal Cadastro/Atualização -->
 <div class="modal fade" id="gastoFixoModal" tabindex="-1" aria-labelledby="gastoFixoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form asp-action="CriarTransacao" method="post" id="formGastoFixo">
+            <form asp-action="Criar" method="post" id="formGastoFixo">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="gastoFixoModalLabel">Novo Gasto Fixo</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
@@ -255,80 +262,33 @@
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const filtro = document.getElementById("tipoTransacaoFiltro");
-            const limpar = document.getElementById("btnLimparFiltro");
-            const tabela = document.getElementById("gastosTableBody");
-            const filtroCard = document.getElementById("filtroGastoFixo");
-
-            function aplicarMascaraMoeda(input) {
-                input.addEventListener("input", (e) => {
-                    let value = e.target.value.replace(/\D/g, "");
-                    let numberValue = parseFloat(value) / 100;
-                    if (!isNaN(numberValue)) {
-                        e.target.value = numberValue.toLocaleString("pt-BR", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        });
-                    } else {
-                        e.target.value = "";
-                    }
-                });
-
-                if (input.form) {
-                    input.form.addEventListener("submit", () => {
-                        if (input.value) {
-                            let raw = input.value.replace(/\./g, "");
-                            input.value = raw;
-                        }
-                    });
-                }
-            }
-
-            document.querySelectorAll("#valorInputCadastro, #pagamentoValor, #recebimentoValor")
-                .forEach(aplicarMascaraMoeda);
 
             // Filtro
-            filtro.addEventListener("change", function () {
-                const valor = this.value;
-                const linhas = tabela.querySelectorAll("tr[data-tipo]");
-
-                filtroCard.classList.remove("border-success", "border-danger", "bg-light", "bg-opacity-10");
-                filtroCard.classList.add("bg-light", "bg-opacity-10");
-
-                if (valor === "1") filtroCard.classList.add("border-success");
-                else if (valor === "2") filtroCard.classList.add("border-danger");
-
-                linhas.forEach(linha => {
-                    linha.style.display = !valor || linha.getAttribute("data-tipo") === valor ? "" : "none";
-                });
+            initFiltro({
+               filtroId: "tipoTransacaoFiltro",
+               limparId: "btnLimparFiltro",
+               tabelaId: "gastosTableBody",
+               cardId: "filtroGastoFixo"
             });
 
-            limpar.addEventListener("click", function () {
-                filtro.value = "";
-                filtro.dispatchEvent(new Event("change"));
-                filtroCard.classList.remove("border-success", "border-danger", "bg-light", "bg-opacity-10");
-            });
+            // Moeda
+            initMascaraMoeda("#valorInputCadastro, #pagamentoValor, #recebimentoValor");
 
             // Modal Pagamento
-            const pagamentoModal = document.getElementById('pagamentoModal');
-            pagamentoModal.addEventListener('show.bs.modal', function (event) {
-                const button = event.relatedTarget;
-                document.getElementById('pagamentoId').value = button.getAttribute('data-id');
-                document.getElementById('pagamentoDescricao').value = button.getAttribute('data-descricao');
-                document.getElementById('pagamentoValor').value = parseFloat(button.getAttribute('data-valor'))
-                    .toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                document.getElementById('pagamentoBanco').value = button.getAttribute('data-banco');
-            });
+            initModalPagamento("pagamentoModal");
 
-            // 🔹 Modal Recebimento
-            const recebimentoModal = document.getElementById('recebimentoModal');
-            recebimentoModal.addEventListener('show.bs.modal', function (event) {
-                const button = event.relatedTarget;
-                document.getElementById('recebimentoId').value = button.getAttribute('data-id');
-                document.getElementById('recebimentoDescricao').value = button.getAttribute('data-descricao');
-                document.getElementById('recebimentoValor').value = parseFloat(button.getAttribute('data-valor'))
-                    .toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                document.getElementById('recebimentoBanco').value = button.getAttribute('data-banco');
+            // Modal Recebimento
+            initModalRecebimento("recebimentoModal");
+
+            // Confirmar Exclusão de Gasto Fixo
+            initConfirmDelete({
+                selector: ".botao-Excluir",
+                url: "/GastoFixo/Excluir",
+                mensagens: {
+                    titulo: "Confirmação de Exclusão",
+                    texto: "Tem certeza que deseja excluir esta conta?",
+                    sucesso: "A conta foi excluída com sucesso!"
+                }
             });
         });
     </script>
