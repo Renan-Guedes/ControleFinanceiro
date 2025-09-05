@@ -31,12 +31,6 @@ namespace ControleFinanceiro.Web.Controllers
             var gastosFixos = _gastoFixoService
                 .ListarTodos(usuarioId);
 
-            // Pega todos os IDs de gasto fixo que têm transação
-            var transacoesIds = _transacaoService.ListarTodos(usuarioId)
-                .Where(t => t.GastoFixoId.HasValue)
-                .Select(t => t.GastoFixoId!.Value)
-                .ToHashSet();
-
             var vm = gastosFixos
                 .Select(g => new GastoFixoViewModel
                 {
@@ -49,11 +43,12 @@ namespace ControleFinanceiro.Web.Controllers
                     UsuarioId = g.UsuarioId,
                     Descricao = g.Descricao ?? string.Empty,
                     Valor = g.Valor,
-                    IsPago = transacoesIds.Contains(g.Id)
+                    IsPago = _transacaoService.ListarTodos(usuarioId).Any(t => t.GastoFixoId == g.Id)
                 })
                 .ToList();
 
             PreencherViewBags(usuarioId);
+            ViewBag.ContagemGastosFixosAbertos = vm.Count(g => !g.IsPago);
 
             return View(vm);
         }
@@ -104,7 +99,9 @@ namespace ControleFinanceiro.Web.Controllers
             ViewBag.Categorias = new SelectList(categorias, "Id", "Nome");
 
             ViewBag.TotalGastosFixos = _gastoFixoService.ObterTotalGastosFixos(usuarioId).ToString("C2");
-            ViewBag.TotalContasEmAberto = _gastoFixoService.ObterContasEmAberto(usuarioId).ToString("C2");
+            ViewBag.ContagemGastosFixos = _gastoFixoService.ListarTodos(usuarioId).Count;
+            
+            ViewBag.TotalGastosFixosEmAberto = _gastoFixoService.ObterContasEmAberto(usuarioId).ToString("C2");
         }
     }
 }
