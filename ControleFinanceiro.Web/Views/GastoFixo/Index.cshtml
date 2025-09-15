@@ -150,7 +150,7 @@
                     <div class="mb-3">
                         <label class="form-label">Banco</label>
                         <select name="BancoId" asp-items="ViewBag.Bancos" class="form-select" required>
-                            <option value="">Selecione um banco</option>
+                            <option value="">Selecione um Banco</option>
                         </select>
                     </div>
 
@@ -203,7 +203,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Data do Pagamento</label>
-                        <input type="date" class="form-control" name="dataPagamento" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                        <input type="date" class="form-control" id="dataPagamento" name="dataPagamento" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Banco</label>
@@ -290,6 +290,60 @@
                     sucesso: "A conta foi excluída com sucesso!"
                 }
             });
+
+            // Interceptar pagamento
+            document.querySelector("#formPagamento").addEventListener("submit", function (e) {
+                e.preventDefault();
+                enviarTransacao("/GastoFixo/RealizarPagamento", "#pagamentoModal", {
+                    Id: document.querySelector("#pagamentoId").value,
+                    Valor: parseFloat(document.querySelector("#pagamentoValor").value),
+                    DataTransacao: document.querySelector("#dataPagamento").value
+                });
+            });
+
+            // Interceptar recebimento
+            document.querySelector("#formRecebimento").addEventListener("submit", function (e) {
+                e.preventDefault();
+                enviarTransacao("/GastoFixo/RealizarRecebimento", "#recebimentoModal", {
+                    Id: document.querySelector("#recebimentoId").value,
+                    Valor: parseFloat(document.querySelector("#recebimentoValor").value),
+                    DataTransacao: document.querySelector("#dataRecebimento").value
+                });
+            });
+
+            // Função genérica
+            function enviarTransacao(url, modalId, payload) {
+                fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.mensagem) {
+                        // Atualizar cards
+                        document.querySelector(".text-warning.mb-1").innerText = data.total;
+                        document.querySelector(".text-danger.mb-1").innerText = data.totalAberto;
+                        document.querySelector(".text-muted.small").innerText = `${data.count} Gastos Mensais`;
+                        document.querySelectorAll(".text-muted.small")[1].innerText = `${data.countAbertos} Contas Restantes`;
+
+                        // Atualizar linha da tabela
+                        const row = document.querySelector(`tr td button[data-id='${data.gastoFixoId}']`)?.closest("tr");
+                        if (row) {
+                            row.querySelector("td:nth-child(6)").innerHTML = `<span class="badge bg-success">${data.statusLabel}</span>`;
+                            row.querySelector("td:nth-child(7)").innerHTML =
+                                `<button class="btn btn-sm btn-secondary" disabled><i class="bi bi-check-circle-fill"></i> ${data.statusLabel}</button>`;
+                        }
+
+                        // Fechar modal
+                        bootstrap.Modal.getInstance(document.querySelector(modalId)).hide();
+                    }
+                })
+                .catch(err => console.error("Erro:", err));
+            }
         });
     </script>
 }

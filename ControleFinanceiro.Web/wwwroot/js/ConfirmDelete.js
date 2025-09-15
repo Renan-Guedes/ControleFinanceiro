@@ -48,17 +48,17 @@
                         },
                         body: JSON.stringify(id)
                     })
-                        .then(response => {
-                            if (response.ok) {
-                                Swal.fire('Excluído!', config.sucesso, 'success');
-                                botao.closest('tr')?.remove();
-                            } else {
-                                Swal.fire('Erro!', config.erro, 'error');
-                            }
-                        })
-                        .catch(() => {
-                            Swal.fire('Erro!', 'Não foi possível conectar ao servidor.', 'error');
-                        });
+                    .then(response => {
+                        if (response.ok) {
+                            Swal.fire('Excluído!', config.sucesso, 'success');
+                            botao.closest('tr')?.remove();
+                        } else {
+                            Swal.fire('Erro!', config.erro, 'error');
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire('Erro!', 'Não foi possível conectar ao servidor.', 'error');
+                    });
                 }
             });
         });

@@ -90,6 +90,80 @@ namespace ControleFinanceiro.Web.Controllers
             }
         }
 
+        // POST: RealizarPagamento
+        // DTO genérico para pagamento/recebimento
+        public class TransacaoRequest
+        {
+            public int Id { get; set; }
+            public decimal Valor { get; set; }
+            public DateTime DataTransacao { get; set; }
+        }
+
+        // POST: Pagamento
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult RealizarPagamento([FromBody] TransacaoRequest request)
+        {
+            return SalvarTransacao(request, "Pago");
+        }
+
+        // POST: Recebimento
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult RealizarRecebimento([FromBody] TransacaoRequest request)
+        {
+            return SalvarTransacao(request, "Recebido");
+        }
+
+        private IActionResult SalvarTransacao(TransacaoRequest request, string label)
+        {
+            var usuarioId = 1; // depois pegar o usuário logado
+            var gasto = _gastoFixoService.BuscarPorId(request.Id, usuarioId);
+
+            if (gasto == null)
+                return NotFound(new { mensagem = "Gasto fixo não encontrado." });
+
+            try
+            {
+                var transacao = new TransacaoModel
+                {
+                    CategoriaId = gasto.CategoriaId,
+                    TipoTransacaoId = gasto.TipoTransacaoId,
+                    BancoId = gasto.BancoId,
+                    UsuarioId = usuarioId,
+                    GastoFixoId = gasto.Id,
+                    Descricao = gasto.Descricao ?? "",
+                    ValorPlanejado = request.Valor,
+                    ValorPago = request.Valor,
+                    DataTransacao = request.DataTransacao,
+                };
+
+                _transacaoService.Criar(transacao);
+
+                // Atualizar cards
+                var total = _gastoFixoService.ObterTotalGastosFixos(usuarioId).ToString("C2");
+                var totalAberto = _gastoFixoService.ObterContasEmAberto(usuarioId).ToString("C2");
+                var count = _gastoFixoService.ListarTodos(usuarioId).Count;
+                var countAbertos = _gastoFixoService.ListarTodos(usuarioId)
+                    .Count(g => !_transacaoService.ListarTodos(usuarioId).Any(t => t.GastoFixoId == g.Id));
+
+                return Ok(new
+                {
+                    mensagem = $"{label} registrado com sucesso!",
+                    gastoFixoId = gasto.Id,
+                    statusLabel = label,
+                    total,
+                    totalAberto,
+                    count,
+                    countAbertos
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensagem = "Erro ao registrar transação: " + ex.Message });
+            }
+        }
+
         // POST: Excluir
         [HttpPost]
         [ValidateAntiForgeryToken]
