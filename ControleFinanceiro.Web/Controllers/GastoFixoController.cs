@@ -4,6 +4,7 @@ using ControleFinanceiro.Domain.Models;
 using ControleFinanceiro.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ControleFinanceiro.Web.Controllers
 {
@@ -15,13 +16,13 @@ namespace ControleFinanceiro.Web.Controllers
         private readonly ITransacaoService _transacaoService;
 
         public GastoFixoController(IGastoFixoService gastoFixoService, IBancoService bancoService, ICategoriaService categoriaService, ITransacaoService transacaoService)
-        { 
-            _gastoFixoService = gastoFixoService; 
+        {
+            _gastoFixoService = gastoFixoService;
             _bancoService = bancoService;
             _categoriaService = categoriaService;
             _transacaoService = transacaoService;
         }
-        
+
 
         // GET: /GastoFixo
         public IActionResult Index()
@@ -59,7 +60,7 @@ namespace ControleFinanceiro.Web.Controllers
         public IActionResult Criar(GastoFixoViewModel vm)
         {
             int usuarioId = 1;
-            
+
             if (!ModelState.IsValid)
             {
                 PreencherViewBags(usuarioId);
@@ -90,78 +91,31 @@ namespace ControleFinanceiro.Web.Controllers
             }
         }
 
-        // POST: RealizarPagamento
-        // DTO genérico para pagamento/recebimento
-        public class TransacaoRequest
-        {
-            public int Id { get; set; }
-            public decimal Valor { get; set; }
-            public DateTime DataTransacao { get; set; }
-        }
-
-        // POST: Pagamento
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult RealizarPagamento([FromBody] TransacaoRequest request)
-        {
-            return SalvarTransacao(request, "Pago");
-        }
-
-        // POST: Recebimento
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult RealizarRecebimento([FromBody] TransacaoRequest request)
-        {
-            return SalvarTransacao(request, "Recebido");
-        }
-
-        private IActionResult SalvarTransacao(TransacaoRequest request, string label)
+        public IActionResult ConfirmarTransacao([FromBody] int gastoFixoId)
         {
             var usuarioId = 1; // depois pegar o usuário logado
-            var gasto = _gastoFixoService.BuscarPorId(request.Id, usuarioId);
+            var gastoFixo = _gastoFixoService.BuscarPorId(gastoFixoId, usuarioId);
 
-            if (gasto == null)
-                return NotFound(new { mensagem = "Gasto fixo não encontrado." });
+            if (gastoFixo == null)
+                return NotFound(new { mensagem = "Conta não encontrada." });
 
-            try
+            var novaTransacao = new TransacaoModel
             {
-                var transacao = new TransacaoModel
-                {
-                    CategoriaId = gasto.CategoriaId,
-                    TipoTransacaoId = gasto.TipoTransacaoId,
-                    BancoId = gasto.BancoId,
-                    UsuarioId = usuarioId,
-                    GastoFixoId = gasto.Id,
-                    Descricao = gasto.Descricao ?? "",
-                    ValorPlanejado = request.Valor,
-                    ValorPago = request.Valor,
-                    DataTransacao = request.DataTransacao,
-                };
+                CategoriaId = gastoFixo.CategoriaId,
+                TipoTransacaoId = gastoFixo.TipoTransacaoId,
+                BancoId = gastoFixo.BancoId,
+                UsuarioId = usuarioId,
+                GastoFixoId = gastoFixo.Id,
+                Descricao = gastoFixo.Descricao ?? "",
+                ValorPlanejado = gastoFixo.Valor,
+                ValorPago = gastoFixo.Valor,
+                DataTransacao = DateTime.Now
+            };
 
-                _transacaoService.Criar(transacao);
-
-                // Atualizar cards
-                var total = _gastoFixoService.ObterTotalGastosFixos(usuarioId).ToString("C2");
-                var totalAberto = _gastoFixoService.ObterContasEmAberto(usuarioId).ToString("C2");
-                var count = _gastoFixoService.ListarTodos(usuarioId).Count;
-                var countAbertos = _gastoFixoService.ListarTodos(usuarioId)
-                    .Count(g => !_transacaoService.ListarTodos(usuarioId).Any(t => t.GastoFixoId == g.Id));
-
-                return Ok(new
-                {
-                    mensagem = $"{label} registrado com sucesso!",
-                    gastoFixoId = gasto.Id,
-                    statusLabel = label,
-                    total,
-                    totalAberto,
-                    count,
-                    countAbertos
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { mensagem = "Erro ao registrar transação: " + ex.Message });
-            }
+            _transacaoService.Criar(novaTransacao);
+            return Ok();
         }
 
         // POST: Excluir
@@ -189,7 +143,7 @@ namespace ControleFinanceiro.Web.Controllers
 
             ViewBag.TotalGastosFixos = _gastoFixoService.ObterTotalGastosFixos(usuarioId).ToString("C2");
             ViewBag.ContagemGastosFixos = _gastoFixoService.ListarTodos(usuarioId).Count;
-            
+
             ViewBag.TotalGastosFixosEmAberto = _gastoFixoService.ObterContasEmAberto(usuarioId).ToString("C2");
         }
     }

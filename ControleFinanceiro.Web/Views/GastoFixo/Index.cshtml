@@ -96,15 +96,7 @@
                         <td>
                             @if (!isPago)
                             {
-                                <button type="button" class="btn btn-outline-success border-0"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="@(item.TipoTransacaoId == 1 ? "#recebimentoModal" : "#pagamentoModal")"
-                                        data-id="@item.Id"
-                                        data-descricao="@item.Descricao"
-                                        data-valor="@item.Valor"
-                                        data-banco="@item.BancoNome">
-                                    <i class="bi bi-cash"></i>
-                                </button>
+                                <a href="#" data-id="@item.Id" class="Confirmar-Transacao btn btn-outline-success border-0"><i class="bi bi-cash"></i></a>
                             }
                             else
                             {
@@ -119,6 +111,11 @@
         </tbody>
     </table>
 </div>
+
+<form id="form-transacao" method="post" asp-action="ConfirmarTransacao" asp-controller="GastoFixo">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="gastoFixoId" id="gastoFixoIdConfirmarTransacao" />
+</form>
 
 <form id="form-excluir" method="post" asp-action="Excluir" asp-controller="GastoFixo">
     @Html.AntiForgeryToken()
@@ -179,86 +176,6 @@
     </div>
 </div>
 
-<!-- Modal Pagamento -->
-<div class="modal fade" id="pagamentoModal" tabindex="-1" aria-labelledby="pagamentoModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="formPagamento" method="post" asp-action="Salvar">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="pagamentoModalLabel">💳 Realizar Pagamento</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="id" id="pagamentoId" />
-                    <div class="mb-3">
-                        <label class="form-label">Descrição</label>
-                        <input type="text" class="form-control" id="pagamentoDescricao" readonly />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Valor Pago</label>
-                        <div class="input-group">
-                            <span class="input-group-text">R$</span>
-                            <input type="text" inputmode="decimal" class="form-control" id="pagamentoValor" name="valor" required />
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Data do Pagamento</label>
-                        <input type="date" class="form-control" id="dataPagamento" name="dataPagamento" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Banco</label>
-                        <input type="text" class="form-control" id="pagamentoBanco" readonly />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger">Confirmar Pagamento</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Recebimento -->
-<div class="modal fade" id="recebimentoModal" tabindex="-1" aria-labelledby="recebimentoModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="formRecebimento" method="post" asp-action="RealizarRecebimento">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="recebimentoModalLabel">💳 Realizar Recebimento</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="id" id="recebimentoId" />
-                    <div class="mb-3">
-                        <label class="form-label">Descrição</label>
-                        <input type="text" class="form-control" id="recebimentoDescricao" readonly />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Valor Recebido</label>
-                        <div class="input-group">
-                            <span class="input-group-text">R$</span>
-                            <input type="text" inputmode="decimal" class="form-control" id="recebimentoValor" name="valor" required />
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Data do Recebimento</label>
-                        <input type="date" class="form-control" id="dataRecebimento" name="dataRecebimento" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Banco</label>
-                        <input type="text" class="form-control" id="recebimentoBanco" readonly />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-success">Confirmar Recebimento</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -280,6 +197,12 @@
             // Modal Recebimento
             initModalRecebimento("recebimentoModal");
 
+            // Confirmar Baixa de Pagamento / Recebimento
+            initConfirmarTransacao({
+                selector: ".Confirmar-Transacao",
+                url: "/GastoFixo/ConfirmarTransacao"
+            });
+
             // Confirmar Exclusão de Gasto Fixo
             initConfirmDelete({
                 selector: ".botao-Excluir",
@@ -289,61 +212,7 @@
                     texto: "Tem certeza que deseja excluir esta conta?",
                     sucesso: "A conta foi excluída com sucesso!"
                 }
-            });
-
-            // Interceptar pagamento
-            document.querySelector("#formPagamento").addEventListener("submit", function (e) {
-                e.preventDefault();
-                enviarTransacao("/GastoFixo/RealizarPagamento", "#pagamentoModal", {
-                    Id: document.querySelector("#pagamentoId").value,
-                    Valor: parseFloat(document.querySelector("#pagamentoValor").value),
-                    DataTransacao: document.querySelector("#dataPagamento").value
-                });
-            });
-
-            // Interceptar recebimento
-            document.querySelector("#formRecebimento").addEventListener("submit", function (e) {
-                e.preventDefault();
-                enviarTransacao("/GastoFixo/RealizarRecebimento", "#recebimentoModal", {
-                    Id: document.querySelector("#recebimentoId").value,
-                    Valor: parseFloat(document.querySelector("#recebimentoValor").value),
-                    DataTransacao: document.querySelector("#dataRecebimento").value
-                });
-            });
-
-            // Função genérica
-            function enviarTransacao(url, modalId, payload) {
-                fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
-                    },
-                    body: JSON.stringify(payload)
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.mensagem) {
-                        // Atualizar cards
-                        document.querySelector(".text-warning.mb-1").innerText = data.total;
-                        document.querySelector(".text-danger.mb-1").innerText = data.totalAberto;
-                        document.querySelector(".text-muted.small").innerText = `${data.count} Gastos Mensais`;
-                        document.querySelectorAll(".text-muted.small")[1].innerText = `${data.countAbertos} Contas Restantes`;
-
-                        // Atualizar linha da tabela
-                        const row = document.querySelector(`tr td button[data-id='${data.gastoFixoId}']`)?.closest("tr");
-                        if (row) {
-                            row.querySelector("td:nth-child(6)").innerHTML = `<span class="badge bg-success">${data.statusLabel}</span>`;
-                            row.querySelector("td:nth-child(7)").innerHTML =
-                                `<button class="btn btn-sm btn-secondary" disabled><i class="bi bi-check-circle-fill"></i> ${data.statusLabel}</button>`;
-                        }
-
-                        // Fechar modal
-                        bootstrap.Modal.getInstance(document.querySelector(modalId)).hide();
-                    }
-                })
-                .catch(err => console.error("Erro:", err));
-            }
+            }); 
         });
     </script>
 }
