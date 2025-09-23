@@ -25,9 +25,19 @@ public class BancoService : IBancoService
     public List<BancoModel> ListarTodos(int usuarioId) 
         => _bancoRepository.ListarTodos(usuarioId);
 
+    public List<BancoModel> ListarAtivos(int usuarioId)
+        => _bancoRepository.ListarAtivos(usuarioId);
+
     public BancoModel? BuscarPorId(int bancoId, int usuarioId) 
         => _bancoRepository.BuscarPorId(bancoId, usuarioId);
 
+    public List<BancoModel> ListarDespesasAtivas(int usuarioId)
+    {
+        throw new NotImplementedException();
+    }
 
-
+    public List<BancoModel> ListarReceitasAtivas(int usuarioId)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,24 +1,21 @@
 ﻿using ControleFinanceiro.Application.Interfaces;
-using ControleFinanceiro.Domain.Interfaces;
-using ControleFinanceiro.Domain.Models;
 using ControleFinanceiro.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ControleFinanceiro.Web.Controllers
 {
     public class TransacaoController : Controller
     {
         private readonly ITransacaoService _transacaoService;
-        private readonly ICategoriaService _categoriaService;
-        private readonly ITipoTransacaoService _tipoTransacaoService;
         private readonly IBancoService _bancoService;
+        private readonly ICategoriaService _categoriaService;
 
-        public TransacaoController(ITransacaoService transacaoService, ICategoriaService categoriaService, ITipoTransacaoService tipoTransacaoService, IBancoService bancoService)
+        public TransacaoController(ITransacaoService transacaoService, IBancoService bancoService, ICategoriaService categoriaService)
         {
             _transacaoService = transacaoService;
-            _categoriaService = categoriaService;
-            _tipoTransacaoService = tipoTransacaoService;
             _bancoService = bancoService;
+            _categoriaService = categoriaService;
         }
 
         // GET: /Transacao
@@ -30,199 +27,57 @@ namespace ControleFinanceiro.Web.Controllers
                 .ListarTodos(usuarioId)
                 .ToList();
 
-            var vm = transacoes.Select(t => new TransacaoViewModel
-            {
-                Id = t.Id,
-                Descricao = t.Descricao,
-                Fatura = t.Fatura,
-                ValorPlanejado = t.ValorPlanejado,
-                ValorPago = t.ValorPago,
-                CategoriaId = t.CategoriaId,
-                CategoriaNome = t.Categoria?.Nome ?? "Categoria Não Encontrada",
-                BancoId = t.BancoId,
-                BancoNome = t.Banco?.Nome ?? "Banco Não Encontrado",
-                TipoTransacaoId = t.TipoTransacaoId,
-                TipoTransacaoNome = t.TipoTransacao?.Nome ?? "Tipo de Transação Não Encontrada",
-                DataVencimento = t.DataVencimento,
-                DataTransacao = t.DataTransacao
-            }).ToList();
+            var vm = transacoes
+                .Select(t => new TransacaoViewModel
+                {
+                    Id = t.Id,
+                    Descricao = t.Descricao,
+                    Fatura = t.Fatura,
+                    ValorPlanejado = t.ValorPlanejado,
+                    ValorPago = t.ValorPago,
+                    CategoriaId = t.CategoriaId,
+                    CategoriaNome = t.Categoria?.Nome ?? "Categoria Não Encontrada",
+                    BancoId = t.BancoId,
+                    BancoNome = t.Banco?.Nome ?? "Banco Não Encontrado",
+                    TipoTransacaoId = t.TipoTransacaoId,
+                    TipoTransacaoNome = t.TipoTransacao?.Nome ?? "Tipo de Transação Não Encontrada",
+                    DataVencimento = t.DataVencimento,
+                    DataTransacao = t.DataTransacao,
+                    IsPago = _transacaoService.ListarTodos(usuarioId).Any(v => v.Id == t.Id && v.ValorPago.HasValue)
+                }).ToList();
+
+            PreencherViewBags(usuarioId);
 
             return View(vm);
         }
 
-        //GET: /Transacao/Criar
-        public IActionResult Criar()
-        {
-            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
-
-            PreencherViewBags(usuarioId);
-            return View(new TransacaoViewModel());
-        }
-
-        //POST: /Transacao/Criar
+        // POST: /Transacao/Excluir
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Criar(TransacaoViewModel vm)
+        public IActionResult Excluir([FromBody] int transacaoId)
         {
-            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
+            var usuarioId = 1; // Trocar pelo usuário autenticado
 
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    PreencherViewBags(usuarioId);
-                    return View(vm);
-                }
-
-                var novaTransacao = new TransacaoModel
-                {
-                    Descricao = vm.Descricao,
-                    TipoTransacaoId = vm.TipoTransacaoId,
-                    Fatura = vm.Fatura,
-                    ValorPlanejado = vm.ValorPlanejado,
-                    ValorPago = vm.ValorPago,
-                    CategoriaId = vm.CategoriaId,
-                    BancoId = vm.BancoId,
-                    UsuarioId = usuarioId,
-                    DataVencimento = vm.DataVencimento,
-                    DataTransacao = vm.DataTransacao
-                };
-
-                _transacaoService.Criar(novaTransacao);
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, "Erro ao salvar transação: " + ex.Message);
-                PreencherViewBags(usuarioId);
-                return View(vm);
-            }
-        }
-
-        // GET: /Transacao/Editar/{id}
-        public IActionResult Editar(int transacaoId)
-        {
-            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
-
-            var transacao = _transacaoService
-                .BuscarPorId(transacaoId, usuarioId);
-
+            var transacao = _transacaoService.BuscarPorId(transacaoId, usuarioId);
             if (transacao == null)
                 return NotFound();
 
-            var vm = new TransacaoViewModel
-            {
-                Id = transacao.Id,
-                CategoriaId = transacao.CategoriaId,
-                TipoTransacaoId = transacao.TipoTransacaoId,
-                BancoId = transacao.BancoId,
-                Descricao = transacao.Descricao,
-                Fatura = transacao.Fatura,
-                ValorPlanejado = transacao.ValorPlanejado,
-                ValorPago = transacao.ValorPago,
-                DataVencimento = transacao.DataVencimento,
-                DataTransacao = transacao.DataTransacao
-            };
-
-            PreencherViewBags(usuarioId);
-            return View(vm);
-        }
-
-        // POST: /Transacao/Editar/{id}
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Editar(TransacaoViewModel transacaoViewModel)
-        {
-            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
-
-            if (!ModelState.IsValid)
-            {
-                PreencherViewBags(usuarioId);
-                return View(transacaoViewModel);
-            }
-
-            var transacao = new TransacaoModel
-            {
-                Id = transacaoViewModel.Id,
-                Descricao = transacaoViewModel.Descricao,
-                TipoTransacaoId = transacaoViewModel.TipoTransacaoId,
-                Fatura = transacaoViewModel.Fatura,
-                ValorPlanejado = transacaoViewModel.ValorPlanejado,
-                ValorPago = transacaoViewModel.ValorPago,
-                CategoriaId = transacaoViewModel.CategoriaId,
-                BancoId = transacaoViewModel.BancoId,
-                UsuarioId = usuarioId,
-                DataVencimento = transacaoViewModel.DataVencimento,
-                DataTransacao = transacaoViewModel.DataTransacao
-            };
-
-            _transacaoService.Atualizar(transacao);
-
-            return RedirectToAction("Index");
-        }
-
-        // GET: /Transacao/Deletar/{id}
-        public IActionResult Deletar(int transacaoId)
-        {
-            var usuarioId = 1; // Substitua pelo ID do usuário autenticado
-
-            var transacao = _transacaoService
-                .BuscarPorId(transacaoId, usuarioId);
-
-            if (transacao == null) return NotFound();
-
-            var vm = new TransacaoViewModel
-            {
-                Id = transacao.Id,
-                Descricao = transacao.Descricao,
-                TipoTransacaoId = transacao.TipoTransacaoId,
-                ValorPago = transacao.ValorPago,
-                DataTransacao = transacao.DataTransacao
-            };
-
-            return View(vm);
-        }
-
-        // POST: /Categoria/Deletar/{id}
-        [HttpPost, ActionName("Deletar")]
-        [ValidateAntiForgeryToken]
-        public IActionResult ConfirmarDeletar(int transacaoId)
-        {
-            int usuarioId = 1; // Substitua pelo ID do usuário autenticado
-
-            try
-            {
-                var transacao = _transacaoService
-                    .BuscarPorId(transacaoId, usuarioId);
-
-                if (transacao == null)
-                    return NotFound();
-
-                _transacaoService.Deletar(transacaoId, usuarioId);
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, "Erro ao salvar: " + ex.Message);
-                return View();
-            }
+            _transacaoService.Deletar(transacaoId, usuarioId);
+            return Ok();
         }
 
         private void PreencherViewBags(int usuarioId)
         {
-            ViewBag.Categorias = _categoriaService
-                .ListarTodos(usuarioId)
-                .ToList();
+            var bancos = _bancoService.ListarAtivos(usuarioId);
+            var categoriasDespesas = _categoriaService.ListarDespesasAtivas(usuarioId);
+            var categoriasReceitas = _categoriaService.ListarReceitasAtivas(usuarioId);
 
-            ViewBag.TipoTransacao = _tipoTransacaoService
-                .ListarTodos()
-                .ToList();
+            ViewBag.Bancos = new SelectList(bancos, "Id", "Nome");
+            ViewBag.CategoriasDespesas = new SelectList(categoriasDespesas, "Id", "Nome");
+            ViewBag.CategoriasReceitas = new SelectList(categoriasReceitas, "Id", "Nome");
 
-            ViewBag.Bancos = _bancoService
-                .ListarTodos(usuarioId)
-                .ToList();
+            ViewBag.TotalReceitas = _transacaoService.ObterTotalReceitas(usuarioId).ToString("C2");
+            ViewBag.TotalDespesas = _transacaoService.ObterTotalDespesas(usuarioId).ToString("C2");
         }
     }
 }

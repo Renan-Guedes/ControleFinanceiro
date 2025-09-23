@@ -27,7 +27,7 @@ public class TransacaoViewModel
     [DisplayName("Valor Pago")]
     public decimal? ValorPago { get; set; }
 
-    public string? ValorPagoFormatado => ValorPago?.ToString("C2");
+    public string? ValorPagoFormatado => ValorPago?.ToString("C2") ?? "-";
 
     [Required()]
     [DisplayName("Categoria")]
@@ -56,4 +56,6 @@ public class TransacaoViewModel
     public DateTime? DataTransacao { get; set; } = null;
 
     public string? DataTransacaoFormatada => DataTransacao?.ToString("dd/MM/yyyy") ?? "-";
+
+    public bool IsPago { get; set; } = false;
 }

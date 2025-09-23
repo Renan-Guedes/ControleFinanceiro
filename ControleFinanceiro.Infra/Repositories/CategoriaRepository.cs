@@ -59,6 +59,23 @@ public class CategoriaRepository : ICategoriaRepository
             .ToList();
     }
 
+    public List<CategoriaModel> ListarAtivos(int usuarioId)
+    {
+        return ListarTodos(usuarioId)
+            .Where(c => c.Ativo == true)
+            .ToList();
+    }
+
+    public List<CategoriaModel> ListarDespesasAtivas(int usuarioId)
+    {
+        return ListarAtivos(usuarioId).Where(c => c.TipoTransacaoId == 2).ToList();
+    }
+
+    public List<CategoriaModel> ListarReceitasAtivas(int usuarioId)
+    {
+        return ListarAtivos(usuarioId).Where(c => c.TipoTransacaoId == 1).ToList();
+    }
+
     public CategoriaModel? BuscarPorId(int categoriaId, int usuarioId)
     {
         return _db.Categorias

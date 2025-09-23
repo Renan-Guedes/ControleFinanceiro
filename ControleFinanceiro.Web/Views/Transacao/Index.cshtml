@@ -4,43 +4,267 @@
     ViewData["Title"] = "Transações";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Minhas Transações</h2>
+        <div>
+            <button type="button" class="btn btn-success shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#receitaModal">
+                <i class="bi bi-plus-circle"></i> Nova Receita
+            </button>
+            <button type="button" class="btn btn-danger shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#despesaModal">
+                <i class="bi bi-plus-circle"></i> Nova Despesa
+            </button>
+        </div>
+    </div>
 
-<a asp-action="Criar" class="btn btn-primary mb-3">Nova Transação</a>
+    <!-- 🔹 Painel de resumo -->
+    <div class="mb-4">
+        <div class="card-body p-4">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6 mx-auto">
+                    <div class="d-flex flex-column align-items-center p-4 rounded-3 bg-success bg-opacity-10 shadow-sm">
+                        <div class="mb-3">
+                            <i class="bi bi-wallet2 text-success" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h6 class="text-muted mb-1">Total de Receitas</h6>
+                        <h2 class="fw-bold text-success mb-1">@ViewBag.TotalReceitas</h2>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mx-auto">
+                    <div class="d-flex flex-column align-items-center p-4 rounded-3 bg-danger bg-opacity-10 shadow-sm">
+                        <div class="mb-3">
+                            <i class="bi bi-wallet2 text-danger" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h6 class="text-muted mb-1">Total de Despesas</h6>
+                        <h2 class="fw-bold text-danger mb-1">@ViewBag.TotalDespesas</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Descrição</th>
-            <th>Tipo</th>
-            <th>Fatura</th>
-            <th>Valor Planejado</th>
-            <th>Valor Pago</th>
-            <th>Categoria</th>
-            <th>Banco</th>
-            <th>Data Vencimento</th>
-            <th>Data Transação</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+    <!-- Filtro -->
+    <div id="filtroTransacao" class="card shadow-sm border-0 mb-4">
+        <div class="card-body d-flex align-items-center gap-3">
+            <label for="tipoTransacaoFiltro" class="fw-semibold">Filtrar por:</label>
+            <select id="tipoTransacaoFiltro" class="form-select w-auto">
+                <option value="">Todas</option>
+                <option value="1">Receitas</option>
+                <option value="2">Despesas</option>
+            </select>
+            <button id="btnLimparFiltro" class="btn btn-outline-secondary">Limpar</button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        @if (Model == null || !Model.Any())
         {
-            <tr>
-                <td>@item.Descricao</td>
-                <td>@item.TipoTransacaoNome</td>
-                <td>@(item.Fatura ? "Sim" : "Não")</td>
-                <td>@item.ValorPlanejadoFormatado</td>
-                <td>@item.ValorPagoFormatado</td>
-                <td>@item.CategoriaNome</td>
-                <td>@item.BancoNome</td>
-                <td>@item.DataVencimentoFormatada</td>
-                <td>@item.DataTransacaoFormatada</td>
-                <td>
-                    <a asp-action="Editar" asp-route-transacaoId="@item.Id" class="btn btn-sm btn-warning">Editar</a>
-                    <a asp-action="Deletar" asp-route-transacaoId="@item.Id" class="btn btn-sm btn-danger">Excluir</a>
-                </td>
-            </tr>
+            <div class="alert alert-info text-center">
+                Nenhuma conta cadastrada ainda.
+            </div>
         }
-    </tbody>
-</table>
+        else
+        {
+            <table class="table table-bordered shadow-sm">
+                <thead class="table-secondary text-center">
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th>Banco</th>
+                        <th>Dt. Vencimento</th>
+                        <th>Valor Planejado</th>
+                        <th>Valor Pago</th>
+                        <th>Dt. Pagamento</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="transacaoTableBody">
+                    @foreach (var conta in Model)
+                    {
+                        var IsPago = conta.IsPago;
+
+                        <tr class="text-center" data-tipo="@conta.TipoTransacaoId">
+                            <td>@conta.CategoriaNome</td>
+                            <td>
+                                <span class="badge @(conta.TipoTransacaoId == 1 ? "bg-success" : "bg-danger")">
+                                    @(conta.TipoTransacaoId == 1 ? "Receita" : "Despesa")
+                                </span>
+                            </td>
+                            <td>@conta.Descricao</td>
+                            <td>@conta.BancoNome</td>
+                            <td>@conta.DataVencimentoFormatada</td>
+                            <td class="text-danger">@conta.ValorPlanejadoFormatado</td>
+                            <td class="text-danger">@conta.ValorPagoFormatado</td>
+                            <td>@conta.DataTransacaoFormatada</td>
+                            <td>
+                                <span class="badge @(IsPago ? "bg-success" : "bg-danger")">
+                                    @(IsPago ? (conta.TipoTransacaoId == 1 ? "Recebido" : "Pago") : "Pendente")
+                                </span>
+                            </td>
+                            <td>
+                                @if (!IsPago)
+                                {
+                                    <a href="#" data-id="@conta.Id" class="Confirmar-Transacao btn btn-outline-success border-0"><i class="bi bi-cash"></i></a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-sm btn-secondary" disabled><i class="bi bi-check-circle-fill"></i> Pago</button>
+                                }
+                                <button type="button" class="btn btn-outline-warning border-0"><i class="bi bi-pencil"></i></button>
+                                <a href="#" data-id="@conta.Id" class="botao-Excluir btn btn-outline-danger border-0"><i class="bi bi-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<form id="form-excluir" method="post" asp-action="Excluir" asp-controller="Transacao">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="transacaoId" id="despesaIdExcluir" />
+</form>
+
+<!-- Modal de Cadastro de Despesas -->
+<div class="modal fade" id="despesaModal" tabindex="-1" aria-labelledby="despesaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form asp-controller="Despesa" asp-action="Criar" method="post" id="formTransacao">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="despesaModalLabel">Nova Despesa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Descrição</label>
+                        <input name="Descricao" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Categoria</label>
+                        <select name="CategoriaId" asp-items="ViewBag.CategoriasDespesas" class="form-select" required>
+                            <option value="">Selecione uma Categoria</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Banco</label>
+                        <select name="BancoId" asp-items="ViewBag.Bancos" class="form-select" required>
+                            <option value="">Selecione um Banco</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Valor Planejado</label>
+                        <div class="input-group">
+                            <span class="input-group-text">R$</span>
+                            <input type="text" inputmode="decimal" name="ValorPlanejado" id="valorPlanejadoInputCadastro" class="form-control" placeholder="0,00" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Valor Pago</label>
+                        <div class="input-group">
+                            <span class="input-group-text">R$</span>
+                            <input type="text" inputmode="decimal" name="ValorPago" id="valorPagoInputCadastro" class="form-control" placeholder="0,00" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Data do Vencimento</label>
+                        <input name="DataVencimento" class="form-control" type="date" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Data do Pagamento</label>
+                        <input name="DataTransacao" class="form-control" type="date" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Cadastro de Receitas -->
+<div class="modal fade" id="receitaModal" tabindex="-1" aria-labelledby="receitaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form asp-controller="Receita" asp-action="Criar" method="post" id="formTransacao">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="despesaModalLabel">Nova Receita</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Descrição</label>
+                        <input name="Descricao" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Categoria</label>
+                        <select name="CategoriaId" asp-items="ViewBag.CategoriasReceitas" class="form-select" required>
+                            <option value="">Selecione uma Categoria</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Banco</label>
+                        <select name="BancoId" asp-items="ViewBag.Bancos" class="form-select" required>
+                            <option value="">Selecione um Banco</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Valor Planejado</label>
+                        <div class="input-group">
+                            <span class="input-group-text">R$</span>
+                            <input type="text" inputmode="decimal" name="ValorPlanejado" id="valorPlanejadoInputCadastro" class="form-control" placeholder="0,00" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Valor Recebido</label>
+                        <div class="input-group">
+                            <span class="input-group-text">R$</span>
+                            <input type="text" inputmode="decimal" name="ValorPago" id="valorPagoInputCadastro" class="form-control" placeholder="0,00" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Data do Recebimento</label>
+                        <input name="DataTransacao" class="form-control" type="date" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Filtro
+        initFiltro({
+            filtroId: "tipoTransacaoFiltro",
+            limparId: "btnLimparFiltro",
+            tabelaId: "transacaoTableBody",
+            cardId: "filtroTransacao"
+        });
+
+        // Confirmar Exclusão
+        initConfirmDelete({
+            selector: ".botao-Excluir",
+            url: "/Transacao/Excluir"
+        });
+    </script>
+}

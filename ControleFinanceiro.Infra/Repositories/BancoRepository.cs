@@ -56,6 +56,11 @@ public class BancoRepository : IBancoRepository
             .ToList();
     }
 
+    public List<BancoModel> ListarAtivos(int usuarioId)
+    {
+        return ListarTodos(usuarioId).Where(b => b.Ativo == true).ToList();
+    }
+
     public BancoModel? BuscarPorId(int bancoId, int usuarioId)
     {
         return _db.Bancos

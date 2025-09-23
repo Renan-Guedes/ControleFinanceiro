@@ -6,6 +6,12 @@ public interface ICategoriaService
 {
     List<CategoriaModel> ListarTodos(int usuarioId);
 
+    List<CategoriaModel> ListarAtivos(int usuarioId);
+
+    List<CategoriaModel> ListarDespesasAtivas(int usuarioId);
+
+    List<CategoriaModel> ListarReceitasAtivas(int usuarioId);
+
     CategoriaModel? BuscarPorId(int categoriaId, int usuarioId);
 
     void Criar(CategoriaModel categoriaModel);

@@ -24,6 +24,16 @@ public class CategoriaService : ICategoriaService
     public List<CategoriaModel> ListarTodos(int usuarioId)
         => _repository.ListarTodos(usuarioId);
 
+    public List<CategoriaModel> ListarAtivos(int usuarioId)
+        => _repository.ListarAtivos(usuarioId);
+
+
+    public List<CategoriaModel> ListarDespesasAtivas(int usuarioId)
+        => _repository.ListarDespesasAtivas(usuarioId);
+
+    public List<CategoriaModel> ListarReceitasAtivas(int usuarioId)
+        => _repository.ListarReceitasAtivas(usuarioId);
+
     public CategoriaModel? BuscarPorId(int categoriaId, int usuarioId)
         => _repository.BuscarPorId(categoriaId, usuarioId);
 }
